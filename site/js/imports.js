@@ -383,11 +383,21 @@ async function prepareDocument(input, file, inspection) {
   return { doc: { ...normalized, id, fingerprint, importedAt: new Date().toISOString() }, file };
 }
 
+async function libraryDatabaseName() {
+  const directory = new URL("../", import.meta.url);
+  const prefix = "maritime-law-library:";
+  const name = prefix + directory.pathname;
+  if (!directory.pathname.endsWith("/site/") || !indexedDB.databases) return name;
+  // Earlier root-hosted builds served the modules one directory higher.
+  const previous = prefix + new URL("../", directory).pathname;
+  const databases = await indexedDB.databases().catch(() => []);
+  return !databases.some(db => db.name === name) && databases.some(db => db.name === previous) ? previous : name;
+}
+
 function openDatabase() {
   if (!globalThis.indexedDB) return Promise.reject(new Error("Local browser storage is unavailable."));
   if (databasePromise) return databasePromise;
-  const name = "maritime-law-library:" + new URL("../", import.meta.url).pathname;
-  databasePromise = new Promise((resolve, reject) => {
+  databasePromise = libraryDatabaseName().then(name => new Promise((resolve, reject) => {
     const opening = indexedDB.open(name, 1);
     let blocked = false;
     opening.onupgradeneeded = () => {
@@ -405,7 +415,7 @@ function openDatabase() {
       db.onversionchange = () => { db.close(); databasePromise = undefined; };
       resolve(db);
     };
-  }).catch(error => { databasePromise = undefined; throw error; });
+  })).catch(error => { databasePromise = undefined; throw error; });
   return databasePromise;
 }
 
@@ -447,6 +457,35 @@ async function storeDocuments(entries) {
 export async function savePdf(file, metadata = {}, inspection) {
   if (!inspection || inspectedFiles.get(inspection) !== file) inspection = await inspectPdf(file);
   const entry = await prepareDocument(metadata, file, inspection);
+  const [saved] = await storeDocuments([entry]);
+  return saved;
+}
+
+export async function saveText(file) {
+  if (!(file instanceof Blob) || !file.size || file.size > 4 * importLimits.textCharacters) {
+    throw new Error("Choose a nonempty UTF-8 text file with up to four million characters.");
+  }
+  let text;
+  try {
+    text = new TextDecoder("utf-8", { fatal: true }).decode(await file.arrayBuffer());
+  } catch { throw new Error("Save this document as UTF-8 plain text, then try again."); }
+  if (text.includes("\u0000")) throw new Error("Choose a UTF-8 plain text file.");
+  if (text.length > importLimits.textCharacters) throw new Error("Document text exceeds four million characters.");
+  text = text.replace(/\r\n?/g, "\n").trim();
+  if (!text) throw new Error("This text file is empty.");
+
+  const paragraphBreak = /\n(?:[ \t]*\n)+/;
+  const paragraphs = paragraphBreak.test(text);
+  const blocks = text.split(paragraphs ? paragraphBreak : "\n");
+  const groupSize = Math.ceil(blocks.length / importLimits.sections);
+  const sections = [];
+  for (let i = 0; i < blocks.length; i += groupSize) {
+    const number = sections.length + 1;
+    sections.push({ key: "s-" + number, label: "Passage " + number,
+      text: blocks.slice(i, i + groupSize).join(paragraphs ? "\n\n" : "\n") });
+  }
+  const fileName = file.name || "Document.txt";
+  const entry = await prepareDocument({ fileName, title: fileName.replace(/\.txt$/i, "") || fileName, sections }, null, null);
   const [saved] = await storeDocuments([entry]);
   return saved;
 }

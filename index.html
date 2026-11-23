@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#172c39"><meta name="description" content="Find maritime law for your boat, search your own documents and read the original provisions.">
+  <title>Ship Law Index</title>
+  <link rel="stylesheet" href="./site/assets/site.css">
+  <link rel="stylesheet" href="./site/assets/boat.css">
+  <link rel="stylesheet" href="./site/assets/boat-reader.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to workspace</a>
+<header class="mast">
+  <a class="brand" href="#boat" aria-label="Ship Law Index home"><span class="brandmark" aria-hidden="true">§</span><strong>Ship Law Index</strong></a>
+  <nav aria-label="Workspace"><a href="#boat" id="open-profile" data-view="boat">Boat search</a><a href="#documents" data-view="documents">My documents</a><a href="#boats" data-view="boats">My boats</a><a href="#map" data-view="map">Law map</a>
+    <details id="research-menu"><summary>Research tools</summary><div><a href="#library" data-view="library">Law library</a><a href="#changes" data-view="changes">Revision changes</a><a href="#jurisdictions" data-view="jurisdictions">Jurisdictions &amp; class</a><a href="#sources" data-view="sources">Sources &amp; imports</a></div></details>
+  </nav>
+</header>
+<main id="main" tabindex="-1">
+  <section id="boat-view" class="view owner-view"><h1>Find laws for your boat</h1><p role="status">Loading vessel particulars…</p></section>
+  <section id="boat-results-view" class="view owner-view" hidden></section>
+  <section id="boat-passage-view" class="view owner-view" hidden></section>
+  <section id="boats-view" class="view owner-view" hidden></section>
+  <section id="map-view" class="view owner-view" hidden></section>
+  <section id="documents-view" class="view" hidden>
+    <header class="workspace-heading"><div><h1 tabindex="-1">My documents</h1><p>Upload a law to search its wording. Your files stay in this browser.</p></div></header>
+    <div class="surface document-tools">
+      <label>Upload a PDF or text file<input id="document-file" type="file" accept=".pdf,.txt,application/pdf,text/plain"></label>
+      <p id="document-status" class="small" role="status"></p>
+      <div id="document-picker" hidden><label>Saved documents<select id="document-choice"></select></label>
+        <button type="button" id="document-remove" class="quiet" aria-label="Remove document">Remove</button></div>
+      <a href="#sources" class="small">Import options and backups</a>
+    </div>
+    <div id="document-search" hidden>
+      <form class="filters document-filters" role="search" aria-label="Search this document">
+        <label class="search-label">Search this document<input id="document-query" type="search" maxlength="260" placeholder="Words, a quoted phrase or a section number"></label>
+        <label><span id="document-from-label">From page</span><input id="document-from" type="number" min="1" step="1" inputmode="numeric"></label>
+        <label><span id="document-to-label">To page</span><input id="document-to" type="number" min="1" step="1" inputmode="numeric"></label>
+        <button type="button" id="document-clear" class="quiet">Clear filters</button>
+      </form>
+      <p id="document-scan" class="note" hidden>Some pages have no searchable text. To search their wording, choose a copy with text recognition (OCR). <a id="document-scan-original" target="_blank" rel="noopener" hidden>Read the original PDF</a></p>
+      <p id="document-count" class="small" role="status"></p>
+      <div class="workgrid" id="document-results" hidden>
+        <aside class="listpane" aria-label="Matching passages"><div class="panel-head"><h2>Passages</h2></div><div id="document-hits"></div></aside>
+        <article class="reader" aria-labelledby="document-heading"><h2 id="document-heading" tabindex="-1"></h2>
+          <a id="document-original" target="_blank" rel="noopener" hidden>Open original page</a>
+          <div class="lawtext" id="document-wording"></div></article>
+      </div>
+    </div>
+  </section>
+  <section id="library-view" class="view" hidden>
+    <div class="workspace-heading"><div><h1>Regulation library</h1><p id="scope-line">Loading the public source index…</p></div><span class="meta-tag" id="coverage-brief" hidden></span></div>
+    <form id="filter-form" class="filters" role="search" autocomplete="off">
+      <label class="search-label">Keyword or citation<input id="q" type="search" placeholder="Search sections, laws or a citation…" maxlength="260"></label>
+      <label>Collection<select id="source-filter"><option value="all">All sources</option><option value="folio">Mapped provisions</option><option value="archive">Norwegian public archive</option><option value="world">National law catalogue</option><option value="local">My imports</option></select></label>
+      <label>Issuing jurisdiction<select id="country-filter"><option value="">All jurisdictions</option></select></label>
+      <label>Source year<select id="year-filter"><option value="">All years</option></select></label>
+      <label>Vessel screening<select id="match-filter"><option value="candidate">Candidates &amp; review</option><option value="match">Matches indexed conditions</option><option value="review">Needs review</option><option value="outside">Outside conditions</option><option value="all">All outcomes</option></select></label>
+      <button type="button" id="clear-filters" class="quiet">Reset filters</button>
+    </form>
+    <div id="profile-strip" hidden></div>
+    <div class="workgrid">
+      <aside class="listpane" aria-label="Search results"><div class="panel-head"><h2>Results</h2><span id="result-count" aria-live="polite"></span></div><div id="search-status" class="small status" role="status"></div><div id="result-list"></div><button id="more-results" class="more" hidden>Show more results</button></aside>
+      <article class="reader" id="reader" aria-label="Source reader"><div class="empty"><h2>Loading sources</h2><p>The first verified provision will open here.</p></div></article>
+    </div>
+  </section>
+  <section id="changes-view" class="view" hidden></section>
+  <section id="jurisdictions-view" class="view" hidden></section>
+  <section id="sources-view" class="view" hidden></section>
+</main>
+<div id="notice" role="status" aria-live="polite" hidden></div>
+<footer><span>Ship Law Index</span><a href="#sources">Sources and coverage</a></footer>
+<noscript>JavaScript is needed for local indexing and PDF imports. <a href="https://lovdata.no/">Open Lovdata</a>.</noscript>
+<script type="module" src="./site/js/app.js"></script>
+</body></html>

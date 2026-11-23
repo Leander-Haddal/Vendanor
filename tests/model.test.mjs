@@ -58,6 +58,7 @@ test('search handles Norwegian spelling, phrases, regular-expression characters 
   assert.equal(fold(' Sjøfartsdirektoratet '),'sjofartsdirektoratet');
   assert.deepEqual(queryParts('skip "åpent hav"'),['skip','apent hav']);
   assert.equal(marked('<skip> 5 [m]','[m]'),'&lt;skip&gt; 5 <mark>[m]</mark>');
+  assert.equal(marked('Port of\nregistry','"port of registry"'),'<mark>Port of\nregistry</mark>');
   assert.equal(safeUrl('javascript:alert(1)'),'');assert.equal(safeUrl('//foreign.example/a',true),'');
   assert.equal(countryCode('NOR',[{code:'NO',alpha3:'NOR',name:'Norway'}]),'NO');
 });

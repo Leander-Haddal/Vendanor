@@ -6,9 +6,11 @@ import {fileURLToPath} from 'node:url';
 import {chromium} from 'playwright-core';
 import {checkBoatJourney, checkPhoneBoat, checkSavedLookup, checkTreatyBoat} from './boat-browser.mjs';
 import {checkLawHistory,checkOwnerSourceSearch} from './history-browser.mjs';
+import {checkDocuments, checkLegacyDocuments} from './documents-browser.mjs';
 
 const base = new URL(process.env.BASE_URL || 'http://127.0.0.1:4173/Vendanor/');
 if (!base.pathname.endsWith('/')) base.pathname += '/';
+const assets = new URL('site/', base);
 const pdfFile = fileURLToPath(new URL('../site/pdf/2020-01-14-67.pdf', import.meta.url));
 
 function browserPath() {
@@ -38,7 +40,7 @@ async function verifyFolio(page) {
   await visibleText(page, '#reader .lawtext', 'Forskriften gjelder for norske lasteskip');
   await widthFits(page);
   const original = await page.getByRole('link', {name:'Open original PDF'}).getAttribute('href');
-  assert.equal(new URL(original).pathname, base.pathname + 'pdf/2025-12-16-2652.pdf');
+  assert.equal(new URL(original).pathname, new URL('pdf/2025-12-16-2652.pdf', assets).pathname);
   const source = await page.request.get(original);
   assert.equal(source.status(), 200);
   assert.equal(createHash('sha256').update(await source.body()).digest('hex'),
@@ -47,7 +49,7 @@ async function verifyFolio(page) {
   const frame = page.locator('#reader iframe');
   await frame.waitFor();
   const url = await frame.getAttribute('src');
-  assert.equal(new URL(url).pathname, base.pathname + 'pdf/sections/no-cargo-2025/s1.pdf');
+  assert.equal(new URL(url).pathname, new URL('pdf/sections/no-cargo-2025/s1.pdf', assets).pathname);
   const clip = await page.request.get(url);
   assert.match(clip.headers()['content-type'], /application\/pdf/);
   assert.equal((await clip.body()).subarray(0, 5).toString(), '%PDF-');
@@ -208,7 +210,7 @@ async function verifyNationalPassage(page) {
     await finder.getByRole('button', {name: 'Create excerpt PDF'}).click();
     await finder.getByRole('link', {name: 'Download excerpt PDF'}).waitFor();
     const excerpt = await finder.locator('[data-download]').evaluate(async node => {
-      const {PDFDocument} = await import(new URL('vendor/pdf-lib.mjs', document.baseURI));
+      const {PDFDocument} = await import(new URL('site/vendor/pdf-lib.mjs', document.baseURI));
       const pdf = await PDFDocument.load(await (await fetch(node.href)).arrayBuffer());
       const first = pdf.getPage(0);
       return {pages: pdf.getPageCount(), height: first.getCropBox().height, full: first.getMediaBox().height,
@@ -242,7 +244,7 @@ async function verifyDirectory(page) {
   await page.locator('#source-filter').selectOption('world');
   await page.locator('#result-list button').first().click();
   const record = page.locator('#reader').getByRole('link', {name:'Open catalogue record'});
-  const bookResponse = await page.request.get(new URL('data/world-laws.json', base).href);
+  const bookResponse = await page.request.get(new URL('data/world-laws.json', assets).href);
   const book = await bookResponse.json();
   const recordId = new URLSearchParams(new URL(page.url()).hash.split('?')[1]).get('doc').replace(/^world:/,'');
   const metadata = book.records.find(item => item.id === recordId);
@@ -259,6 +261,14 @@ async function verifyMobile(page) {
   await widthFits(page);
   await verifyDirectory(page);
   await widthFits(page);
+}
+
+async function verifyDocuments(page) {
+  await checkDocuments(page, base, widthFits);
+}
+
+async function verifyLegacyDocuments(page) {
+  await checkLegacyDocuments(page, base);
 }
 
 async function verifyBoat(page) {
@@ -285,7 +295,7 @@ const browser = await chromium.launch({executablePath:browserPath(),headless:tru
 try {
   const faults = [];
   const requested = process.argv.slice(2);
-  const checks = [verifyBoat, verifyTreatyBoat, verifySavedLookup, verifyFolio, verifyProfile, verifyArchive, verifyComparison, verifyImports, verifyDirectory, verifyNationalPassage, verifyLawHistory, verifyBoatSearch, verifyMobile];
+  const checks = [verifyBoat, verifyTreatyBoat, verifySavedLookup, verifyFolio, verifyProfile, verifyArchive, verifyComparison, verifyImports, verifyDocuments, verifyLegacyDocuments, verifyDirectory, verifyNationalPassage, verifyLawHistory, verifyBoatSearch, verifyMobile];
   assert.ok(requested.every(name => checks.some(check => check.name===name)), 'Unknown browser check name');
   for (const check of checks.filter(item => !requested.length || requested.includes(item.name))) {
     const context = await browser.newContext(check === verifyMobile

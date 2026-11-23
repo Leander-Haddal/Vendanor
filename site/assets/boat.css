@@ -84,8 +84,8 @@ body{background:#f4f6f6}
 .register-links{display:grid;grid-template-columns:repeat(auto-fit,minmax(10rem,1fr));gap:.4rem .75rem;margin:.6rem 0}.register-links a{display:block;padding:.35rem 0}
 .national-suggestions{margin:.65rem 0;padding:.65rem 1.25rem}.national-suggestions summary{font-weight:600}.national-suggestions>p,.operation-shortcut p{color:var(--muted);margin:.55rem 0;font-size:.90rem}.operation-shortcut{margin-bottom:.8rem}
 @media(max-width:760px){
-  .mast{padding:.65rem 1rem 0;gap:.25rem}.mast nav{gap:1.15rem;justify-content:flex-start;width:100%;order:2;min-height:2.8rem}
-  .mast nav>a,.mast nav summary{font-size:.88rem}.mast nav details{margin-left:auto}
+  .mast{position:relative;padding:.65rem 1rem 0;gap:.25rem}.mast nav{flex-wrap:wrap;gap:0 .6rem;justify-content:space-between;width:100%;order:2;min-height:2.8rem}.mast nav>a{min-height:2.65rem}
+  .mast nav>a,.mast nav summary{font-size:.88rem}.mast nav details{position:absolute;top:.45rem;right:1rem;z-index:4}
   .owner-view{margin:.55rem auto 2rem}.owner-heading{margin-bottom:1rem}
   .boat-form-body,.fleet-card,.map-picker,.map-sections>section:not(:empty),.source-bridge{padding:1rem}.owner-form-foot{padding:.85rem 1rem}
   .vessel-lookup>summary{padding:.8rem 1rem}.owner-grid{gap:.78rem}.source-bridge,.fleet-row{align-items:start;flex-direction:column}

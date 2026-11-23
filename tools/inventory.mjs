@@ -100,9 +100,9 @@ function fileRole(path) {
   if(path.endsWith('.yml'))return 'Actions entry point. Job dependencies, permissions and publish conditions are defined in the release section.';
   if(path.endsWith('.html'))return 'Static HTML landmarks, reader workspace, filter controls, dialogs and module entry point.';
   if(path.endsWith('.css'))return 'Layout, input and focus states, print and narrow-screen rules.';
-  if(path==='README.md')return 'Operator and reader guide.';
+  if(path==='README.md')return 'Reader guide and link to the live site.';
   if(path==='PLAN.md')return 'Design, evidence policy, delivery sequence and reproducible file and function inventory.';
-  return ({'.gitattributes':'Repository line-ending policy.','.gitignore':'Excludes dependency caches, personal material and local test output.','site/.nojekyll':'Static publication marker.'})[path]||'Repository source.';
+  return ({'.gitattributes':'Repository line-ending policy.','.gitignore':'Excludes dependency caches, personal material and local test output.','.nojekyll':'Static publication marker.'})[path]||'Repository source.';
 }
 async function inventory() {
   const files=await listFiles();

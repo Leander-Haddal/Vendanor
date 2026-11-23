@@ -34,9 +34,13 @@ jobs:
           curl --fail --retry 10 --retry-connrefused --retry-delay 1 http://127.0.0.1:4173/Vendanor/ --output /dev/null
           npm run test:browser
       - uses: actions/configure-pages@v5
+      - name: Stage the public site
+        run: |
+          mkdir "$RUNNER_TEMP/ship-law-pages"
+          cp -R index.html .nojekyll site "$RUNNER_TEMP/ship-law-pages/"
       - uses: actions/upload-pages-artifact@v4
         with:
-          path: site
+          path: ${{ runner.temp }}/ship-law-pages
   deploy:
     runs-on: ubuntu-latest
     needs: verify

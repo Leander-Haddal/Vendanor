@@ -3,7 +3,8 @@ import {open,stat} from 'node:fs/promises';
 import {resolve,extname,sep} from 'node:path';
 import {fileURLToPath} from 'node:url';
 
-const root=fileURLToPath(new URL('../site/',import.meta.url));
+const root=fileURLToPath(new URL('../',import.meta.url));
+const site=resolve(root,'site'),entry=resolve(root,'index.html');
 const types={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.mjs':'text/javascript; charset=utf-8','.json':'application/json; charset=utf-8','.css':'text/css; charset=utf-8','.pdf':'application/pdf','.txt':'text/plain; charset=utf-8'};
 const arg=process.argv.indexOf('--port');
 const port=Number(arg===-1?(process.env.PORT||4173):process.argv[arg+1]);
@@ -13,9 +14,9 @@ async function serve(req,res) {
     if(req.method!=='GET'&&req.method!=='HEAD'){res.writeHead(405,{Allow:'GET, HEAD'}).end();return;}
     const url=new URL(req.url,'http://127.0.0.1');
     if(url.pathname==='/Vendanor'){res.writeHead(308,{Location:'/Vendanor/'+url.search}).end();return;}
-    const path=decodeURIComponent(url.pathname).replace(/^\/Vendanor\//,'/').replace(/^\/+|\/+$/g,'')||'index.html';
-    const file=resolve(root,path);
-    if(!file.startsWith(resolve(root)+sep)){res.writeHead(404).end();return;}
+    const path=decodeURIComponent(url.pathname).replace(/^\/Vendanor\//,'/').replace(/^\/+/, '');
+    const file=resolve(root,path.endsWith('/')||!path?path+'index.html':path);
+    if(file!==entry&&!file.startsWith(site+sep)){res.writeHead(404).end();return;}
     const info=await stat(file);
     if(!info.isFile()){res.writeHead(404).end();return;}
     res.setHeader('Content-Type',types[extname(file)]||'application/octet-stream');

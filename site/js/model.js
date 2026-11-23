@@ -17,14 +17,15 @@ export function marked(value, query) {
   const words = (String(query).match(/"[^"]+"|[^\s"]+/g) || []).map(word => word.replace(/^"|"$/g, '')).filter(Boolean);
   if (!words.length) return esc(text);
   const special = /[.*+?^${}()|[\]\\]/g;
-  const pattern = new RegExp('(' + words.map(word => word.replace(special, '\\$&')).join('|') + ')', 'giu');
+  const patterns = words.map(word => word.replace(special, '\\$&').replace(/\s+/g, '\\s+'));
+  const pattern = new RegExp('(' + patterns.join('|') + ')', 'giu');
   return text.split(pattern).map((part, index) => index % 2 ? '<mark>' + esc(part) + '</mark>' : esc(part)).join('');
 }
 
 export function safeUrl(raw, local = false) {
   if (!raw || typeof raw !== 'string') return '';
   try {
-    const base = globalThis.location?.href || 'https://example.test/project/';
+    const base = local ? new URL('../', import.meta.url).href : globalThis.location?.href || 'https://example.test/project/';
     const url = new URL(raw, base);
     if (!['http:', 'https:'].includes(url.protocol)) return '';
     if (local && url.origin !== new URL(base).origin) return '';
@@ -155,10 +156,9 @@ export function folioRows(instruments) {
 
 export function excerpt(text, parts, limit = 165) {
   const source = String(text || '').replace(/\s+/g, ' ').trim();
-  const folded = fold(source);
-  let start = parts.length ? folded.indexOf(parts[0]) : 0;
-  if (start < 0) start = 0;
-  start = Math.max(0, start - 38);
+  if (source.length <= limit) return source;
+  const found = parts.length ? fold(source).indexOf(parts[0]) : 0;
+  const start = Math.max(0, Math.min(found - 38, source.length - limit));
   return (start ? '…' : '') + source.slice(start,start+limit) + (start+limit < source.length ? '…' : '');
 }
 

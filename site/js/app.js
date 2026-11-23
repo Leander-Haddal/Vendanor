@@ -11,6 +11,7 @@ import {resolveEdition,loadUkEdition} from './uk-editions.js';
 import {renderReader,releasePreview} from './reader.js';
 import {renderChanges} from './changes.js';
 import {renderSources} from './sources.js';
+import {createDocumentWorkspace} from './documents.js';
 import {countryCode,jurisdictionDesk} from './jurisdictions.js';
 import {collections} from './collections.js';
 
@@ -24,11 +25,13 @@ let flagSources={flags:[]},ukHistory={records:[]},euHistory={records:[]},imoHist
 let registryBook={entries:[]},earlyFields=[],fieldReleaseDay='',pendingDefinition;
 const historyLoads=new Map();
 let boatResultSignature='',resultScroll=0,returnPassage='';
-const views=['boat','boat-results','boat-passage','boats','map','library','changes','sources','jurisdictions'];
+const views=['boat','boat-results','boat-passage','boats','map','documents','library','changes','sources','jurisdictions'];
 let profile=readProfile(),rows=[],readerMode='text',loaded=false,limit=40,ticket=0,routeTurn=0,prefill,storageError='',lastQuery='',lastReader='',noticeTimer,within='',withinDoc='';
 let boatRecord=selectedBoat();
 if(boatRecord)profile=boatRecord.profile;
 let draft;
+let publicStart;
+const documentWorkspace=createDocumentWorkspace($('documents-view'),()=>publicStart && refreshImports());
 
 function referenceDay() {
   const now=today(),latest=catalogues.map(c=>c.checkedAt).filter(Boolean).sort().at(-1)||fieldReleaseDay;
@@ -114,7 +117,7 @@ function rebuild() {
 }
 async function refreshImports() {
   try{imports=await listImports();storageError='';}catch{imports=[];storageError='Local document storage is unavailable in this browser session.';}
-  rebuild();
+  if(loaded)rebuild();
 }
 function profileSummary() {
   const active=fields.filter(f=>profile.values[f.key]!==undefined),count=active.length+(profile.asOf?1:0);
@@ -253,17 +256,39 @@ worker.onmessage=event=>{
 };
 worker.onerror=()=>{$('search-status').textContent='The local search worker could not start. Reload this page to retry.';};
 
-async function drawRoute() {
-  if(!loaded)return;
-  const {view,params}=route(),turn=++routeTurn;
+function showView(view) {
   for(const name of views)$(name+'-view').hidden=view!==name;
   for(const nav of document.querySelectorAll('[data-view]'))nav.setAttribute('aria-current',(nav.dataset.view===view||(nav.dataset.view==='boat'&&view.startsWith('boat-')))?'page':'false');
   $('research-menu').open=false;
+}
+async function drawRoute() {
+  const {view,params}=route(),turn=++routeTurn;
+  if(!loaded&&view!=='documents'){
+    if(ownerPage==='documents'){documentWorkspace.close();ownerPage='';showView('boat');}
+    publicStart??=start().catch(error=>{
+      publicStart=undefined;
+      $('scope-line').textContent='The library could not start.';
+      $('boat-view').querySelector('[role=status]')?.replaceChildren(error.message);
+      $('reader').textContent=error.message;
+    });
+    return;
+  }
+  const previous=ownerPage,entered=ownerPage!==view||lastOwnerHash!==location.hash;
+  ownerPage=view;lastOwnerHash=location.hash;
+  showView(view);
+  if(previous==='documents'&&view!=='documents')documentWorkspace.close();
+  if(view==='documents'){
+    if(previous!=='documents'){
+      boatFormActive=false;releasePreview();lastReader='';lastQuery='';
+      window.scrollTo(0,0);$('documents-view').querySelector('h1').focus({preventScroll:true});
+      await documentWorkspace.open();
+    }
+    return;
+  }
   if(['map','sources','library','boat-passage','changes'].includes(view)){
     await loadEditionIndexes(view,params);if(turn!==routeTurn)return;
   }
   if(view!=='boat')boatFormActive=false;
-  const previous=ownerPage,entered=ownerPage!==view||lastOwnerHash!==location.hash;ownerPage=view;lastOwnerHash=location.hash;
   if(view!=='library'){releasePreview();lastReader='';lastQuery='';}
   if(view==='boat'){
     if(boatFormActive)return;
@@ -347,7 +372,7 @@ async function start() {
   failedCollections=Object.entries(collections).filter(([,file])=>!data[file]).map(([name])=>name);
   gazette=data['gazette.json']||gazette;originals=data['originals.json']||originals;
   flagSources=data['flag-sources.json']||flagSources;registryBook=data['registry-guides.json']||registryBook;imoHistory=data['imo-history.json']||imoHistory;
-  await refreshImports();loaded=true;
+  await refreshImports();loaded=true;rebuild();
   if(boatFormActive&&(imports.some(i=>i.fields?.length)||failedCollections.length))boatFormActive=false;
   if(results.some(r=>r.status!=='fulfilled'))notify('Some public source files are unavailable. Displaying the collections that loaded.');
   await drawRoute();
@@ -372,4 +397,4 @@ $('clear-filters').onclick=()=>{limit=40;navigate('library');};
 $('more-results').onclick=()=>{limit+=60;search(route().params);};
 $('result-list').onclick=event=>{const button=event.target.closest('[data-row]');if(button){const row=rows[+button.dataset.row];select(row.doc,row.sectionId,true);}};
 window.addEventListener('hashchange',()=>{clearTimeout(debounce);debounce=undefined;drawRoute();});
-start().catch(error=>{$('scope-line').textContent='The library could not start.';$('boat-view').textContent='The boat search could not start. '+error.message;$('reader').textContent=error.message;});
+drawRoute();

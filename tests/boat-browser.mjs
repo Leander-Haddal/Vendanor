@@ -91,8 +91,9 @@ async function checkOriginal(page, base) {
   assert.match(await evidence.textContent(), /2025\/2652/);
   const clip = new URL(await passage.locator('[data-boat-pdf]').getAttribute('href'), page.url());
   const original = new URL(await passage.locator('[data-boat-full-pdf]').getAttribute('href'), page.url());
-  assert.equal(clip.pathname, new URL(section.clip, base).pathname);
-  assert.equal(original.pathname, new URL(version.pdf, base).pathname);
+  const assets = new URL('site/', base);
+  assert.equal(clip.pathname, new URL(section.clip, assets).pathname);
+  assert.equal(original.pathname, new URL(version.pdf, assets).pathname);
   const [excerptResponse, originalResponse] = await Promise.all([page.request.get(clip.href), page.request.get(original.href)]);
   assert.equal(excerptResponse.status(), 200);
   assert.equal(originalResponse.status(), 200);
@@ -195,7 +196,7 @@ export async function checkTreatyBoat(page,base) {
   const reader = page.locator('#boat-passage-view');
   await reader.locator('[data-boat-wording]').filter({hasText:'a sidelight, 1 mile'}).waitFor();
   assert.equal(new URL(await reader.locator('[data-boat-pdf]').getAttribute('href'),base).pathname,
-    new URL('pdf/colreg-usbook-r22c.pdf',base).pathname);
+    new URL('site/pdf/colreg-usbook-r22c.pdf',base).pathname);
   assert.equal(await reader.locator('[data-boat-publisher]').getAttribute('href'),
     'https://www.navcen.uscg.gov/navigation-rules-amalgamated');
   const flagProof = reader.locator('[data-boat-flag-source]');
