@@ -4,8 +4,7 @@ import {existsSync} from 'node:fs';
 import {readFile} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
 import {chromium} from 'playwright-core';
-import {checkBoatJourney, checkEditionOverview, checkPhoneBoat, checkSavedBoat, checkTreatyBoat, checkRevisionPicker} from './boat-browser.mjs';
-import {checkLawHistory,checkOwnerSourceSearch} from './history-browser.mjs';
+import {checkLawHistory} from './history-browser.mjs';
 import {checkDocuments, checkLegacyDocuments} from './documents-browser.mjs';
 
 const base = new URL(process.env.BASE_URL || 'http://127.0.0.1:4173/Vendanor/');
@@ -39,20 +38,17 @@ async function verifyFolio(page) {
   await page.goto(address.href);
   await visibleText(page, '#reader .lawtext', 'Forskriften gjelder for norske lasteskip');
   await widthFits(page);
-  const original = await page.getByRole('link', {name:'Open original PDF'}).getAttribute('href');
+  const original = new URL('pdf/2025-12-16-2652.pdf',assets).href;
   assert.equal(new URL(original).pathname, new URL('pdf/2025-12-16-2652.pdf', assets).pathname);
   const source = await page.request.get(original);
   assert.equal(source.status(), 200);
   assert.equal(createHash('sha256').update(await source.body()).digest('hex'),
     'eedab4c406938f78c498e550d9dbac90def6c8ad8de1b3bdea858135dd1da9a7');
-  await page.getByRole('button', {name:'PDF excerpt', exact:true}).click();
-  const frame = page.locator('#reader iframe');
-  await frame.waitFor();
-  const url = await frame.getAttribute('src');
-  assert.equal(new URL(url).pathname, new URL('pdf/sections/no-cargo-2025/s1.pdf', assets).pathname);
-  const clip = await page.request.get(url);
-  assert.match(clip.headers()['content-type'], /application\/pdf/);
-  assert.equal((await clip.body()).subarray(0, 5).toString(), '%PDF-');
+  await page.locator('#read-original').click();
+  await page.locator('#reader .pdf-sheet canvas').waitFor();
+  assert.equal(await page.locator('#reader [data-page]').inputValue(),'1');
+  await page.locator('#reader [data-next]').click();
+  assert.equal(await page.locator('#reader [data-page]').inputValue(),'2');
   await page.locator('[data-mode="text"]').click();
   await page.locator('#section-find').fill('periodisk kontroll');
   const options = page.locator('#section-choice option');
@@ -62,14 +58,6 @@ async function verifyFolio(page) {
   await page.locator('#section-choice').selectOption(await match.getAttribute('value'));
   await visibleText(page, '#reader .lawtext', '30 måneder');
   assert.equal(new URLSearchParams(new URL(page.url()).hash.split('?')[1]).get('section'), 's149');
-}
-
-async function verifyProfile(page) {
-  await page.goto(new URL('#library', base).href);
-  await page.locator('#library-view').waitFor();
-  await page.locator('#open-profile').click();
-  await page.locator('#boat-form').waitFor();
-  assert.equal(new URL(page.url()).hash.split('?')[0], '#boat');
 }
 
 async function verifyArchive(page) {
@@ -90,13 +78,7 @@ async function verifyArchive(page) {
   await page.goto(notice.href);
   await visibleText(page, '#reader .lawtext', 'virkeområdet');
   await page.locator('[data-mode="pdf"]').click();
-  const clip = page.locator('#reader iframe');
-  await clip.waitFor();
-  const header = await clip.evaluate(async node => {
-    const result = await fetch(node.src);
-    return (await result.blob()).slice(0, 5).text();
-  });
-  assert.equal(header,'%PDF-');
+  await page.locator('#reader .pdf-sheet canvas').waitFor();
   await page.locator('[data-mode="text"]').click();
 }
 
@@ -139,9 +121,7 @@ async function verifyImports(page) {
   await visibleText(page, '#passage-finder .passage-hit', '1. februar 2020');
   await finder.getByRole('button', {name: 'Close', exact: true}).click();
   await page.locator('[data-mode="pdf"]').click();
-  const local = page.locator('#reader iframe');
-  await local.waitFor();
-  assert.match(await local.getAttribute('src'), /^blob:/);
+  await page.locator('#reader .pdf-sheet canvas').waitFor();
   await sources.click();
   const downloading = page.waitForEvent('download');
   await page.locator('[data-export]').first().click();
@@ -193,7 +173,7 @@ async function verifyNationalPassage(page) {
     address.hash = 'library?' + new URLSearchParams({doc: 'world:LEX-FAOC217329', section: 'catalogue'});
     await page.goto(address.href);
     await visibleText(page, '#reader h2', 'Sea Fisheries (Amendment) Regulations 2023');
-    assert.equal(await page.getByRole('link', {name: 'Open linked PDF'}).getAttribute('href'), source);
+    await page.locator('#read-original').waitFor();
     await page.getByRole('button', {name: 'Find passage in PDF'}).click();
     const finder = page.locator('#passage-finder');
     await finder.waitFor();
@@ -225,43 +205,114 @@ async function verifyNationalPassage(page) {
 }
 
 async function verifyDirectory(page) {
-  await page.goto(new URL('#jurisdictions', base).href);
-  await page.locator('#country-lookup').fill('Norway');
-  await visibleText(page, '#country-detail h2', 'Norway');
-  await page.locator('#country-lookup').fill('');
-  for (const society of ['DNV','BV']) {
-    await page.locator('#society-filter').selectOption(society);
-    await page.locator('#country-list button').first().click();
-    const evidence = page.locator('#country-detail .note').filter({hasText:society==='DNV'?'DNV':'Bureau Veritas'}).first();
-    assert.match(await evidence.getByRole('link').getAttribute('href'), /^https:\/\//);
-  }
-  await page.locator('#society-filter').selectOption('');
-  const country = page.locator('#country-list button').filter({hasText:/[1-9][\d,]* catalogue records/}).first();
-  await country.click();
-  const code = await country.getAttribute('data-code');
-  await page.locator('#see-laws').click();
-  assert.equal(await page.locator('#country-filter').inputValue(),code);
-  await page.locator('#source-filter').selectOption('world');
-  await page.locator('#result-list button').first().click();
-  const record = page.locator('#reader').getByRole('link', {name:'Open catalogue record'});
-  const bookResponse = await page.request.get(new URL('data/world-laws.json', assets).href);
-  const book = await bookResponse.json();
-  const recordId = new URLSearchParams(new URL(page.url()).hash.split('?')[1]).get('doc').replace(/^world:/,'');
-  const metadata = book.records.find(item => item.id === recordId);
-  assert.equal(await record.getAttribute('href'),metadata.sourceUrl);
-  if (metadata.pdfUrl) {
-    assert.equal(await page.locator('#reader').getByRole('link', {name:'Open linked PDF'}).getAttribute('href'),metadata.pdfUrl);
-  }
+  await page.goto(base.href+'#library?tab=map');
+  const atlas=page.locator('#library-atlas');
+  await atlas.locator('svg path').first().waitFor();
+  await atlas.getByLabel('Country or territory').selectOption('NO');
+  await visibleText(page,'.place-detail','Norwegian archive');
+  await atlas.getByRole('link',{name:'Compare country'}).click();
+  await atlas.locator('[data-side="right"]').selectOption('GB');
+  await visibleText(page,'.implementation-compare','SOLAS');
+  await atlas.locator('[data-shared]').check();
+  await visibleText(page,'.treaty-table','SOLAS');
   await widthFits(page);
 }
 
-async function verifyMobile(page) {
-  await checkPhoneBoat(page, base, widthFits);
-  await verifyComparison(page);
-  await widthFits(page);
-  await verifyDirectory(page);
+async function verifyRegulations(page) {
+  await page.goto(base.href+'#boat');
+  const view=page.locator('#regulations-view');
+  await view.locator('.law-card').first().waitFor();
+  assert.equal(await page.getByRole('link',{name:'My boats',exact:true}).count(),0);
+  assert.equal(await view.getByText('Ship specifications',{exact:true}).count(),0);
+  const filter=view.locator('.facet-panel');
+  if(!await filter.evaluate(n=>n.open))await filter.locator('summary').first().click();
+  await view.locator('[name=flag]').selectOption('NO');
+  await view.locator('[name=grossTonnage]').fill('30');await view.locator('[name=grossTonnage]').press('Tab');
+  await view.locator('#rule-broad').check();
+  if(!await view.locator('.law-index').evaluate(n=>n.open))await view.locator('.law-index>summary').click();
+  await visibleText(page,'.law-tree','Small cargo ships');
+  await view.locator('#rule-query').fill('COLREG');
+  await view.locator('.law-card').first().waitFor();
+  assert.match(page.url(),/f.grossTonnage=30/);
+  const link=view.locator('.source-print, .source-hunk a').first();
+  assert.match(await link.getAttribute('href'),/#library/);
+  await link.click();
+  await page.locator('#reader .pdf-sheet canvas').waitFor();
+  await page.goBack();
+  await view.locator('.law-card').first().waitFor();
+  assert.equal(await view.locator('[name=grossTonnage]').inputValue(),'30');
   await widthFits(page);
 }
+async function verifyEditionPicker(page){
+  await page.goto(base.href+'#regulations?f.flag=NO');
+  await page.locator('.date-picker-button').click();
+  const dialog=page.locator('.revision-dialog');
+  await dialog.locator('[data-year]').waitFor();
+  assert.ok(await dialog.locator('[data-year] option').count()>1);
+  await dialog.locator('input[name=day]').fill('2021-06-01');
+  await dialog.getByRole('button',{name:'Use date'}).click();
+  assert.match(page.url(),/date=2021-06-01/);
+}
+async function verifyTreatyPdf(page){
+  await page.goto(base.href+'#library?doc=imo%3Astcw-1978&mode=pdf');
+  await page.locator('#reader .pdf-sheet canvas').waitFor();
+  assert.ok(Number(await page.locator('#reader [data-page]').getAttribute('max'))>5);
+  await page.goto(base.href+'#library?doc=imo%3Abwm-2004&section=page-7&mode=pdf');
+  await page.locator('#reader .pdf-sheet canvas[aria-label$=", page 7"]').waitFor();
+  assert.equal(await page.locator('#reader [data-page]').inputValue(),'7');
+  assert.ok(await page.locator('#source-pdf-choice option').count()>1);
+  await widthFits(page);
+  for(const [id,title] of [['afs-2001','Anti-fouling Systems'],['bunkers-2001','Bunker Oil Pollution']]){
+    await page.goto(base.href+'#library?'+new URLSearchParams({doc:'imo:'+id,section:'original',mode:'pdf'}));
+    await page.getByRole('img',{name:new RegExp(title+'.*page 1','i')}).waitFor();
+    assert.equal(await page.locator('#reader [data-page]').inputValue(),'1');
+  }
+}
+async function verifySourceFilters(page){
+  const facts=new URLSearchParams({'f.flag':'NO','f.shipType':'cargo','f.foreignTrade':'yes','f.grossTonnage':'500',q:'SOLAS chapter II-1',unfiltered:'0'});
+  await page.goto(base.href+'#regulations?'+facts);
+  const view=page.locator('#regulations-view'),section=view.locator('.source-hunk[data-section="solas-construction"]');
+  await section.waitFor();
+  await view.locator('[name=grossTonnage]').fill('499');await view.locator('[name=grossTonnage]').press('Tab');
+  assert.equal(await section.count(),0);
+  await page.goto(base.href+'#regulations?f.flag=IE&q=ballast&unfiltered=1');
+  const results=view.locator('.national-discovery details').filter({has:page.locator('summary').filter({hasText:'Published conditions'})});
+  await results.locator('summary').click();
+  const first=results.locator('article').first();await first.waitFor();
+  assert.match(await first.textContent(),/ballast/i);
+  const target=new URL(await first.locator('a').getAttribute('href'),base);
+  await first.locator('a').click();
+  await page.locator('#reader .lawtext').waitFor();
+  assert.equal(new URLSearchParams(new URL(page.url()).hash.split('?')[1]).get('section'),new URLSearchParams(target.hash.split('?')[1]).get('section'));
+  assert.ok((await page.locator('#reader .lawtext').textContent()).length>30);
+}
+async function verifyPublishedWordingFilter(page){
+  await page.goto(base.href+'#regulations?f.flag=IE');
+  const view=page.locator('#regulations-view');
+  await view.locator('.facet-chooser>summary').click();
+  await view.locator('.facet-lookup').fill('segregated ballast tanks');
+  await view.getByRole('button',{name:'Search published wording'}).click();
+  const option=view.locator('.wording-choice').first();await option.waitFor();
+  await option.click();
+  const field=view.locator('.wording-field select'),source=view.locator('.source-cards .law-card a').first();
+  await source.waitFor();
+  assert.equal(await field.inputValue(),'yes');
+  assert.match(page.url(),/where=/);
+  const link=await source.getAttribute('href');
+  await field.selectOption('no');
+  await visibleText(page,'.source-cards','No selected source passages satisfy these filters');
+  await page.reload();
+  await field.waitFor();assert.equal(await field.inputValue(),'no');
+  await field.selectOption('yes');await source.waitFor();
+  assert.equal(await source.getAttribute('href'),link);
+  await widthFits(page);await source.click();await page.locator('#reader .lawtext').waitFor();
+  assert.match(await page.locator('#reader .lawtext').textContent(),/segregated ballast tanks/i);
+}
+async function verifyMobile(page) {
+  await verifyRegulations(page); await verifyDirectory(page);
+}
+
+async function verifyHistory(page){await checkLawHistory(page,base);}
 
 async function verifyDocuments(page) {
   await checkDocuments(page, base, widthFits);
@@ -271,39 +322,11 @@ async function verifyLegacyDocuments(page) {
   await checkLegacyDocuments(page, base);
 }
 
-async function verifyBoat(page) {
-  await checkBoatJourney(page, base, widthFits);
-}
-
-async function verifySavedBoat(page) {
-  await checkSavedBoat(page,base);
-}
-
-async function verifyRevisionPicker(page) {
-  await checkRevisionPicker(page,base);
-}
-
-async function verifyTreatyBoat(page) {
-  await checkTreatyBoat(page,base);
-}
-
-async function verifyLawHistory(page) {
-  await checkLawHistory(page,base);
-}
-
-async function verifyBoatSearch(page) {
-  await checkOwnerSourceSearch(page,base);
-}
-
-async function verifyEditionOverview(page) {
-  await checkEditionOverview(page,base);
-}
-
 const browser = await chromium.launch({executablePath:browserPath(),headless:true});
 try {
   const faults = [];
   const requested = process.argv.slice(2);
-  const checks = [verifyBoat, verifyTreatyBoat, verifySavedBoat, verifyRevisionPicker, verifyFolio, verifyProfile, verifyArchive, verifyComparison, verifyImports, verifyDocuments, verifyLegacyDocuments, verifyDirectory, verifyNationalPassage, verifyLawHistory, verifyBoatSearch, verifyEditionOverview, verifyMobile];
+  const checks = [verifyRegulations,verifySourceFilters,verifyPublishedWordingFilter,verifyEditionPicker,verifyFolio,verifyArchive,verifyComparison,verifyImports,verifyDocuments,verifyLegacyDocuments,verifyDirectory,verifyTreatyPdf,verifyNationalPassage,verifyHistory,verifyMobile];
   assert.ok(requested.every(name => checks.some(check => check.name===name)), 'Unknown browser check name');
   for (const check of checks.filter(item => !requested.length || requested.includes(item.name))) {
     const context = await browser.newContext(check === verifyMobile

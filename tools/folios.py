@@ -9,8 +9,10 @@ import re
 from tempfile import NamedTemporaryFile
 from urllib.request import Request, urlopen
 
-import pymupdf
-
+try:
+    import pymupdf
+except ModuleNotFoundError:
+    pymupdf = None
 
 ROOT = Path(__file__).resolve().parents[1]
 SITE = ROOT / "site"
@@ -228,10 +230,56 @@ def build_version(config, version, source, refresh, sources):
     return output
 
 
+def add_passenger_consolidation(book):
+    """Index the register's actual consolidated wording and provision URLs."""
+    record_id = "SF/forskrift/2020-01-14-63"
+    archive = json.loads((INDEX.parent / "gazette.json").read_text(encoding="utf-8"))
+    meta = next(row for row in archive["records"] if row["id"] == record_id)
+    shard = json.loads((INDEX.parent / meta["shard"]).read_text(encoding="utf-8"))
+    record = next(row for row in shard["records"] if row["id"] == record_id)
+    if meta["lastChangeInForceText"] != "2026-01-01" or len(record["sections"]) != 19:
+        raise ValueError("Review the amended passenger regulation and its vessel conditions")
+    instrument = next(row for row in book["instruments"] if row["id"] == meta["legalId"])
+    original = {s["number"].replace(" ", ""): s for s in instrument["versions"][0]["sections"]}
+    sections = []
+    for published in record["sections"]:
+        prior = original[published["key"]]
+        entry = {k: prior[k] for k in ("id", "number", "criteria", "screeningLevel")}
+        entry.update(title=published["label"].split(".", 1)[1].strip(), text=published["text"],
+                     sourceUrl=published["sourceUrl"])
+        sections.append(entry)
+    edition_id = "no-pax-consolidated-2026"
+    instrument["versions"] = [v for v in instrument["versions"] if v["id"] != edition_id]
+    instrument["versions"].append({
+        "id": edition_id, "kind": "Consolidated text", "label": "2026 consolidated regulation",
+        "language": "nb", "effectiveFrom": meta["lastChangeInForceText"], "editionDate": meta["lastChangeInForceText"],
+        "scopeChange": {"from": "2026-01-01", "when": {"field": "offshoreTransfer", "op": "eq",
+                        "value": "no", "source": "2025/2652 § 158(5), amending 2020/63 § 1(2)(c)"}},
+        "verifiedThrough": max(archive["coverage"]["snapshotDate"], "2026-11-23"),
+        "sourceUrl": meta["sourceUrl"], "sourcePage": meta["sourceUrl"], "archiveRecord": record_id,
+        "sourceLinks": ["https://www.sdir.no/siteassets/engelske-forskrifter-pdf/14-january-2020-no.-63-vessels-of-less-than-24-metres-carrying-12-passengers-or-less2.pdf"],
+        "notes": ["Lovdata consolidated text. Each section links to its published Norwegian wording. The Norwegian Maritime Authority's English translation records the same amendments through 1 January 2026."],
+        "sections": sections
+    })
+
+
+def save_index(book):
+    write_bytes(INDEX, (json.dumps(book, ensure_ascii=False, separators=(",", ":")) + "\n").encode("utf-8"))
+
+
 def main():
     arguments = argparse.ArgumentParser(description=__doc__)
     arguments.add_argument("--refresh", action="store_true", help="re-fetch and verify every pinned publisher PDF")
+    arguments.add_argument("--consolidation-only", action="store_true", help="update the consolidated text from the local Lovdata archive")
     args = arguments.parse_args()
+    if args.consolidation_only:
+        output = json.loads(INDEX.read_text(encoding="utf-8"))
+        add_passenger_consolidation(output)
+        save_index(output)
+        return
+    if pymupdf is None:
+        arguments.error("Building the PDF excerpts requires PyMuPDF")
+
     config = json.loads(MANIFEST.read_text(encoding="utf-8"))
     output = {k: config[k] for k in ("version", "checkedAt", "fields", "comparisons")}
     output["instruments"] = []
@@ -250,7 +298,8 @@ def main():
     for reference in references:
         if (reference["versionId"], reference["sectionId"]) not in keys:
             raise ValueError(f"Unresolved folio reference {reference}")
-    write_bytes(INDEX, (json.dumps(output, ensure_ascii=False, separators=(",", ":")) + "\n").encode("utf-8"))
+    add_passenger_consolidation(output)
+    save_index(output)
 
 
 if __name__ == "__main__":

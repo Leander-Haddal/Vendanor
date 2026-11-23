@@ -2,29 +2,26 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#172c39"><meta name="description" content="Find maritime law for your boat, search your own documents and read the original provisions.">
+  <meta name="theme-color" content="#172c39"><meta name="description" content="Filter maritime provisions, compare national collections and read original instruments.">
   <title>Ship Law Index</title>
   <link rel="stylesheet" href="./site/assets/site.css">
   <link rel="stylesheet" href="./site/assets/boat.css">
   <link rel="stylesheet" href="./site/assets/boat-reader.css">
   <link rel="stylesheet" href="./site/assets/boat-overview.css">
+  <link rel="stylesheet" href="./site/assets/library.css">
 </head>
 <body>
 <a class="skip" href="#main">Skip to workspace</a>
 <header class="mast">
-  <a class="brand" href="#boat" aria-label="Ship Law Index home"><span class="brandmark" aria-hidden="true">§</span><strong>Ship Law Index</strong></a>
-  <nav aria-label="Workspace"><a href="#boat" id="open-profile" data-view="boat">Regulations</a><a href="#documents" data-view="documents">Document search</a><a href="#boats" data-view="boats">My boats</a><a href="#map" data-view="map">Flag registers</a>
-    <details id="research-menu"><summary>Research tools</summary><div><a href="#library" data-view="library">Law library</a><a href="#changes" data-view="changes">Revision changes</a><a href="#jurisdictions" data-view="jurisdictions">Jurisdictions &amp; class</a><a href="#sources" data-view="sources">Sources &amp; imports</a></div></details>
+  <a class="brand" href="#regulations" aria-label="Ship Law Index home"><span class="brandmark" aria-hidden="true">§</span><strong>Ship Law Index</strong></a>
+  <nav aria-label="Workspace"><a href="#regulations" data-view="regulations">Regulations</a><a href="#library" data-view="library">Library</a><a href="#documents" data-view="documents">Document search</a>
+    <details id="research-menu"><summary>Research tools</summary><div><a href="#changes" data-view="changes">Compare editions</a><a href="#sources" data-view="sources">Sources &amp; imports</a></div></details>
   </nav>
 </header>
 <main id="main" tabindex="-1">
-  <section id="boat-view" class="view owner-view" aria-label="Regulations" tabindex="-1"><p role="status">Loading ship specifications…</p></section>
-  <section id="boat-results-view" class="view owner-view" aria-label="Regulations" tabindex="-1" hidden></section>
-  <section id="boat-passage-view" class="view owner-view" hidden></section>
-  <section id="boats-view" class="view owner-view" hidden></section>
-  <section id="map-view" class="view owner-view" hidden></section>
+  <section id="regulations-view" class="view owner-view" aria-label="Regulations" tabindex="-1"><p role="status">Loading provisions…</p></section>
   <section id="documents-view" class="view" hidden>
-    <header class="workspace-heading"><div><h1 tabindex="-1">Document search</h1><p>Upload a law to search its wording. Your files stay in this browser.</p></div></header>
+    <header class="workspace-heading"><div><h1 tabindex="-1">Document search</h1><p>Search the wording in a PDF or text file. Your files stay in this browser.</p></div></header>
     <div class="surface document-tools">
       <label>Upload a PDF or text file<input id="document-file" type="file" accept=".pdf,.txt,application/pdf,text/plain"></label>
       <p id="document-status" class="small" role="status"></p>
@@ -50,23 +47,21 @@
     </div>
   </section>
   <section id="library-view" class="view" hidden>
-    <div class="workspace-heading"><div><h1>Regulation library</h1><p id="scope-line">Loading the public source index…</p></div><span class="meta-tag" id="coverage-brief" hidden></span></div>
+    <div class="library-heading"><h1>Library</h1><nav class="library-tabs" aria-label="Library sections"><a href="#library" data-tab="documents">Documents</a><a href="#library?tab=map" data-tab="map">World map</a><a href="#library?tab=compare" data-tab="compare">Compare countries</a></nav></div>
+    <div id="library-atlas" hidden></div><div id="library-documents">
     <form id="filter-form" class="filters" role="search" autocomplete="off">
-      <label class="search-label">Keyword or citation<input id="q" type="search" placeholder="Search sections, laws or a citation…" maxlength="260"></label>
-      <label>Collection<select id="source-filter"><option value="all">All sources</option><option value="folio">Mapped provisions</option><option value="archive">Norwegian public archive</option><option value="world">National law catalogue</option><option value="local">My imports</option></select></label>
+      <label class="search-label">Keyword or citation<input id="q" type="search" placeholder="Title, wording or citation" maxlength="260"></label>
+      <label>Collection<select id="source-filter"><option value="all">All sources</option><option value="folio">Mapped provisions</option><option value="archive">Norwegian public archive</option><option value="world">National catalogue</option><option value="imo">IMO instruments &amp; status</option><option value="uk">UK legislation</option><option value="eu">EU legal acts</option><option value="register">Flag administrations</option><option value="local">Private imports</option></select></label>
       <label>Issuing jurisdiction<select id="country-filter"><option value="">All jurisdictions</option></select></label>
       <label>Source year<select id="year-filter"><option value="">All years</option></select></label>
-      <label>Vessel screening<select id="match-filter"><option value="candidate">Candidates &amp; review</option><option value="match">Matches indexed conditions</option><option value="review">Needs review</option><option value="outside">Outside conditions</option><option value="all">All outcomes</option></select></label>
       <button type="button" id="clear-filters" class="quiet">Reset filters</button>
     </form>
-    <div id="profile-strip" hidden></div>
     <div class="workgrid">
       <aside class="listpane" aria-label="Search results"><div class="panel-head"><h2>Results</h2><span id="result-count" aria-live="polite"></span></div><div id="search-status" class="small status" role="status"></div><div id="result-list"></div><button id="more-results" class="more" hidden>Show more results</button></aside>
       <article class="reader" id="reader" aria-label="Source reader"><div class="empty"><h2>Loading sources</h2><p>The first verified provision will open here.</p></div></article>
-    </div>
+    </div></div>
   </section>
   <section id="changes-view" class="view" hidden></section>
-  <section id="jurisdictions-view" class="view" hidden></section>
   <section id="sources-view" class="view" hidden></section>
 </main>
 <div id="notice" role="status" aria-live="polite" hidden></div>

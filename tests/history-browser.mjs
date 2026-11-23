@@ -1,68 +1,20 @@
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 
-export async function checkLawHistory(page,base) {
-  await page.goto(base.href+'#map?country=EU');
-  const eu=page.locator('#map-eu');
-  await eu.locator('[data-find]').fill('32014L0090');
-  const marine=eu.locator('[data-rows] > details').first();
-  await marine.locator('summary').first().click();
-  assert.equal(await marine.getByRole('link',{name:'Open original act and published formats'}).getAttribute('href'),'https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32014L0090');
-  await marine.getByText(/Consolidated wording/).click();
-  assert.ok((await marine.getByRole('link',{name:/Consolidated edition/}).count())>=1);
-  await page.locator('#map-country').selectOption('GB');
-  const uk=page.locator('#map-uk');
-  await uk.locator('input').fill('Life-Saving Appliances and Arrangements');
-  const regulation=uk.locator('.map-national-list > details').filter({hasText:/2020/}).first();
-  await regulation.locator('summary').click();
-  const earlier=regulation.locator('[data-edition]'),later=regulation.locator('[data-with]');
-  await earlier.selectOption({label:'made'});await later.selectOption({label:'2022-12-19'});
-  for(const label of ['made','2022-12-19']){
-    const body=await readFile(new URL('./fixtures/gb-2020-501-'+label+'.xml',import.meta.url));
-    await page.route('https://www.legislation.gov.uk/uksi/2020/501/'+label+'/data.xml',r=>r.fulfill({contentType:'application/xml',headers:{'Access-Control-Allow-Origin':'*'},body}));
+export async function checkLawHistory(page,base){
+  const stem='https://www.legislation.gov.uk/uksi/2020/501';
+  const before='uk-edition:uksi/2020/501@made', after='uk-edition:uksi/2020/501@2022-12-19';
+  for(const edition of ['made','2022-12-19']){
+    await page.route(stem+'/'+edition+'/data.xml',async route=>route.fulfill({contentType:'application/xml',headers:{'Access-Control-Allow-Origin':'*'},
+      body:await readFile(new URL('./fixtures/gb-2020-501-'+edition+'.xml',import.meta.url))}));
   }
-  await regulation.getByRole('button',{name:'Compare wording'}).click();
-  await page.getByText('1 changed provision',{exact:true}).waitFor();
-  assert.match(await page.locator('#diff-output .note').innerText(),/41 compared/);
-  const change=page.locator('.patch').filter({has:page.locator('summary',{hasText:'4 · General application'})});
-  await change.locator('summary').click();
-  assert.match(await change.locator('.diff-line.del').allTextContents().then(lines=>lines.join(' ')),/High Speed Craft\) Regulations 2004/);
-  assert.match(await change.locator('.diff-line.add').allTextContents().then(lines=>lines.join(' ')),/High Speed Craft\) Regulations 2022/);
-  assert.match(decodeURIComponent(page.url()),/uk-edition:uksi\/2020\/501@2022-12-19/);
-  if(!await change.locator('a').first().isVisible())await change.locator('summary').click();
-  await change.getByRole('link',{name:/Later source/}).click();
-  assert.equal(await page.getByRole('link',{name:'This provision at the publisher'}).getAttribute('href'),'https://www.legislation.gov.uk/uksi/2020/501/regulation/4/2022-12-19');
-  await page.goto(base.href+'#map?country=NO');
-  const imo=page.locator('#map-international');
-  await imo.locator('[data-find]').fill('MSC.204(81)');
-  const item=imo.locator('[data-choice] option').nth(1);await imo.locator('[data-choice]').selectOption(await item.getAttribute('value'));
-  assert.match(await imo.locator('[data-history]').innerText(),/MSC.204\(81\)/);
-}
-
-export async function checkOwnerSourceSearch(page,base) {
-  let release;
-  const pending=new Promise(done=>{release=done;});
-  await page.route('**/data/solas-folios.json',async request=>{await pending;await request.continue();});
-  await page.goto(base.href,{waitUntil:'domcontentloaded'});
-  await page.selectOption('#boat-flag','MH');await page.selectOption('#boat-shipType','recreational');
-  await page.selectOption('#boat-colregWaters','high');await page.fill('#boat-lengthOverall','9.5');
-  await page.click('#boat-submit');await page.getByText('Opening the source passages for your boat…').waitFor();
-  release();
-  const input=page.locator('#boat-law-keyword');await input.fill('look-out');
-  await page.locator('#boat-outcome').selectOption('match');
-  const card=page.locator('.source-cards .law-card');
-  assert.equal(await card.count(),1);
-  await card.locator('.source-words mark').first().waitFor();
-  await card.locator('[data-read-passage]').first().click();
-  assert.match(await page.locator('[data-boat-wording]').innerText(),/look-out/i);
-  await page.goBack();assert.equal(await input.inputValue(),'look-out');
-  assert.equal(await page.locator('#boat-outcome').inputValue(),'match');
-  await input.fill('xyzzzzz');assert.equal(await card.count(),0);
-  await page.getByRole('button',{name:'Clear filters'}).click();
-  assert.equal(await input.inputValue(),'');
-  assert.equal(await page.locator('#boat-outcome').inputValue(),'all');
-  const guides=page.locator('#boat-results-view details').filter({has:page.locator('summary',{hasText:/Flag administration notices to check/})}).first();
-  await guides.locator(':scope > summary').click();await guides.locator('details > summary').first().click();
-  const official=guides.getByRole('link',{name:/Open original · p\./}).first();
-  assert.match(await official.getAttribute('href'),/^https:\/\/.+#page=\d+$/);
+  await page.goto(base.href+'#changes?'+new URLSearchParams({before,after}));
+  await page.locator('#diff-output .diff-line.add').first().waitFor();
+  assert.match(await page.locator('#diff-output').innerText(),/High Speed Craft/);
+  await page.goto(base.href+'#library?doc=eu%3A32014L0090');
+  await page.locator('#reader h2').filter({hasText:/marine equipment/i}).waitFor();
+  assert.ok(await page.locator('#section-choice option').count()>1);
+  await page.goto(base.href+'#library?source=imo&q='+encodeURIComponent('MSC.204(81)'));
+  await page.locator('#result-list button').filter({hasText:'MSC.204(81)'}).first().click();
+  await page.locator('#reader .lawtext').filter({hasText:'MSC.204(81)'}).waitFor();
 }

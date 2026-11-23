@@ -45,7 +45,7 @@ test('foreign passenger operations use coastal scope and the date of the located
   assert.ok(!rows(old.review).some(r=>r.section.id==='s3'));
   assert.deepEqual(run({...pax,norwegianWaters:'no'},'2022-01-01'),{matched:[],review:[]});
   const current=run({...pax,offshoreTransfer:'no'});
-  assert.equal(current.matched.length,0);
+  assert.ok(rows(current.matched).some(r=>r.doc.version.id==='no-pax-consolidated-2026'&&r.section.id==='s1'));
   assert.ok(rows(current.review).some(r=>r.doc.version.id==='no-pax-amend-2023'));
   assert.ok(!rows(current.review).some(r=>r.doc.version.id==='no-pax-2020'));
   const transfer=run({...pax,offshoreTransfer:'yes'});

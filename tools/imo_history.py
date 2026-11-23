@@ -323,6 +323,10 @@ def select_headings(lines, books):
             raise ValueError(f"No publisher bookmark at {volume}, p.{first}")
         primary = {"id": identifier, "title": plain(value[number.end():]), "listNumber": ordinal,
                    "sourceParagraph": i + 1, "participationKeys": columns.split(), **book_location(volume, first), "entries": []}
+        # The chronology's AFS heading differs from the title on the adopted convention.
+        if identifier == "afs-2001":
+            primary["title"] = "International Convention on the Control of Harmful Anti-fouling Systems on Ships, 2001 (AFS 2001)"
+            primary["titleSource"] = "https://www.imo.org/en/about/conventions/pages/international-convention-on-the-control-of-harmful-anti-fouling-systems-on-ships-(afs).aspx"
         headings.append((i, primary, primary))
     if [item["listNumber"] for _, item, _ in headings if "listNumber" in item] != list(range(1, 54)):
         raise ValueError("The 53 numbered treaty headings no longer match the reviewed chronology")

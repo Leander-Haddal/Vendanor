@@ -1,0 +1,77 @@
+:root { --sea: #075965; --soft: #e8f2f1; }
+main { max-width: 112rem; }
+#regulations-view { max-width: none; }
+.law-workspace { align-items: start; }
+.law-sidebar { display: grid; gap: .85rem; }
+.facet-panel,.atlas-card,.national-discovery>details { background: var(--panel,#fff); border: 1px solid var(--line); border-radius: .55rem; }
+.facet-panel>summary,.national-discovery summary { padding: .82rem 1rem; font-weight: 700; cursor: pointer; }
+.facet-content { padding: .1rem .9rem .85rem; }
+.facet-fields { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: .5rem .6rem; margin: .25rem 0 .6rem; }
+.facet-fields .owner-field:has(select),.facet-fields .owner-field:nth-child(n+5) { grid-column: 1/-1; }
+.facet-chooser,.collection-filters { margin: .55rem 0; }
+.facet-chooser>summary,.collection-filters>summary,.atlas-country summary { color: var(--blue); cursor: pointer; font-size: .88rem; font-weight: 600; }
+.facet-options { max-height: 18rem; overflow-y: auto; overscroll-behavior: contain; }
+.facet-options details { padding: .3rem 0; }
+.facet-options button { width: 100%; text-align: left; padding: .3rem .55rem; border: 0; margin: .13rem 0; }
+.facet-options small { color: var(--muted); }
+.wording-field { margin: .6rem 0; overflow-wrap: anywhere; }
+.wording-field a,.wording-choice small { display: block; font-size: .78rem; }
+.wording-field a { margin-top: .2rem; }
+.wording-choice,.source-hunk blockquote { overflow-wrap: anywhere; }
+.national-discovery article details summary { padding: .35rem 0; font-weight: 500; font-size: .85rem; }
+.national-discovery article details button { display: block; margin: .25rem 0; text-align: left; }
+.collection-filters label { display: flex; gap: .5rem; align-items: center; padding: .25rem 0; }
+.collection-filters input,.inline input { width: auto; }
+.active-facets { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .6rem; }
+.active-facets:empty { display: none; }
+.active-facets button { padding: .25rem .55rem; font-size: .81rem; min-height: 1.8rem; border-radius: 1rem; background: var(--soft); color: var(--sea); }
+.national-discovery { margin-top: .8rem; }
+.national-discovery details>div,.compare-list>div { padding: 0 1rem .75rem; }
+.national-discovery a,.compare-list a { display: block; padding: .3rem 0; }
+.library-heading { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: .65rem; margin-bottom: 1rem; }
+.library-heading h1,.atlas-card h2 { margin: 0; }
+.library-tabs { display: flex; flex-wrap: wrap; gap: 1rem; }
+.library-tabs a { padding: .5rem 0; text-decoration: none; color: var(--muted); }
+.library-tabs a[aria-current=page] { border-bottom: 2px solid var(--sea); color: var(--sea); font-weight: 650; }
+.atlas-layout { display: grid; grid-template-columns: minmax(0,3fr) minmax(17rem,1fr); gap: 1rem; align-items: start; }
+.atlas-card { padding: clamp(.85rem,1.7vw,1.6rem); min-width: 0; }
+.map-drawing { margin: .8rem 0; aspect-ratio: 720/284; background: #f0f6f8; border-radius: .35rem; }
+.map-drawing svg { display: block; width: 100%; }
+.map-drawing path { stroke: #fff; stroke-width: .45; }
+.map-drawing a:hover path,.map-drawing a:focus-visible path,.map-drawing path.chosen { stroke: #132f3c; stroke-width: 1.7; }
+.tone-0 { fill:#d5dfe1; background:#d5dfe1; }.tone-1 { fill:#bbdeda; background:#bbdeda; }.tone-2 { fill:#75b9b2; background:#75b9b2; }.tone-3 { fill:#30847f; background:#30847f; }.tone-4 { fill:#145656; background:#145656; }
+.map-legend,.atlas-actions,.pdf-controls { display: flex; align-items: center; flex-wrap: wrap; gap: .55rem .9rem; }
+.map-legend { font-size: .78rem; }.map-legend i { display: inline-block; height: .8em; width: .8em; margin-right: .27em; border-radius: 2px; }
+.place-detail dl { display: grid; grid-template-columns: 1fr auto; gap: .35rem; }.place-detail dd { margin:0; font-variant-numeric:tabular-nums; }
+.atlas-actions { margin: .8rem 0; }
+.compare-pickers { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: .9rem; margin: 1rem 0; }
+.compare-list { border-top: 1px solid var(--line); padding: .5rem 0; }
+.compare-list summary { cursor:pointer; }.compare-list small { margin-left: .5rem; color: var(--muted); }
+.treaty-table { max-height: 32rem; overflow: auto; }.treaty-table table { width: 100%; border-collapse: collapse; }
+.treaty-table td,.treaty-table th { text-align: left; border-bottom: 1px solid var(--line); padding: .5rem; font-size: .9rem; }
+.treaty-table td { white-space: nowrap; }
+.pdf-controls { padding: .6rem; background: var(--soft); border-radius: .35rem; }
+.pdf-controls label { display: flex; align-items: center; gap: .4rem; }.pdf-controls input,.pdf-controls select { width: auto; margin:0; }.pdf-controls input { width: 5rem; }
+.pdf-sheet { width: 100%; overflow:auto; max-height: 85vh; background:#edf1f2; }
+.pdf-sheet canvas { display: block; height:auto; max-width:none; margin: auto; }
+.pdf-transcript { margin: .7rem 0; }.incorporation { border-left: 3px solid var(--sea); padding: .5rem .8rem; margin: .8rem 0; }
+.incorporation p { margin:.2rem 0; }
+@media(min-width:761px){.law-sidebar { max-height:calc(100vh - 1.5rem); overflow:auto; }.law-index { overflow:visible; max-height:none; }}
+@media(max-width:760px){.atlas-layout,.compare-pickers { grid-template-columns: 1fr; }.library-tabs{gap:.75rem}.law-sidebar{position:static}.facet-fields { grid-template-columns:repeat(2,minmax(0,1fr)); }.pdf-controls { gap:.4rem; }.map-legend{gap:.45rem}}
+
+.document-pdf-dialog { width: min(68rem,96vw); max-height: 94vh; padding: 1rem; }
+.document-pdf-dialog header { display:flex; justify-content:space-between; align-items:baseline; gap:1rem; }
+.document-pdf-dialog h2 { margin:.15rem 0 .8rem; }.source-pair article { min-width:0; }
+.national-discovery article { padding:.5rem 0; border-top:1px solid var(--line); }
+.national-discovery article small {display:block;color:var(--muted)}.national-discovery blockquote{margin:.4rem 0}
+.comparison-date { max-width:14rem; }.compared-provisions { margin-top:.5rem; }
+
+.law-sidebar>.facet-panel,.law-sidebar>.law-index { margin:0; }
+.facet-content>.facet-chooser,.facet-content>.collection-filters { border:0; padding:0; }
+.facet-content>.facet-chooser>summary,.facet-content>.collection-filters>summary { padding:.32rem 0; }
+.facet-content [data-date] { width:100%; }
+@media(min-width:761px) { .facet-fields .owner-field:nth-child(-n+2):has(select) { grid-column:auto; } }
+.source-logic dt { font-weight:650; padding-top:.5rem; }.source-logic dd { margin:.2rem 0 .5rem 1rem; }
+.condition-pair {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;padding:.7rem 0;border-top:1px solid var(--line)}
+.condition-pair blockquote {margin:.35rem 0;white-space:pre-wrap;overflow-wrap:anywhere}
+@media(max-width:760px){.condition-pair{grid-template-columns:1fr}}

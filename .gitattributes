@@ -7,4 +7,5 @@
 *.py text eol=lf
 *.yml text eol=lf
 *.pdf binary
+*.gz binary
 tests/fixtures/*.xml -text

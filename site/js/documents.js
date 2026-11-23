@@ -1,5 +1,6 @@
 import {esc, excerpt, fold, marked, queryParts} from './model.js';
 import {inspectPdf, listImports, openImportPdf, removeImport, revokeImportPdf, savePdf, saveText} from './imports.js';
+import {mountPdfReader} from './pdf-reader.js';
 
 function heading(section) {
   if (section.title === section.label || section.title === 'Original page ' + section.fromPage) return section.label;
@@ -15,9 +16,25 @@ export function createDocumentWorkspace(container, onChange) {
   const scanOriginal = get('scan-original');
   let documents = [], doc, index = [], selected, pdfUrl = '', visible = false, revision = 0;
   let originalRevision = 0;
+  let dialog;
+  function showPdf(event,page){
+    if(!pdfUrl||event.ctrlKey||event.metaKey||event.shiftKey||event.altKey)return;
+    event.preventDefault();
+    dialog=document.createElement('dialog');dialog.className='document-pdf-dialog';
+    dialog.innerHTML='<header><h2></h2><button type="button">Close</button></header><div class="document-pdf-body"></div>';
+    dialog.querySelector('h2').textContent=doc.title;
+    dialog.setAttribute('aria-label',doc.title);
+    container.append(dialog);dialog.showModal();
+    const active=dialog,closeReader=mountPdfReader(active.querySelector('.document-pdf-body'),pdfUrl,page,doc.title);
+    active.querySelector('button').onclick=()=>active.close();
+    active.onclose=()=>{closeReader();active.remove();if(dialog===active)dialog=null;};
+  }
+  original.onclick=e=>showPdf(e,selected?.fromPage||1);
+  scanOriginal.onclick=e=>showPdf(e,1);
 
   function releaseOriginal() {
     originalRevision++;
+    dialog?.close();
     revokeImportPdf(pdfUrl);
     pdfUrl = '';
     original.removeAttribute('href');

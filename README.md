@@ -1,31 +1,29 @@
 # Ship Law Index
 
-Look up maritime regulations for a boat or search a legal document of your own. [Open Ship Law Index](https://leander-haddal.github.io/Vendanor/)
+Find maritime provisions by flag, vessel type, tonnage, dimensions and operating conditions. [Open Ship Law Index](https://leander-haddal.github.io/Vendanor/)
 
-## Search your own document
+## Filter regulations
 
-Choose a PDF or plain text (`.txt`) file in **Document search**. You can start here without entering any boat details. [Open Document search](https://leander-haddal.github.io/Vendanor/#documents)
+Choose a filter or search for wording such as `pilot transfer`. The index on the left groups the results by instrument. Select a passage on the right to read the source at its provision or original PDF page. **Editions** lets you choose a revision or a specific date. [Open Regulations](https://leander-haddal.github.io/Vendanor/#regulations)
 
-Search for a word, a section number, or a phrase in quotes such as `"port of registry"`. Use **From page** and **To page** to narrow a PDF search. For text files, the same controls use passage numbers.
+**Show unfiltered content** includes passages that depend on facts you haven’t entered. For example, if you enter tonnage and leave length blank, you can see both length branches. Entering a length removes branches that conflict with it. **Passage details** shows the conditions behind a result.
 
-Select a match to read the passage. **Open original page** takes you to that page in the PDF. PDFs can be up to 24 MiB and 600 pages. Scans need a text layer for keyword search.
+To look beyond the mapped rules, turn on **Show unfiltered content** and search the wording. **Published conditions** opens the passages behind those results. Selecting a flag narrows this search to that country’s publications and international texts. To answer a condition in a publisher’s own words, choose **Filter by this condition** on a passage, or search under **Add a filter → Search published wording**. A **Yes** or **No** answer applies to that provision.
 
-Your documents stay in this browser. To keep a backup or take them to another device, open **Import options and backups** and choose **Export my library**.
+## Read and compare sources
 
-## Find laws for a boat
+Search the **Library** by title, citation, jurisdiction or source year. **Read PDF** opens the document inside the site. Registered treaty texts, subsequent amendments and national implementing instruments have separate records. [Browse the Library](https://leander-haddal.github.io/Vendanor/#library)
 
-In **Regulations**, choose the flag and boat type, then select **Find laws**. Add the length, tonnage or operating area if you know them. You can save the particulars under **My boats** for your next visit.
+The world map counts the source records held for each country. **Compare countries** shows shared treaty wording, differences in mapped conditions, and recorded treaty participation. **Compare published conditions** finds passages with identical wording or different numbers in otherwise identical wording. You can also pick two national publications to compare directly. [Explore the world map](https://leander-haddal.github.io/Vendanor/#library?tab=map) · [Compare countries](https://leander-haddal.github.io/Vendanor/#library?tab=compare)
 
-Open **Date and editions** to browse the indexed revisions for your flag. Choose a year to see each edition and its date. If an amendment was published before it took effect, choosing it uses its effective date. For a specific voyage, enter the date under **Exact date**.
+## Search a private document
 
-The **Law index** groups your results by jurisdiction or convention. Select a law to see its passages, or choose a particular source edition when several are listed. Search the wording or a section number, and use **Screening result** to narrow the list. **Needs checking** marks passages where a detail is missing or the scope needs a closer look.
+Upload a PDF or plain text file in **Document search**. Search for a word, a quoted phrase or a section number, then narrow the results by page or passage. Files stay in this browser. Use **Sources & imports** to back them up. [Open Document search](https://leander-haddal.github.io/Vendanor/#documents)
 
-Click an excerpt to open the cited page in the full original. You can switch between the printed excerpt and its text, or open **Passage details** for the complete wording and its sources. To try a different length, flag or date, edit **Ship specifications** above the results and choose **Apply changes**.
+## Coverage
 
-## Browse the public sources
+The index includes national legislation, EU acts, IMO conventions, protocols and codes, and the ILO Maritime Labour Convention. Mapping is incomplete. A confirmed match identifies a dated, sourced provision. Extracted thresholds and catalogue references are available for further reading. Counts and source details are published with the collection. [Sources and coverage](https://leander-haddal.github.io/Vendanor/#sources)
 
-Open **Flag registers** to find national registers, treaty records and earlier editions. Under **Research tools**, use **Law library** to search by keyword or citation and **Revision changes** to read two editions side by side.
+National catalogue data come from the FAOLEX Complete Collection, under CC BY-NC-SA 3.0 IGO. Each record identifies the publisher of its underlying document. Country outlines are from Natural Earth. [FAOLEX Open Data](https://www.fao.org/faolex/en/open-data) · [Natural Earth](https://www.naturalearthdata.com/about/terms-of-use/)
 
-Norwegian public data is licensed under NLOD 2.0. National catalogue entries are adapted from FAO’s FAOLEX collection under CC BY-NC-SA 3.0 IGO. [Norwegian data licence](https://data.norge.no/nlod/en/2.0) · [FAOLEX credits and terms](https://www.fao.org/faolex/en/open-data)
-
-Maritime Labour Convention excerpts are credited to the International Labour Organization under CC BY 4.0. UK legislation is Crown copyright under the Open Government Licence. Linked originals carry their publishers’ terms. [ILO permissions](https://www.ilo.org/rights-and-permissions) · [Open Government Licence](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/) · [EUR-Lex legal notice](https://eur-lex.europa.eu/content/legal-notice/legal-notice.html) · [Software notices](site/vendor/LICENSES.txt)
+Domestic editions include Irish Statute Book material under the Oireachtas Open Data PSI Licence, Justice Canada consolidations, and consolidated texts from Spain’s Boletín Oficial del Estado. The publisher links identify the official editions. [Irish Statute Book Open Data](https://www.irishstatutebook.ie/open-data.html) · [Justice Canada](https://lois-laws.justice.gc.ca/eng/FAQ/) · [BOE Open Data](https://www.boe.es/datosabiertos/)

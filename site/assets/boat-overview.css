@@ -1,8 +1,8 @@
 /* Use the project width for browsing. Long-form passages retain their reading measure. */
-#boat-results-view, #map-view, #boats-view { max-width: none; }
+#regulations-view, #map-view, #boats-view { max-width: none; }
 #boat-view { max-width: 82rem; }
 @media (min-width: 64rem) {
-  main:has(> #boat-results-view:not([hidden])) { max-width: 112rem; }
+  main:has(> #regulations-view:not([hidden])) { max-width: 112rem; }
   #boat-core, .owner-grid.detail-fields { grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); }
   #map-view .map-sections {
     display: grid;
@@ -16,8 +16,8 @@
   #map-view .map-sections > section:only-child { grid-column: 1 / -1; }
 }
 
-#boat-results-view { margin-top: .5rem; }
-#boat-view:focus, #boat-results-view:focus, .excerpt-count:focus { outline: none; }
+#regulations-view { margin-top: .5rem; }
+#boat-view:focus, #regulations-view:focus, .excerpt-count:focus { outline: none; }
 .excerpt-edition { font-variant-numeric: tabular-nums; }
 .specs-panel { margin: 0 0 1.25rem; overflow: clip; }
 .specs-panel > summary {
@@ -37,7 +37,22 @@
 }
 #result-boat-core input, #result-boat-core select, #result-boat-core button { min-height: 2.45rem; }
 #result-boat-core button { padding: .5rem 1rem; }
-.specs-body .owner-more > summary { padding: .55rem 0; font-size: .85rem; }
+.spec-extra { margin-top: .85rem; padding-top: .65rem; border-top: 1px solid var(--line); }
+.spec-extra-heading, .spec-chooser header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.spec-extra-heading strong { font-size: .9rem; }
+.add-spec { color: var(--blue); padding: .38rem .75rem; }
+.spec-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); gap: .6rem 1rem; margin: .5rem 0; }
+.spec-item { position: relative; min-width: 0; }
+.spec-item label { margin: 0; padding-right: 1.8rem; font-size: .84rem; }
+.spec-item input, .spec-item select { margin-bottom: 0; }
+.remove-spec { position: absolute; top: -.3rem; right: 0; border: 0; padding: 0; width: 1.6rem; min-height: 1.6rem; background: transparent; color: var(--muted); line-height: 1; }
+.spec-help > summary { padding: .55rem 0; font-size: .82rem; }
+.spec-chooser { width: min(38rem, 94vw); padding: 1rem; }
+.spec-search { display: grid; grid-template-columns: 1.25fr 1fr; gap: .65rem; margin-top: 1rem; }
+.spec-choices { max-height: min(50vh, 26rem); overflow-y: auto; overscroll-behavior: contain; margin-top: .6rem; }
+.spec-choices button { display: flex; align-items: center; justify-content: space-between; gap: .65rem; width: 100%; min-height: 2.7rem; border: 0; border-top: 1px solid var(--line); border-radius: 0; text-align: left; }
+.spec-choices small { color: var(--muted); font-weight: 400; text-align: right; }
+.spec-choices.spec-topics { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(13rem, 100%), 1fr)); column-gap: .8rem; }
 .specs-body .lookup-evidence { margin: 0; }
 .owner-field .date-picker-button {
   display: flex; align-items: center; justify-content: space-between; gap: .4rem;
@@ -88,10 +103,14 @@
   border: 0; border-left: 3px solid transparent; padding: .52rem .65rem;
   text-align: left; color: var(--ink); font-size: .9rem; font-weight: 500; overflow-wrap: anywhere;
 }
-.law-tree button small { color: var(--muted); font-variant-numeric: tabular-nums; }
+.law-tree button small { flex: none; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .law-tree button[aria-current=true] { border-left-color: var(--accent); background: var(--tint); color: var(--blue); font-weight: 650; }
 .law-stream { min-width: 0; }
-.overview-filters { display: grid; grid-template-columns: minmax(9rem, 1fr) minmax(10rem, 15rem); gap: .8rem; padding: .65rem 1rem; }
+.overview-filters { display: grid; grid-template-columns: minmax(9rem, 1fr) minmax(12rem, 18rem); align-items: center; gap: 0 1rem; padding: .65rem 1rem; }
+.overview-filters > label:first-child { grid-row: span 2; }
+.overview-filters .unfiltered-control { display: flex; align-items: center; gap: .55rem; align-self: end; color: var(--ink); font-size: .92rem; cursor: pointer; }
+.overview-filters .unfiltered-control input { flex: none; width: 1.1rem; height: 1.1rem; min-height: 0; margin: 0; accent-color: var(--accent); }
+#unfiltered-help { align-self: start; margin: .15rem 0 0 1.65rem; color: var(--muted); font-size: .77rem; line-height: 1.35; }
 .overview-filters label, #result-boat-core label { color: var(--muted); font-size: .81rem; }
 .overview-filters input, .overview-filters select { min-height: 2.4rem; margin-bottom: 0; }
 .owner-view .excerpt-count { margin: .8rem 0 .6rem; color: var(--muted); font-size: .86rem; font-weight: 550; letter-spacing: 0; }
@@ -104,9 +123,12 @@
 .source-hunk > header, .source-hunk > footer { display: flex; align-items: baseline; flex-wrap: wrap; gap: .4rem .8rem; }
 .source-hunk > footer { margin: 0; padding: 0; max-width: none; }
 .source-hunk h4 { flex: 1; min-width: min(12rem, 100%); font-size: .96rem; line-height: 1.4; }
+.provision-outcomes { padding-left: 1.15rem; margin: .5rem 0; font-size: .86rem; }
+.provision-outcomes li + li { margin-top: .25rem; }
+.case-options { margin-top: .4rem; }
+.case-options summary { color: var(--blue); font-size: .82rem; }
 .passage-outcome { border-radius: 3px; padding: .12rem .45rem; font-size: .74rem; font-weight: 650; }
 .passage-outcome.match { background: var(--good-bg); color: var(--good); }
-.passage-outcome.review { background: var(--warn-bg); color: var(--warn); }
 .source-hunk .source-quote {
   display: block; width: 100%; margin: .65rem 0 .5rem; padding: .65rem .9rem;
   border: 0; border-inline-start: 3px solid #a3c1c4; border-radius: 0 3px 3px 0;
@@ -136,6 +158,8 @@
 .law-questions .related-checks > summary { padding: .35rem 0 0; font-size: .84rem; }
 .overview-empty { padding: 1.25rem; }
 .overview-empty button, .overview-empty p { margin-top: .6rem; }
+.missing-specs { display: flex; flex-wrap: wrap; gap: .25rem .8rem; }
+.missing-specs button { padding: .3rem 0; border: 0; background: transparent; color: var(--blue); font-size: .82rem; text-align: left; }
 .additional-sources { border-top: 1px solid var(--line-dark); padding-top: 1rem; margin-top: 1.75rem; }
 .additional-sources > a { display: inline-block; margin-top: .4rem; }
 
@@ -151,6 +175,8 @@
 }
 @media (max-width: 32rem) {
   .overview-filters { grid-template-columns: minmax(0, 1fr); gap: .35rem; }
+  .overview-filters > label:first-child { grid-row: auto; }
+  .spec-search { grid-template-columns: 1fr; }
   .law-card-heading, .source-hunk { padding: .7rem .8rem; }
   .excerpt-edition { flex-basis: 100%; }
   .revision-list button { display: grid; gap: .2rem; }

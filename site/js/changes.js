@@ -1,8 +1,15 @@
-import {esc,fold} from './model.js';
+import {esc,fold,safeUrl} from './model.js';
 import {lineDiff,sectionDiff} from './diff.js';
 import {sectionTitle,link} from './reader.js';
+import {mountPdfReader} from './pdf-reader.js';
 
 let generation=0;
+let closers=[];
+export function closeComparison(){
+  generation++;
+  for(const close of closers)close();
+  closers=[];
+}
 function chooser(name,docs,key) {
   const active=docs.find(d=>d.key===key);
   const label=name==='before'?'Earlier source':'Later source';
@@ -10,6 +17,7 @@ function chooser(name,docs,key) {
 }
 
 export async function renderChanges(container,ctx) {
+  closeComparison();
   const token=++generation;
   const docs=ctx.choices();
   const presets=ctx.presets();
@@ -41,10 +49,22 @@ export async function renderChanges(container,ctx) {
     const [a,b]=await Promise.all([ctx.getDoc(before),ctx.getDoc(after)]);
     if(token!==generation||!container.isConnected)return;
     if(!a||!b)throw new Error('One of these editions is unavailable.');
-    if(a.version.scanOnly||b.version.scanOnly){
-      output.innerHTML='<p>This comparison includes a scanned edition. Read the original publications to compare their wording.</p><div class="owner-actions">'+link('Earlier publication',a.version.pdfUrl||a.version.sourceUrl,true)+link('Later publication',b.version.pdfUrl||b.version.sourceUrl,true)+'</div>';return;
+    const metadataOnly=d=>d.version.scanOnly||d.type==='register'||d.type==='world'&&d.version.wordingKind!=='source'||(['uk','eu'].includes(d.type)&&d.version.wordingKind==='catalogue')||
+      d.type==='imo'&&!d.version.pdf;
+    if(metadataOnly(a)||metadataOnly(b)){
+      output.innerHTML='<p>Compare the original publications. A complete wording comparison is unavailable for this pair.</p><div class="compare-pickers source-pair"></div>';
+      const pair=output.querySelector('.source-pair');
+      for(const d of [a,b]){
+        const card=document.createElement('article'),address=d.version.pdf?safeUrl(d.version.pdf,true):safeUrl(d.version.pdfUrl||d.version.issuedPdfUrl);
+        card.innerHTML='<h3>'+esc(d.instrument.title)+'</h3><a href="#library?'+esc(new URLSearchParams({doc:d.key,mode:address?'pdf':'text'}).toString())+'">Read in Library</a>';
+        pair.append(card);
+        if(address){const host=document.createElement('div');card.append(host);closers.push(mountPdfReader(host,address,1,d.instrument.title));}
+        else card.insertAdjacentHTML('beforeend',link('Publisher record',d.version.sourceUrl));
+      }
+      return;
     }
-    let left=a.sections,right=b.sections;
+    const compareText=d=>d.version.wordingKind==='source'?d.sections.filter(s=>s.id.startsWith('text-')||s.id.startsWith('publisher-')):d.type==='imo'?d.sections.filter(s=>s.pages):d.sections;
+    let left=compareText(a),right=compareText(b);
     if(selected?.leftSection&&selected?.rightSection){
       const l=left.find(s=>s.id===selected.leftSection),r=right.find(s=>s.id===selected.rightSection);
       if(l&&r){left=[{...l,matchKey:'mapped'}];right=[{...r,matchKey:'mapped'}];}

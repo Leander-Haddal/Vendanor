@@ -1,13 +1,16 @@
 import {readFile,writeFile,rename} from 'node:fs/promises';
 import {collections} from '../site/js/collections.js';
 import {collectFields} from '../site/js/profile.js';
+import {mapCatalogue} from '../site/js/provision-map.js';
+import {implementationFields} from '../site/js/implementation.js';
+import {treatyFields} from '../site/js/treaty-scope.js';
 
 const directory=new URL('../site/data/',import.meta.url);
 const catalogues=await Promise.all(Object.values(collections).map(async name=>JSON.parse(await readFile(new URL(name,directory),'utf8'))));
-const index={checkedAt:catalogues.map(c=>c.checkedAt).sort().at(-1),fields:collectFields(catalogues,[])};
+const index={checkedAt:catalogues.map(c=>c.checkedAt).sort().at(-1),fields:collectFields([...catalogues.map(mapCatalogue),{fields:[...implementationFields,...treatyFields]}],[])};
 const target=new URL('boat-fields.json',directory),serialized=JSON.stringify(index)+'\n';
 if(process.argv.includes('--check')){
-  if(await readFile(target,'utf8')!==serialized)throw new Error('The boat form and the legal field definitions differ. Run node tools/boat_fields.mjs.');
+  if(await readFile(target,'utf8')!==serialized)throw new Error('The filter index and the legal field definitions differ. Run node tools/boat_fields.mjs.');
 }else{
   const temporary=new URL('boat-fields.'+process.pid+'.tmp',directory);
   await writeFile(temporary,serialized);await rename(temporary,target);

@@ -16,7 +16,6 @@ from urllib.request import Request, urlopen
 M49 = "https://unstats.un.org/unsd/methodology/m49/overview/"
 NORMLEX = "https://normlex.ilo.org/dyn/nrmlx_en/f?p=NORMLEXPUB:"
 MLC_INDEX = NORMLEX + "80020:0::NO:::"
-REVIEWED = "2026-11-23"
 
 # Names present in the published MLC implementation index, joined to ILO's country IDs.
 # Each ID was checked against an ILO MLC profile or the ILO's named ratifications record.
@@ -149,34 +148,6 @@ PUBLISHED_PROFILES = {
 ALIASES = {"China - Hong Kong Special Administrative Region": "HK"}
 
 # Independently reviewed lists of flag-state delegations; retain the remit of each source.
-FLAG_SOURCES = {
-    "GB": ("https://www.gov.uk/guidance/uk-authorised-recognised-organisations-ros",
-           "The UK Maritime and Coastguard Agency lists this society for survey and inspection of UK ships."),
-    "DE": ("https://portal.emsa.europa.eu/web/dona/country-profiles/germany/recognised-organisations-recognised-security-organisations-and-notified-bodies",
-           "Germany's EMSA country profile lists a statutory-task agreement. The source distinguishes surveys, certificates and security tasks."),
-    "BS": ("https://www.bahamasmaritime.com/the-bma/partnerships/authorised-classification-societies/",
-           "The Bahamas Maritime Authority lists this society for statutory certification and services. The Bahamas National Requirements specify its remit."),
-    "PA": ("https://www.panamashipregistry.com/wp-content/uploads/2026/01/MMC-136-RO-20-01-2026-1.pdf",
-           "Panama Maritime Authority circular MMC-136, section 6.3 and page 6, lists this society as active. Delegated tasks depend on the applicable authorization."),
-    "NO": ("https://www.sdir.no/en/vessels/certificates-and-documents-for-vessels/mlc--konvensjon-for-sjofolks-arbeids--og-levevilkar/",
-           "The Norwegian Maritime Authority lists this society for inspection and certification under the Maritime Labour Convention, 2006."),
-}
-
-# Selected government reports to the ILO. Listed years belong to the cited reports.
-MLC_REPORTS = {
-    "AG": (103369, "DNV BV", "Antigua and Barbuda's 2015 report lists this society for MLC inspections."),
-    "CV": (103096, "BV", "The Cabo Verde recognized-organizations entry names this society under the Maritime Labour Convention."),
-    "CY": (103070, "DNV BV", "Cyprus's entry cites Circular 24/2012. It lists delegated MLC inspection and certification functions and reserves complaint resolution to the administration."),
-    "IS": (102685, "DNV BV", "Iceland's 2022 report names this society for classed vessels. It identifies other bodies for non-classed vessels."),
-    "LR": (102742, "DNV BV", "Liberia's Marine Notice MLC-001 of 2014 lists this society for maritime labour inspections, certification or both. The precise delegation is in the notice."),
-    "MH": (103414, "DNV BV", "Marshall Islands Marine Notice 2-011-33 (2016) lists this society for MLC inspection and certification."),
-    "MY": (102960, "DNV BV", "Malaysia's 2016 MLC report lists this recognized organization."),
-    "PH": (102970, "DNV BV", "The Philippine entry cites 2013 labour advisories for MLC inspections and maritime labour certificates."),
-    "TG": (103050, "BV", "Togo's 2013 marine notice lists this society for MLC verification inspections and certification."),
-    "VC": (103333, "DNV BV", "Saint Vincent and the Grenadines' October 2023 report names this society for MLC inspections and certification."),
-}
-
-
 class M49Table(HTMLParser):
     def __init__(self):
         super().__init__(convert_charrefs=True)
@@ -267,7 +238,7 @@ def country_rows(markup):
             raise ValueError(f"Invalid UN row: {row}")
         if code in countries:
             raise ValueError("Duplicate UN code: " + code)
-        countries[code] = {"code": code, "alpha3": alpha3, "m49": m49, "name": name, "recognitions": []}
+        countries[code] = {"code": code, "alpha3": alpha3, "m49": m49, "name": name}
     if len({c["m49"] for c in countries.values()}) != len(countries):
         raise ValueError("UN numeric identifiers must be unique.")
     return countries
@@ -288,21 +259,9 @@ def compile_directory(countries, profile_ids, checked_on):
         if "profileUrl" in entry:
             raise ValueError("Duplicate ILO profile mapping: " + code)
         entry["profileUrl"] = NORMLEX + f"80021:0::NO::P80021_{field}:{key}"
-    for code, (reference_id, societies, scope) in MLC_REPORTS.items():
-        url = NORMLEX + f"80022:0::NO::P80022_COUNTRY_ID:{reference_id}"
-        countries[code]["recognitions"].extend({"society": society, "sourceUrl": url, "scope": scope,
-                                                "basis": "MLC government report", "checkedOn": REVIEWED}
-                                               for society in societies.split())
-    for code, (url, scope) in FLAG_SOURCES.items():
-        basis = "MLC flag authority" if code == "NO" else "Flag authority"
-        countries[code]["recognitions"].extend({"society": society, "sourceUrl": url, "scope": scope,
-                                                "basis": basis, "checkedOn": REVIEWED} for society in ("DNV", "BV"))
     result = sorted(countries.values(), key=lambda r: (name_key(r["name"]), r["code"]))
     coverage = {"countryCount": len(result), "profileCount": sum("profileUrl" in r for r in result),
-                "recognitionCountryCount": sum(bool(r["recognitions"]) for r in result),
-                "recognitionCount": sum(len(r["recognitions"]) for r in result),
-                "profileIndexCheckedOn": checked_on, "recognitionCheckedOn": REVIEWED,
-                "scope": "UN statistical countries and areas, ILO implementation links, and selected named government delegations. An empty evidence list means no reviewed entry here. The date and limits of each underlying authorization belong to its source."}
+                "profileIndexCheckedOn": checked_on, "scope": "UN statistical countries and areas with ILO implementation profiles."}
     return {"schemaVersion": 1, "source": {"name": "United Nations Statistics Division and ILO NORMLEX",
             "url": M49, "mlcIndexUrl": MLC_INDEX}, "coverage": coverage, "countries": result}
 
@@ -317,7 +276,7 @@ def main():
     cli.add_argument("--index-date", type=date.fromisoformat, help="Publication/check date of a supplied MLC index.")
     args = cli.parse_args()
     countries = country_rows(read_source(M49, args.m49_file))
-    profiles, checked = PUBLISHED_PROFILES, REVIEWED
+    profiles, checked = PUBLISHED_PROFILES, "2026-11-23"
     if args.mlc_index or args.refresh_mlc:
         links = ProfileLinks()
         links.feed(read_source(MLC_INDEX, args.mlc_index))

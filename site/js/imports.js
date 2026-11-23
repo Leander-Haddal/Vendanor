@@ -180,10 +180,14 @@ async function readPage(page, remaining) {
 }
 
 export async function loadPdfBytes(bytes) {
+  return loadPdfSource({data:bytes});
+}
+
+export async function loadPdfSource(source) {
   const pdfjs = await import("../vendor/pdfjs.mjs");
   pdfjs.GlobalWorkerOptions.workerSrc = new URL("../vendor/pdf.worker.mjs", import.meta.url).href;
   return pdfjs.getDocument({
-    data: bytes, BinaryDataFactory: LocalPdfResources, useWorkerFetch: false,
+    ...source, BinaryDataFactory: LocalPdfResources, useWorkerFetch: false,
     disableFontFace: true, useSystemFonts: false, useWasm: false, useWasmSimd: false,
     disableWorkerRendering: true, enableXfa: false, isEvalSupported: false,
     verbosity: 0,

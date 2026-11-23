@@ -20,7 +20,7 @@ jobs:
           python-version: '3.12'
       - run: npm ci
       - run: sudo apt-get update && sudo apt-get install -y poppler-utils
-      - run: python -m pip install pymupdf==1.26.7
+      - run: python -m pip install pymupdf==1.26.7 tesserocr==2.13.0 requests
       - run: python tools/gazette.py
       - run: python tools/archive_pdfs.py --offline --limit 100 --byte-budget 100000000
       - run: python tools/countries.py
@@ -30,6 +30,13 @@ jobs:
       - run: python tools/flag_sources.py && python tools/registry_guides.py --refresh && python tools/imo_history.py
       - run: python tools/folios.py && python tools/eu_folios.py && python tools/flag_folios.py
       - run: python tools/mlc_folios.py && python tools/colreg_folios.py && python tools/solas_folios.py
+      - run: python tools/library_sources.py
+      - run: python tools/national_texts.py --download
+      - run: python tools/national_pdfs.py
+      - run: python tools/national_ocr.py && python tools/national_texts.py
+      - run: python tools/official_texts.py --download
+      - run: python tools/national_publishers.py --download
+      - run: python tools/rule_inventory.py && node tools/source_logic.mjs
       - run: node tools/boat_fields.mjs
       - run: npm test && npm run check && npm run inventory -- --check
       - uses: actions/upload-artifact@v4

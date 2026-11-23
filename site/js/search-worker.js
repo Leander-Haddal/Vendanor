@@ -65,10 +65,12 @@ async function search(message) {
     rows.push(row);
     if(groupKey)shared.set(groupKey,{row,flags:new Set([item.jurisdiction]),title:item.title.split(' · ').slice(0,-1).join(' · ')||item.title});
   }
-  if(allowsType('world',source)&&allowsMatch('review',match))for(const r of world){
+  if(allowsMatch('review',match))for(const r of world){
+    if(!allowsType(r.collection||'world',source))continue;
     if((country&&!r.codes.includes(country))||(year&&String(r.year)!==year)||!accepted(r.searchText,parts))continue;
-    rows.push({doc:r.id,title:r.title,sectionId:'catalogue',type:'world',heading:r.title,date:String(r.year||''),
-      jurisdiction:r.country,preview:r.preview,state:'review',score:score(r.title,15)+(profile.flag===r.country?12:0)});
+    const hit=parts.length?r.events?.find(e=>accepted(e.label,parts)):null;
+    rows.push({doc:r.id,title:r.title,sectionId:hit?.id||(r.collection==='world'?'catalogue':''),type:r.collection||'world',heading:r.title,date:String(r.year||''),
+      jurisdiction:r.country,preview:hit?.label||r.preview,state:'review',score:score(r.title,15)+(profile.flag===r.country?12:0)});
   }
   if(!allowsType('archive',source) || (country&&country!=='NO') || !allowsMatch('review',match)) { emit(ticket,rows,limit,true,''); return; }
   const pending=[];

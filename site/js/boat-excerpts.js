@@ -1,4 +1,4 @@
-import {excerpt, fold, marked, queryParts, safeUrl} from './model.js';
+import {describeRule, excerpt, fold, marked, queryParts, safeUrl} from './model.js';
 import {originalPassageControl, pageCitation, sourceWording} from './boat-reader.js';
 import {loadPdfBytes, openImportClip, revokeImportPdf} from './imports.js';
 
@@ -90,7 +90,7 @@ async function printedPage(doc, section, width, phrase, term) {
   }
 }
 
-export function passagePreview(row, query) {
+export function passagePreview(row, query, includeUnspecified=false, fields=[]) {
   const {doc, section} = row;
   const host = document.createElement('section');
   host.className = 'source-hunk';
@@ -100,22 +100,28 @@ export function passagePreview(row, query) {
   const body = wording.paragraphs.join('\n\n') || section.text || '';
   const normalized = fold(body);
   const terms = queryParts(query).filter(term => normalized.includes(term));
-  const snippet = excerpt(body, terms, 360);
+  const printedCases=row.cases?.filter(item=>item.language&&item.state===true)||[];
+  const matchedText=!terms.length&&(printedCases.find(item=>!item.withinScope)||printedCases[0])?.outcome;
+  const snippet = excerpt(matchedText||body, terms, 360);
   const phrase = sourcePhrase(snippet, terms[0]);
+  const locateTerm=terms[0]||(matchedText?phrase:'');
 
   const header = document.createElement('header');
   const title = document.createElement('h4');
   title.innerHTML = marked(wording.heading, query);
-  const outcome = document.createElement('span');
-  outcome.className = 'passage-outcome ' + row.state;
-  outcome.textContent = row.state === 'match' ? 'Matches' : 'Needs checking';
-  header.append(title, outcome);
+  header.append(title);
+  if(row.state==='match'){
+    const outcome=document.createElement('span');
+    outcome.className='passage-outcome match';
+    outcome.textContent=section.screeningLevel!=='section'&&section.screenCases?'Clause match':'Matches';
+    header.append(outcome);
+  }
 
   const feedback = document.createElement('p');
   feedback.setAttribute('role', 'status');
   feedback.className = 'preview-feedback';
   const hasPrint = section.clip || doc.version.hasPdf && doc.version.localId;
-  const locateHit = hasPrint && terms.length && section.pages?.length > 1;
+  const locateHit = hasPrint && locateTerm && section.pages?.length > 1;
   let load;
   const {control:original, caption, setPage} = originalPassageControl(doc, section, phrase, feedback, locateHit ? () => load() : null);
   original.className = 'source-quote';
@@ -136,7 +142,7 @@ export function passagePreview(row, query) {
     toggle.textContent = 'Show printed excerpt';
     let canvas, loading;
     async function prepare() {
-      const {canvas:printed, physicalPage} = await printedPage(doc, section, text.clientWidth || 640, phrase, terms[0]);
+      const {canvas:printed, physicalPage} = await printedPage(doc, section, text.clientWidth || 640, phrase, locateTerm);
       setPage?.(physicalPage);
       canvas = printed;
       canvas.hidden = true;
@@ -173,12 +179,33 @@ export function passagePreview(row, query) {
     else if (locateHit) whenVisible(toggle, () => load().catch(() => {}));
   }
   const details = document.createElement('a');
-  details.href = '#boat-passage?' + new URLSearchParams({doc: doc.key, section: section.id});
+  details.href = '#library?' + new URLSearchParams({doc: doc.key, section: section.id, mode:'evidence'});
   details.textContent = 'Passage details';
   details.dataset.readPassage = '';
   details.dataset.doc = doc.key;
   details.dataset.section = section.id;
   foot.append(details);
-  host.append(header, original, foot, feedback);
+  host.append(header);
+  const cases=row.cases?.filter(item=>item.state===true||includeUnspecified);
+  if(cases?.length){
+    const list=document.createElement('ul');list.className='provision-outcomes';
+    for(const item of cases){
+      const li=document.createElement('li');
+      const condition=document.createElement('strong');
+      condition.textContent=item.reference+(item.withinScope?'': ' · '+(item.condition||describeRule(item.displayWhen||item.when,fields)));
+      const outcome=document.createElement('span');
+      if(item.language)outcome.lang=item.language;
+      outcome.textContent=excerpt(item.outcome,[],200);
+      li.append(condition,document.createTextNode(' '),outcome);
+      list.append(li);
+    }
+    if(cases.length<=2)host.append(list);
+    else{
+      const disclosure=document.createElement('details'),summary=document.createElement('summary');
+      disclosure.className='case-options';summary.textContent='Clause conditions ('+cases.length+')';
+      disclosure.append(summary,list);host.append(disclosure);
+    }
+  }
+  host.append(original, foot, feedback);
   return host;
 }

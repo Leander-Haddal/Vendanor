@@ -82,7 +82,7 @@ function fileRole(path) {
   if(path.startsWith('site/vendor/'))return 'Upstream distribution or bundled decoding resource. Release, integrity and licences appear in tools/vendor.mjs and site/vendor/LICENSES.txt.';
   const dataRoles={
     'boat-fields':'Small first-load index of source-defined controls and the release date. Verified against all six folio manifests.',
-    'countries':'UN M49 name and code records with optional ILO profiles and documented class authorization evidence.',
+    'countries':'UN M49 country and territory names and codes with available ILO profiles.',
     'flag-sources':'UNCTAD ranking and reviewed flag administrations with national legislative sources.',
     'registry-guides':'Cited passages and page numbers at five flag administrations, original PDF hashes, printed date precision and scope questions.',
     'imo-history':'Treaty chronologies, resolution evidence, status notes and a country-by-instrument participation matrix.',

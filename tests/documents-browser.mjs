@@ -66,6 +66,11 @@ export async function checkDocuments(page, base, widthFits) {
   assert.match(await pageLink.getAttribute('href'), /^blob:.*#page=2$/);
   assert.deepEqual(await pageLink.evaluate(async link => Array.from(new Uint8Array(
     await (await fetch(link.href)).arrayBuffer()).slice(0, 5))), [...Buffer.from('%PDF-')]);
+  await pageLink.click();
+  const reader=view.getByRole('dialog',{name:'Harbour rules'});
+  await reader.locator('.pdf-sheet canvas').waitFor();
+  assert.equal(await reader.getByLabel('Page',{exact:true}).inputValue(),'2');
+  await reader.getByRole('button',{name:'Close'}).click();
   await view.getByLabel('To page').fill('1');
   await count.filter({hasText:'lower number first'}).waitFor();
   assert.equal(await hits.count(), 0);

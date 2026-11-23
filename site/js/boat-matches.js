@@ -1,4 +1,4 @@
-import {evaluate, isoDay, temporal} from './model.js';
+import {caseState, evaluate, isoDay, limitedScope, screeningRule, screeningValues, temporal} from './model.js';
 
 const cargo = new Set(['FOR-2025-12-16-2652', 'FOR-2014-12-19-1853']);
 const passenger = 'FOR-2020-01-14-63';
@@ -85,14 +85,17 @@ function noticeEvidence(doc, section, values, originals, day) {
   return null;
 }
 
-function scopeLimit(doc, section) {
+function scopeLimit(doc, section, values) {
   const family = doc.instrument.id;
   if (doc.type === 'local' || doc.instrument.local) return null;
-  if (family === passenger && section.id === 's9-3') {
+  if (family === passenger && section.id === 's9-3' && section.screeningLevel === 'instrument') {
     return 'The rule checks passenger-vessel scope. This paragraph also requires exclusively outdoor steering and has sailing- and heritage-vessel exceptions.';
   }
   if (section.id === 'scope' && tankers.has(family)) return null;
+  if (!limitedScope(section,values)) return null;
+  if (section.confirmWhen&&evaluate(section.confirmWhen,values)!==true)return section.scopeNote;
   if (section.screeningLevel === 'context') return section.caveat || 'A competent authority must determine the individual case.';
+  if (section.screeningLevel === 'partial') return 'The indexed conditions narrow this passage. Read the original for its remaining qualifications and exceptions.';
   if (section.screeningLevel === 'chapter') return 'The entered particulars meet or may meet the chapter scope. Check the conditions in this provision.';
   if (section.screeningLevel === 'instrument') return 'The entered particulars meet or may meet the instrument scope. This provision has no separate complete vessel rule.';
   return null;
@@ -101,6 +104,7 @@ function scopeLimit(doc, section) {
 /** Narrowly scoped local rules may cross a border. The issuer alone cannot establish a flag or coastal nexus. */
 function localJurisdiction(doc, rule, values) {
   if (doc.type !== 'local' && !doc.instrument.local && (cargo.has(doc.instrument.id) || doc.instrument.id === passenger || tankers.has(doc.instrument.id) || nationalReach.has(doc.instrument.id))) return null;
+  if(doc.instrument.registeredText)return null;
   const jurisdiction = doc.instrument.jurisdiction?.trim().toUpperCase();
   if (!jurisdiction || values.flag === jurisdiction) return null;
   if (jurisdiction === 'NO' && values.norwegianWaters === 'yes') return null;
@@ -111,63 +115,62 @@ function localJurisdiction(doc, rule, values) {
 }
 
 function rowFor(doc, section, context) {
-  const {values, day, interest, originals} = context;
+  const {values, day, interest, originals, includeUnspecified} = context;
   const local = doc.type === 'local' || doc.instrument.local;
   const family = doc.instrument.id;
   const isScope = ['s1','scope','application','geographic-reach','original-area'].includes(section.id);
-  if (!local && family === 'gb-lifesaving-2020' && ['high-speed-reference','high-speed-2004'].includes(section.id) && values.ukLsaHighSpeed !== 'yes') return null;
+  if (!includeUnspecified && !local && family === 'gb-lifesaving-2020' && ['high-speed-reference','high-speed-2004'].includes(section.id) && values.ukLsaHighSpeed !== 'yes') return null;
   const notice = !section.criteria && !local ? noticeEvidence(doc, section, values, originals, day) : null;
   if (interest === 'scope' && !isScope && !notice) return null;
-  const rule = section.criteria || notice?.rule;
+  const rule = section.criteria ? screeningRule(section,doc.version,day) : notice?.rule;
   if (!rule) {
-    // A complete untagged import remains in the library. One source entry can invite review in its own jurisdiction.
-    if (!local || !values.flag || section !== doc.sections[0] || doc.sections.some(s => s.criteria) || doc.instrument.jurisdiction !== values.flag) return null;
-    return {doc,section,state:'review',missing:[],reason:'This imported source has no indexed vessel conditions.'};
+    if (!includeUnspecified && (!local || !values.flag || section !== doc.sections[0] || doc.sections.some(s => s.criteria) || doc.instrument.jurisdiction !== values.flag)) return null;
+    return {doc,section,state:'review',missing:[],reason:section.caveat || 'This passage has no indexed vessel conditions.'};
   }
   const criteria = [rule];
-  if (!local && doc.version.id === 'eu-1726-2003' && section.id === 'scope') {
+  if (!local && doc.version.id === 'eu-1726-2003' && section.id === 'scope' && section.screeningLevel==='instrument') {
     criteria.push({any:[{field:'deadweightTonnes',op:'gte',value:5000},{field:'euHeavyGradeOil',op:'eq',value:'yes'}]});
-  }
-  if (!local && doc.version.id === 'no-cargo-2014' && section.id === 's1-2-b') {
-    const scope = doc.sections.find(s => s.id === 's1')?.criteria;
-    if (scope?.all) criteria.push({all:scope.all.filter(node => node.field !== 'onlyPassenger2009')});
-  }
-  if (!local && tankers.has(family) && section.id === 'state-service') {
-    const scope = doc.sections.find(s => s.id === 'scope')?.criteria;
-    // Article 2(2) is an exclusion. Test the other scope conditions without treating its own exception as disqualifying.
-    if (scope?.all) criteria.push({all:scope.all.filter(node => node.field !== 'euGovernmentService')});
   }
   const state = evaluate({all:criteria}, values);
   if (state === false) return null;
-  const missing = [...new Set(criteria.flatMap(node => missingFields(node, values)))];
+  const cases=section.cases?.map(item=>({...item,state:caseState(item,values)})).filter(item=>item.state!==false);
+  const openCases=section.screenCases&&!cases?.some(item=>item.state===true)?(cases||[]).map(item=>item.when):[];
+  const pending=section.confirmWhen&&limitedScope(section,values)?section.confirmWhen:null;
+  const missing = [...new Set([...criteria,pending,...openCases].flatMap(node => missingFields(node, values)))];
   const time = day ? temporal(doc.version, day) : null;
-  const limitation = notice?.reason || scopeLimit(doc, section) || localJurisdiction(doc, rule, values);
+  const limitation = notice?.reason || scopeLimit(doc, section, values) || localJurisdiction(doc, rule, values);
   const reason = limitation || (state === null ? 'Further vessel particulars are needed to evaluate the cited conditions.' :
     time === null ? 'The edition’s effective interval is unconfirmed for the requested date.' : 'The supplied particulars meet the indexed conditions for this dated provision.');
   return {doc, section, state:state === true && time === true && !limitation ? 'match' : 'review',
-    missing, reason, scopeState:state, dateState:time, evidence:notice?.evidence || section};
+    missing, reason, scopeState:state, dateState:time, evidence:notice?.evidence || section,
+    cases};
 }
 
 /** Search dated provisions. The caller supplies the reference day, including for a current-day search. */
-export function searchBoat(documents, profile = {}) {
-  const values = {...profile.values};
-  if (!Object.values(values).some(value => value !== undefined && value !== null && value !== '')) return {matched:[],review:[]};
-  if (!values.norwegianWaters && values.mainlandTerritorialWaters === 'yes') values.norwegianWaters = 'yes';
-  if (!values.ukLsaReach && values.flag === 'GB') values.ukLsaReach = 'uk';
-  if (values.shipType === 'fishing' || values.ukLsaHighSpeed === 'yes') values.ukLsaExcluded = 'yes';
+export function searchBoat(documents, profile = {}, {includeUnspecified=false} = {}) {
+  const supplied=profile.values||{};
+  if (!includeUnspecified && !Object.values(supplied).some(value => value !== undefined && value !== null && value !== '')) return {matched:[],review:[]};
   const day = isoDay(profile.asOf);
   const originals = new Map();
   for (const doc of documents) {
-    if (doc.type !== 'local' && !doc.instrument?.local && doc.sections?.some(s => s.id === 's1' && s.criteria)) originals.set(doc.instrument.id, doc);
+    if (doc.type !== 'local' && !doc.instrument?.local && !doc.version?.archiveRecord && doc.sections?.some(s => s.id === 's1' && s.criteria)) originals.set(doc.instrument.id, doc);
   }
   const matched = new Map(), review = new Map();
   for (const doc of documents) {
     if (!doc.instrument || !doc.version || !doc.sections?.length || ['archive','world'].includes(doc.type)) continue;
     if (day ? temporal(doc.version, day) === false : doc.version.effectiveTo) continue;
-    const interest = familyInterest(doc, values);
+    const values=screeningValues(supplied,doc.version);
+    // The broad view uses the actual three-valued predicates for every alternative.
+    // An unentered trade, ship type or coastal operating area supplies no negative evidence.
+    let interest='identified';
+    if(!includeUnspecified)interest=familyInterest(doc,values);
+    else if(doc.type!=='local'&&!doc.instrument.local){
+      if(doc.instrument.flagState && values.flag && doc.instrument.flagState!==values.flag)continue;
+      if(doc.instrument.id==='gb-lifesaving-2020' && values.ukLsaReach==='uk' && values.flag && values.flag!=='GB')continue;
+    }
     if (interest === 'none') continue;
     for (const section of doc.sections) {
-      const row = rowFor(doc, section, {values,day,interest,originals});
+      const row = rowFor(doc, section, {values,day,interest,originals,includeUnspecified});
       if (!row) continue;
       const groups = row.state === 'match' ? matched : review;
       const id = doc.instrument.key || ((doc.type === 'local' || doc.instrument.local) ? 'local:' : 'official:') + doc.instrument.id;

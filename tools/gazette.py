@@ -227,7 +227,7 @@ def tidy_lines(value):
     return "\n".join(line for raw in value.splitlines() if (line := clean(raw)))
 
 
-def sections_from_xml(raw, record):
+def sections_from_xml(raw, record, include_appendices=False):
     main = parse_xml(raw).find("./body/main")
     if main is None:
         raise ValueError("Missing documentBody in " + record["id"])
@@ -236,7 +236,7 @@ def sections_from_xml(raw, record):
         nonlocal omitted
         heading = next((child for child in node if child.tag in HEADINGS), None)
         label = inline(heading) or inherited
-        if node is not main and (re.match(r"^(?:vedlegg|anneks|appendiks|appendix|bilag)\b", label, re.I)
+        if not include_appendices and node is not main and (re.match(r"^(?:vedlegg|anneks|appendiks|appendix|bilag)\b", label, re.I)
                                  or re.match(r"^(?:vedlegg|anneks)", node.get("data-name", ""), re.I)):
             omitted += 1
             return
