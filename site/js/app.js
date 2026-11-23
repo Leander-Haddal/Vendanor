@@ -3,6 +3,7 @@ import {readJson,dataUrl,readShard,archiveSections,archiveKind} from './archive.
 import {listImports,importToFolio} from './imports.js';
 import {readProfile,collectFields,saveProfile} from './profile.js';
 import {renderBoatForm,today} from './boat-form.js';
+import {revisionDates} from './revision-picker.js';
 import {renderBoatResults,showNationalSuggestions} from './boat-results.js';
 import {renderBoatPassage} from './boat-reader.js';
 import {listBoats,rememberBoat,savedBoat,selectedBoat,selectSavedBoat,forgetBoat,renderFleet} from './fleet.js';
@@ -23,8 +24,10 @@ let catalogues=[],gazette={records:[]},originals={records:{}},imports=[],fields=
 let countries=[],worldBook={records:[]},world=new Map(),worldLoading=true;
 let flagSources={flags:[]},ukHistory={records:[]},euHistory={records:[]},imoHistory={instruments:[]},failedCollections=[],boatFormActive=false,ownerPage='',lastOwnerHash='';
 let registryBook={entries:[]},earlyFields=[],fieldReleaseDay='',pendingDefinition;
+let refreshEntryDates;
 const historyLoads=new Map();
-let boatResultSignature='',resultScroll=0,returnPassage='';
+let boatResultSignature='',overviewReturn;
+let overviewState={};
 const views=['boat','boat-results','boat-passage','boats','map','documents','library','changes','sources','jurisdictions'];
 let profile=readProfile(),rows=[],readerMode='text',loaded=false,limit=40,ticket=0,routeTurn=0,prefill,storageError='',lastQuery='',lastReader='',noticeTimer,within='',withinDoc='';
 let boatRecord=selectedBoat();
@@ -43,16 +46,22 @@ function currentDraft() {
 }
 function countryName(code) {return countries.find(c=>c.code===code)?.name||code||'';}
 function applyBoat(state) {
+  const editing=route().view==='boat-results';
   if(state.remember)boatRecord=rememberBoat(state);
   else {selectSavedBoat();boatRecord={name:state.name,identifier:state.identifier,lookup:state.lookup};}
   profile=state.profile;saveProfile(profile);draft=null;boatFormActive=false;
-  lastReader='';lastQuery='';returnPassage='';profileSummary();navigate('boat-results');
+  if(!editing)overviewState={};
+  boatResultSignature='';lastReader='';lastQuery='';overviewReturn=null;profileSummary();navigate('boat-results');
+  if(editing){
+    $('boat-results-view').querySelector('.excerpt-count')?.focus({preventScroll:true});
+    notify('Ship specifications updated.');
+  }
   if(!loaded&&$('boat-form-status'))$('boat-form-status').textContent='Opening the source passages for your boat…';
 }
 function useBoat(id,edit) {
   const row=savedBoat(id);if(!row)return;
   selectSavedBoat(id);boatRecord=row;profile=row.profile;saveProfile(profile);draft=null;boatFormActive=false;
-  lastReader='';lastQuery='';profileSummary();navigate(edit?'boat':'boat-results');
+  overviewState={};overviewReturn=null;boatResultSignature='';lastReader='';lastQuery='';profileSummary();navigate(edit?'boat':'boat-results');
 }
 
 function route() {
@@ -185,18 +194,20 @@ function treatyEditions(doc,section) {
 function openLocal(doc) {
   const key=byEdition.get('local-'+doc.id);if(key)select(key,doc.sections[0]?.key);
 }
-function openBoatDefinition(source) {
+function openBoatDefinition(source,from='boat',flag=draft?.profile.values.flag) {
   if(!loaded){pendingDefinition=source;if($('boat-form-status'))$('boat-form-status').textContent='Opening the source provision…';return;}
   const cited=byKey.get(byEdition.get(source.versionId));
   if(!cited){notify('The cited source is unavailable.');return;}
-  const flag=draft?.profile.values.flag,section=cited.sections.find(s=>s.id===source.sectionId);
+  const section=cited.sections.find(s=>s.id===source.sectionId);
   const local=cited.instrument.flagState&&flag?[...byKey.values()].find(d=>d.instrument.flagState===flag&&d.version.pdf===cited.version.pdf&&d.sections.some(s=>s.id===section?.id&&s.text===section.text)):null;
-  navigate('boat-passage',{doc:(local||cited).key,section:source.sectionId,from:'boat'});
+  navigate('boat-passage',{doc:(local||cited).key,section:source.sectionId,from});
 }
 function openBoatForm() {
   boatFormActive=true;draft??=currentDraft();
-  renderBoatForm($('boat-view'),{fields,draft,onDraft:value=>{draft=value;},onSearch:applyBoat,onSource:openBoatDefinition});
+  refreshEntryDates=renderBoatForm($('boat-view'),{fields,draft,revisions,latestDay:referenceDay,onDraft:value=>{draft=value;},onSearch:applyBoat,onSource:openBoatDefinition});
 }
+
+function revisions(values) {return loaded ? revisionDates(byKey.values(),values) : null;}
 
 async function loadEditionIndexes(view,params) {
   const code=params.get('country')??profile.values.flag,needed=[];
@@ -208,7 +219,7 @@ async function loadEditionIndexes(view,params) {
       const request=readJson(dataUrl(key+'-history.json')).then(book=>{
         if(key==='uk')ukHistory=book;else euHistory=book;
       }).catch(()=>{
-        historyLoads.delete(key);notify('The '+key.toUpperCase()+' edition index could not be loaded. Reopen the law map to retry.');
+        historyLoads.delete(key);notify('The '+key.toUpperCase()+' edition index could not be loaded. Reopen Flag registers to retry.');
       });
       historyLoads.set(key,request);
     }
@@ -274,6 +285,9 @@ async function drawRoute() {
     return;
   }
   const previous=ownerPage,entered=ownerPage!==view||lastOwnerHash!==location.hash;
+  if(previous==='boat-results'&&view!=='boat-results'){
+    overviewReturn=['boat-passage','library'].includes(view)?{scroll:window.scrollY,control:document.activeElement}:null;
+  }
   ownerPage=view;lastOwnerHash=location.hash;
   showView(view);
   if(previous==='documents'&&view!=='documents')documentWorkspace.close();
@@ -302,20 +316,21 @@ async function drawRoute() {
   }else if(view==='boat-results'){
     if(!profile.values.flag||!profile.values.shipType){navigate('boat',{},true);return;}
     const signature=JSON.stringify([profile,boatRecord?.name,boatRecord?.lookup,[...byKey.keys()]]);
-    if(boatResultSignature!==signature){boatResultSignature=signature;renderBoatResults($('boat-results-view'),{profile,fields,name:boatRecord?.name,lookup:boatRecord?.lookup,imo:imoHistory,guides:registryBook,documents:[...byKey.values()],countryName,records:[...world.values()],failedCollections,
-      onEdit:()=>{draft=currentDraft();navigate('boat');},onRead:(doc,section)=>navigate('boat-passage',{doc,section}),
+    if(boatResultSignature!==signature){boatResultSignature=signature;renderBoatResults($('boat-results-view'),{profile,fields,state:overviewState,imo:imoHistory,guides:registryBook,documents:[...byKey.values()],countryName,records:[...world.values()],failedCollections,
+      renderSpecifications:host=>renderBoatForm(host,{inline:true,fields,draft:currentDraft(),revisions,latestDay:referenceDay,onSearch:applyBoat,
+        onSource:source=>openBoatDefinition(source,'boat-results',host.querySelector('[name=flag]').value)}),
       onRefine:changes=>{const state=currentDraft();Object.assign(state.profile.values,changes);applyBoat(state);}});}
-    if(previous==='boat-passage'&&returnPassage){
-      window.scrollTo(0,resultScroll);
-      [...$('boat-results-view').querySelectorAll('[data-read-passage]')].find(b=>b.dataset.doc+'|'+b.dataset.section===returnPassage)?.focus({preventScroll:true});return;
+    if(overviewReturn&&['boat-passage','library'].includes(previous)){
+      window.scrollTo(0,overviewReturn.scroll);
+      if($('boat-results-view').contains(overviewReturn.control))overviewReturn.control.focus({preventScroll:true});
+      overviewReturn=null;return;
     }
   }else if(view==='boat-passage'){
-    if(previous==='boat-results'){resultScroll=window.scrollY;returnPassage=params.get('doc')+'|'+params.get('section');}
     let doc;
     try{doc=await getDoc(params.get('doc'));}catch{/* Show the unavailable passage with a route back below. */}
     if(turn!==routeTurn)return;
     const section=doc?.sections.find(s=>s.id===params.get('section'));
-    if(!doc||!section){$('boat-passage-view').innerHTML='<h1>Passage unavailable</h1><a href="#boat">Back to boat search</a>';return;}
+    if(!doc||!section){$('boat-passage-view').innerHTML='<h1>Passage unavailable</h1><a href="#boat">Back to Regulations</a>';return;}
     renderBoatPassage($('boat-passage-view'),{doc,section,fields,profile,onBack:()=>navigate(params.get('from')==='boat'?'boat':'boat-results'),onLibrary:()=>select(doc.key,section.id)});
   }else if(view==='map'){
     renderLawMap($('map-view'),{countries,flags:flagSources,guides:registryBook,records:[...world.values()],documents:[...byKey.values()],params,uk:ukHistory,eu:euHistory,imo:imoHistory,flag:profile.values.flag,navigate});
@@ -324,7 +339,7 @@ async function drawRoute() {
     if(entered&&view==='map'&&params.get('convention')){
       const heading=$('map-international')?.querySelector('h3');if(heading){heading.tabIndex=-1;heading.focus();heading.scrollIntoView({block:'start'});return;}
     }
-    if(entered && location.hash){window.scrollTo(0,0);$(view+'-view').querySelector('h1')?.focus({preventScroll:true});}
+    if(entered && location.hash){window.scrollTo(0,0);const host=$(view+'-view');(host.querySelector('h1')||host).focus({preventScroll:true});}
     return;
   }
   if(view==='sources'){
@@ -373,6 +388,7 @@ async function start() {
   gazette=data['gazette.json']||gazette;originals=data['originals.json']||originals;
   flagSources=data['flag-sources.json']||flagSources;registryBook=data['registry-guides.json']||registryBook;imoHistory=data['imo-history.json']||imoHistory;
   await refreshImports();loaded=true;rebuild();
+  refreshEntryDates?.();
   if(boatFormActive&&(imports.some(i=>i.fields?.length)||failedCollections.length))boatFormActive=false;
   if(results.some(r=>r.status!=='fulfilled'))notify('Some public source files are unavailable. Displaying the collections that loaded.');
   await drawRoute();

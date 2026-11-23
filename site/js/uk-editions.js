@@ -71,7 +71,7 @@ export async function loadUkEdition(key,records) {
         version:{id:key,label:version.label,sourceUrl:version.url,pdfUrl:version.pdfUrl,scanOnly:true,sections}};
     }
     const response=await fetch(safeContents(version.url),{credentials:'omit',referrerPolicy:'no-referrer',signal:AbortSignal.timeout(25000)});
-    if(!response.ok)throw new Error('The National Archives could not supply this edition. Open the official timeline in the law map.');
+    if(!response.ok)throw new Error('The National Archives could not supply this edition. Open the official timeline in Flag registers.');
     const sections=parseEdition(await response.text());
     return {key,type:'uk',sections,instrument:{id:record.id,title:record.title,shortTitle:record.title,jurisdiction:'GB',authority:'The National Archives',language:'en'},
       version:{id:key,label:'UK published edition · '+version.label,sourceUrl:version.url,sections,

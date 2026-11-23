@@ -73,7 +73,7 @@ export function renderLawMap(host,ctx) {
   const {countries,flags,records,documents,params,uk}=ctx,selected=params.get('country')??ctx.flag,code=selected==='all'?'':selected||'';
   const jurisdictions=[{code:'EU',name:'European Union'},...countries];
   const country=jurisdictions.find(c=>c.code===code),entries=flags.flags||[];
-  host.innerHTML='<header class="owner-heading"><h1 tabindex="-1">Law map</h1><p>Choose a flag to explore legislation, official registers and earlier editions.</p></header>'+
+  host.innerHTML='<header class="owner-heading"><h1 tabindex="-1">Flag registers</h1><p>Choose a flag to explore legislation, official registers and earlier editions.</p></header>'+
     '<div class="owner-card map-picker"><label>Flag state or jurisdiction<select id="map-country"><option value="">All registers and treaties</option>'+jurisdictions.map(c=>'<option value="'+esc(c.code)+'" '+(c.code===code?'selected':'')+'>'+esc(c.name)+'</option>').join('')+'</select></label></div>'+
     (country?'<header class="map-country-heading"><h2>'+esc(country.name)+'</h2>'+(code==='EU'?'':mapLink('Flag administration and class evidence','jurisdictions',{country:code}))+'</header><nav class="map-jumps" aria-label="Sections for this jurisdiction"></nav><div class="map-sections"><section id="map-primary"></section><section id="map-mapped"></section><section id="map-uk"></section><section id="map-eu"></section><section id="map-national"></section><section id="map-international"></section></div>':
       '<section class="owner-card register-grid"><h2>Major shipping registers</h2><div class="register-links">'+entries.filter(x=>x.rank).slice(0,8).map(x=>mapLink(x.registerName||x.name,'map',{country:x.code})).join('')+'</div>'+

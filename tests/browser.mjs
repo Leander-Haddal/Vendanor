@@ -4,7 +4,7 @@ import {existsSync} from 'node:fs';
 import {readFile} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
 import {chromium} from 'playwright-core';
-import {checkBoatJourney, checkPhoneBoat, checkSavedLookup, checkTreatyBoat} from './boat-browser.mjs';
+import {checkBoatJourney, checkEditionOverview, checkPhoneBoat, checkSavedBoat, checkTreatyBoat, checkRevisionPicker} from './boat-browser.mjs';
 import {checkLawHistory,checkOwnerSourceSearch} from './history-browser.mjs';
 import {checkDocuments, checkLegacyDocuments} from './documents-browser.mjs';
 
@@ -275,8 +275,12 @@ async function verifyBoat(page) {
   await checkBoatJourney(page, base, widthFits);
 }
 
-async function verifySavedLookup(page) {
-  await checkSavedLookup(page,base);
+async function verifySavedBoat(page) {
+  await checkSavedBoat(page,base);
+}
+
+async function verifyRevisionPicker(page) {
+  await checkRevisionPicker(page,base);
 }
 
 async function verifyTreatyBoat(page) {
@@ -291,11 +295,15 @@ async function verifyBoatSearch(page) {
   await checkOwnerSourceSearch(page,base);
 }
 
+async function verifyEditionOverview(page) {
+  await checkEditionOverview(page,base);
+}
+
 const browser = await chromium.launch({executablePath:browserPath(),headless:true});
 try {
   const faults = [];
   const requested = process.argv.slice(2);
-  const checks = [verifyBoat, verifyTreatyBoat, verifySavedLookup, verifyFolio, verifyProfile, verifyArchive, verifyComparison, verifyImports, verifyDocuments, verifyLegacyDocuments, verifyDirectory, verifyNationalPassage, verifyLawHistory, verifyBoatSearch, verifyMobile];
+  const checks = [verifyBoat, verifyTreatyBoat, verifySavedBoat, verifyRevisionPicker, verifyFolio, verifyProfile, verifyArchive, verifyComparison, verifyImports, verifyDocuments, verifyLegacyDocuments, verifyDirectory, verifyNationalPassage, verifyLawHistory, verifyBoatSearch, verifyEditionOverview, verifyMobile];
   assert.ok(requested.every(name => checks.some(check => check.name===name)), 'Unknown browser check name');
   for (const check of checks.filter(item => !requested.length || requested.includes(item.name))) {
     const context = await browser.newContext(check === verifyMobile

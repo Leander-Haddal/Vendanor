@@ -37,7 +37,7 @@ export async function checkDocuments(page, base, widthFits) {
   const status = view.getByRole('status').filter({hasText: 'first document'});
   await status.waitFor();
   assert.equal(page.url(), new URL('?bookmark=1#documents', base).href);
-  assert.equal(await page.locator('nav').getByRole('link', {name:'My documents'}).getAttribute('aria-current'), 'page');
+  assert.equal(await page.locator('nav').getByRole('link', {name:'Document search'}).getAttribute('aria-current'), 'page');
   const file = view.getByLabel('Upload a PDF or text file');
   const choice = view.getByLabel('Saved documents');
   const search = view.getByRole('searchbox');
@@ -100,7 +100,7 @@ export async function checkDocuments(page, base, widthFits) {
   assert.equal(await page.evaluate(() => localStorage.length), 0);
   await view.getByRole('link', {name:'Import options and backups'}).click();
   await page.locator('#sources-view .source-list').filter({hasText:'Port notice'}).waitFor();
-  await page.locator('nav').getByRole('link', {name:'My documents'}).click();
+  await page.locator('nav').getByRole('link', {name:'Document search'}).click();
   await choice.selectOption({label:'Port notice'});
   page.once('dialog', dialog => dialog.accept());
   await view.getByRole('button', {name:'Remove document'}).click();

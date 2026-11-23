@@ -89,7 +89,6 @@ function fileRole(path) {
     'uk-history':'UK instrument IDs, published PDF identities and original or dated edition links extracted from official legislation metadata.',
     'eu-history':'EU shipping directory concepts, acts, CELEX identifiers, consolidated editions and directed legal change relationships.',
     'world-laws':'FAOLEX national records with original title, language, jurisdiction, subjects, recorded dates, repeal indicator and publisher links.',
-    'vessels-no':'Dated Norwegian fishing-vessel extract. The declared column array specifies the units and order of the compact vessel records.',
     'originals':'Original archive PDF digests and physical extraction bounds tied to immutable section ordinals.',
     'gazette':'Norwegian source metadata, record identities, section counts, published dates and the filenames of searchable body shards.'
   };

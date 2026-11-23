@@ -25,7 +25,6 @@ jobs:
       - run: python tools/archive_pdfs.py --offline --limit 100 --byte-budget 100000000
       - run: python tools/countries.py
       - run: python tools/world_laws.py --refresh
-      - run: python tools/vessels.py
       - run: python tools/uk_history.py
       - run: python tools/eu_history.py
       - run: python tools/flag_sources.py && python tools/registry_guides.py --refresh && python tools/imo_history.py

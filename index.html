@@ -7,23 +7,24 @@
   <link rel="stylesheet" href="./site/assets/site.css">
   <link rel="stylesheet" href="./site/assets/boat.css">
   <link rel="stylesheet" href="./site/assets/boat-reader.css">
+  <link rel="stylesheet" href="./site/assets/boat-overview.css">
 </head>
 <body>
 <a class="skip" href="#main">Skip to workspace</a>
 <header class="mast">
   <a class="brand" href="#boat" aria-label="Ship Law Index home"><span class="brandmark" aria-hidden="true">§</span><strong>Ship Law Index</strong></a>
-  <nav aria-label="Workspace"><a href="#boat" id="open-profile" data-view="boat">Boat search</a><a href="#documents" data-view="documents">My documents</a><a href="#boats" data-view="boats">My boats</a><a href="#map" data-view="map">Law map</a>
+  <nav aria-label="Workspace"><a href="#boat" id="open-profile" data-view="boat">Regulations</a><a href="#documents" data-view="documents">Document search</a><a href="#boats" data-view="boats">My boats</a><a href="#map" data-view="map">Flag registers</a>
     <details id="research-menu"><summary>Research tools</summary><div><a href="#library" data-view="library">Law library</a><a href="#changes" data-view="changes">Revision changes</a><a href="#jurisdictions" data-view="jurisdictions">Jurisdictions &amp; class</a><a href="#sources" data-view="sources">Sources &amp; imports</a></div></details>
   </nav>
 </header>
 <main id="main" tabindex="-1">
-  <section id="boat-view" class="view owner-view"><h1>Find laws for your boat</h1><p role="status">Loading vessel particulars…</p></section>
-  <section id="boat-results-view" class="view owner-view" hidden></section>
+  <section id="boat-view" class="view owner-view" aria-label="Regulations" tabindex="-1"><p role="status">Loading ship specifications…</p></section>
+  <section id="boat-results-view" class="view owner-view" aria-label="Regulations" tabindex="-1" hidden></section>
   <section id="boat-passage-view" class="view owner-view" hidden></section>
   <section id="boats-view" class="view owner-view" hidden></section>
   <section id="map-view" class="view owner-view" hidden></section>
   <section id="documents-view" class="view" hidden>
-    <header class="workspace-heading"><div><h1 tabindex="-1">My documents</h1><p>Upload a law to search its wording. Your files stay in this browser.</p></div></header>
+    <header class="workspace-heading"><div><h1 tabindex="-1">Document search</h1><p>Upload a law to search its wording. Your files stay in this browser.</p></div></header>
     <div class="surface document-tools">
       <label>Upload a PDF or text file<input id="document-file" type="file" accept=".pdf,.txt,application/pdf,text/plain"></label>
       <p id="document-status" class="small" role="status"></p>

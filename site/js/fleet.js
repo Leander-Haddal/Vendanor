@@ -60,7 +60,7 @@ export function fleetMatches(boats,query) {
 
 export function renderFleet(container,{boats,countryName,onNew,onOpen,onEdit,onRemove}) {
   container.innerHTML='<header class="owner-heading"><h1 tabindex="-1">My boats</h1><p>Saved on this device.</p></header>'+
-    '<div class="owner-card fleet-card"><div class="fleet-bar">'+(boats.length?'<label>Find a saved boat<input type="search" id="fleet-query" placeholder="Name, registration or IMO"></label>':'<h2>Save your first boat</h2>')+
+    '<div class="owner-card fleet-card"><div class="fleet-bar">'+(boats.length?'<label>Filter saved boats<input type="search" id="fleet-query" placeholder="Name or registration"></label>':'<h2>Save your first boat</h2>')+
     '<button class="boat-primary" type="button" id="new-boat">Add a boat</button></div>'+
     (boats.length?'':'<p>Choose “Remember this boat” when you search to keep its particulars here.</p>')+'<div id="fleet-list" aria-live="polite"></div></div>';
   const list=container.querySelector('#fleet-list'),input=container.querySelector('#fleet-query');

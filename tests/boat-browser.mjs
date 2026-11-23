@@ -38,7 +38,7 @@ async function quietForm(page, base, widthFits) {
 }
 
 async function submitBoat(page) {
-  const submit = page.locator('#boat-submit');
+  const submit = page.locator('#boat-submit:visible, #result-boat-form:visible button[type="submit"]');
   await submit.focus();
   await page.keyboard.press('Enter');
   await page.waitForURL(url => url.hash.startsWith('#boat-results'));
@@ -48,11 +48,17 @@ async function submitBoat(page) {
 }
 
 async function editBoat(page) {
-  await page.locator('#edit-boat').click();
-  const form = page.locator('#boat-form');
-  await form.waitFor();
-  assert.equal(new URL(page.url()).hash.split('?')[0], '#boat');
+  const form = page.locator('#result-boat-form');
+  await reveal(form);
+  assert.equal(new URL(page.url()).hash, '#boat-results');
   return form;
+}
+
+async function selectLaw(results, id) {
+  const law = results.locator('button[data-law="official:' + id + '"]:not([data-edition])');
+  await reveal(law);
+  await law.click();
+  assert.equal(await law.getAttribute('aria-current'), 'true');
 }
 
 async function readProvision(page, sectionId) {
@@ -67,19 +73,26 @@ async function readProvision(page, sectionId) {
   return page.locator('#boat-passage-view');
 }
 
-async function dateThreshold(passageList) {
-  const more = passageList.locator(':scope > details.more-passages');
-  await more.locator(':scope > summary').click();
-  await more.locator('.passage-options').waitFor();
-  const input = more.locator('input[type="search"]');
-  if (await input.count()) await input.fill('§ 19(1)');
-  return more.locator('[data-read-passage][data-section="s19-1"]');
-}
-
 async function checkOriginal(page, base) {
   const folios = JSON.parse(await readFile(new URL('../site/data/folios.json', import.meta.url), 'utf8'));
   const version = folios.instruments.find(row => row.id === cargoId).versions.find(row => row.id === versionId);
   const section = version.sections.find(row => row.id === 's1');
+  const results = page.locator('#boat-results-view');
+  const material = results.locator(cargoCard + ' .source-hunk[data-section="s1"]');
+  await material.scrollIntoViewIfNeeded();
+  const quote = material.locator('.source-quote');
+  const target = new URL(await quote.getAttribute('href'), base);
+  assert.equal(target.pathname, new URL('site/' + version.pdf, base).pathname);
+  const fragment = new URLSearchParams(target.hash.slice(1));
+  assert.equal(fragment.get('page'), String(section.pages[0]));
+  assert.ok(section.text.replace(/\s+/g, ' ').includes(fragment.get('search')));
+  await material.getByRole('button', {name:'Show text excerpt'}).waitFor();
+  assert.ok(await material.locator('canvas').evaluate(canvas => {
+    const {data} = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height);
+    return data.some((value, index) => index % 4 === 0 && value < 150 && data[index + 3] === 255);
+  }), 'The printed excerpt must contain visible ink from the source PDF');
+  await material.getByRole('button', {name:'Show text excerpt'}).click();
+  assert.match(await material.locator('.source-words').innerText(), /Forskriften gjelder for norske lasteskip/);
   const passage = await readProvision(page, 's1');
   await passage.locator('[data-boat-wording]').filter({hasText:'Forskriften gjelder for norske lasteskip'}).waitFor();
   const heading = passage.locator('#boat-passage-heading');
@@ -110,6 +123,7 @@ async function checkOriginal(page, base) {
   await passage.waitFor();
   await passage.locator('[data-boat-back]').click();
   await page.locator('#boat-results-view').waitFor();
+  assert.equal(await page.locator(':focus').getAttribute('data-section'), 's1');
 }
 
 export async function checkBoatJourney(page, base, widthFits) {
@@ -134,7 +148,10 @@ export async function checkBoatJourney(page, base, widthFits) {
   assert.equal(await form.locator('[name="lengthOverall"]').inputValue(), '14');
   await setField(form, 'grossTonnage', '120');
   await setField(form, 'buildDate', '1998');
-  await setField(form, '_asOf', '2026-11-23');
+  await form.locator('.date-picker-button').click();
+  const calendar = page.getByRole('dialog', {name:'Choose a law date'});
+  await calendar.getByLabel('Exact date').fill('2026-11-23');
+  await calendar.getByRole('button', {name:'Use date', exact:true}).click();
   let results = await submitBoat(page);
   assert.equal(await results.locator(cargoCard).count(), 0, 'A German flag alone cannot match Norwegian-flag cargo scope');
   await widthFits(page);
@@ -154,16 +171,44 @@ export async function checkBoatJourney(page, base, widthFits) {
   await setField(form, 'onlyPassenger2020', 'no');
   await setField(form, 'wheelhouse', 'yes');
   results = await submitBoat(page);
-  const conditional = results.locator(cargoCard + ' .law-questions > .related-checks');
-  await conditional.locator(':scope > summary').click();
-  await (await dateThreshold(conditional.locator(':scope > div'))).waitFor();
-  const unconfirmed = await dateThreshold(results.locator(cargoCard + ' .law-passages'));
-  assert.equal(await unconfirmed.count(),0,'The construction year alone cannot settle the 1 July 1998 cutoff');
+  const index = await results.locator('.law-sidebar').boundingBox();
+  const stream = await results.locator('.law-stream').boundingBox();
+  assert.ok(index.x + index.width <= stream.x && stream.x + stream.width - index.x > page.viewportSize().width * .85);
+  await selectLaw(results, cargoId);
+  const query = results.locator('#boat-law-keyword'), outcome = results.locator('#boat-outcome');
+  await query.fill('"§ 19(1)"');
+  await outcome.selectOption('review');
+  const threshold = results.locator(cargoCard + ' .source-hunk[data-section="s19-1"]');
+  await threshold.waitFor();
+  await outcome.selectOption('match');
+  assert.equal(await threshold.count(),0,'The construction year alone cannot settle the 1 July 1998 cutoff');
   form = await editBoat(page);
   await setField(form, 'buildDate', '1998-07-01');
   results = await submitBoat(page);
-  await results.locator(cargoCard).waitFor();
-  await (await dateThreshold(results.locator(cargoCard + ' .law-passages'))).waitFor();
+  await threshold.waitFor();
+  assert.equal(await threshold.getAttribute('data-state'), 'match');
+  assert.equal(await query.inputValue(), '"§ 19(1)"');
+  // This section starts on page 5. The searched wording is on its second printed page.
+  const clipPath = '**/pdf/sections/no-cargo-2025/s19-1.pdf';
+  let releaseClip;
+  const held = new Promise(resolve => { releaseClip = resolve; });
+  await page.route(clipPath, async route => { await held; await route.continue(); });
+  try {
+    await query.fill('kameraløsning');
+    await threshold.locator('.source-words mark').waitFor();
+    const [tab] = await Promise.all([page.waitForEvent('popup'), threshold.locator('.source-quote').click()]);
+    releaseClip();
+    await tab.waitForURL(url => url.pathname.endsWith('/2025-12-16-2652.pdf') && new URLSearchParams(url.hash.slice(1)).get('page') === '6');
+    await tab.close();
+    assert.match(await threshold.locator('.source-location').innerText(), /page 6/);
+  } finally { releaseClip(); await page.unroute(clipPath); }
+  await query.fill('');
+  await outcome.selectOption('all');
+  await selectLaw(results, cargoId);
+  const card = results.locator(cargoCard);
+  const shown = await card.locator('.source-hunk').count();
+  await card.locator('.expand-passages').click();
+  assert.ok(await card.locator('.source-hunk').count() > shown);
   await checkOriginal(page, base);
   await readProvision(page, 's1');
   await page.goBack();
@@ -189,9 +234,24 @@ export async function checkTreatyBoat(page,base) {
   await setField(form,'colregLightBasis','ordinary');
   await setField(form,'colregTowSubject','no');
   let results = await submitBoat(page);
-  const card = results.locator('#boat-matched [data-law-id="IMO-COLREG-1972-DE"]');
+  const card = results.locator('[data-law-id="IMO-COLREG-1972-DE"]');
   await card.waitFor();
-  await card.locator('.law-passages > .more-passages > summary').click();
+  await selectLaw(results, 'IMO-COLREG-1972-DE');
+  await results.locator('#boat-outcome').selectOption('match');
+  await results.locator('#boat-law-keyword').fill('"Rule 22(c)"');
+  const excerpt = card.locator('.source-hunk[data-section="r22c"]');
+  assert.match(await excerpt.locator('.source-words').innerText(), /a sidelight, 1 mile/);
+  const original = new URL(await excerpt.locator('.source-quote').getAttribute('href'));
+  assert.equal(original.pathname,new URL('site/pdf/colreg-usbook.pdf',base).pathname);
+  assert.equal(new URLSearchParams(original.hash.slice(1)).get('page'),'45');
+  const clipPath = '**/pdf/colreg-usbook-r22c.pdf';
+  await page.route(clipPath, route => route.abort());
+  await excerpt.getByRole('button', {name:'Show printed excerpt'}).click();
+  await excerpt.getByRole('status').filter({hasText:'The printed preview is unavailable'}).waitFor();
+  assert.match(await excerpt.locator('.source-words').innerText(), /a sidelight, 1 mile/);
+  await page.unroute(clipPath);
+  await excerpt.getByRole('button', {name:'Show printed excerpt'}).click();
+  await excerpt.locator('canvas').waitFor();
   await card.locator('[data-read-passage][data-section="r22c"]').click();
   const reader = page.locator('#boat-passage-view');
   await reader.locator('[data-boat-wording]').filter({hasText:'a sidelight, 1 mile'}).waitFor();
@@ -215,7 +275,24 @@ export async function checkPhoneBoat(page, base, widthFits) {
   await setField(form, 'shipType', 'cargo');
   for (const [key,value] of Object.entries({lengthOverall:'14',lengthL:'14',grossTonnage:'120'})) await setField(form, key, value);
   for (const key of ['onlyPassenger2020','approvedTraining']) await setField(form, key, 'no');
+  const results = await submitBoat(page);
+  await widthFits(page);
+  assert.equal(await results.locator('.law-index').getAttribute('open'), null);
+  assert.equal(await results.locator('.specs-panel').getAttribute('open'), null);
+  await selectLaw(results, cargoId);
+  assert.equal(await results.locator('.law-index').getAttribute('open'), null);
+  assert.equal(await results.locator('.law-card').count(), 1);
+  await results.locator(cargoCard + ' .source-words').first().waitFor();
+  const specs = await editBoat(page);
+  await specs.locator('.date-picker-button').click();
+  await page.getByRole('dialog').getByLabel('Revision year').waitFor();
+  await widthFits(page);
+  await page.getByRole('button', {name:'Close date selector'}).click();
+  await setField(specs, 'lengthOverall', '15.5');
   await submitBoat(page);
+  assert.equal(await results.locator('.law-card').count(), 1);
+  assert.equal(await results.locator('.specs-panel > summary').innerText(), 'Ship specifications');
+  assert.equal(await results.locator('[name="lengthOverall"]').first().inputValue(), '15.5');
   await widthFits(page);
   const passage = await readProvision(page, 's1');
   await passage.locator('[data-boat-wording]').waitFor();
@@ -224,61 +301,41 @@ export async function checkPhoneBoat(page, base, widthFits) {
   await page.locator('#boat-results-view').waitFor();
 }
 
-export async function checkSavedLookup(page, base) {
-  const snapshot = JSON.parse(await readFile(new URL('../site/data/vessels-no.json',import.meta.url),'utf8'));
-  const row = snapshot.rows.find(r => r[1]==='LIBAS' && r[5]) || snapshot.rows.find(r => r[2] && r[4] && r[5] && r[6]);
+export async function checkSavedBoat(page, base) {
   await page.goto(base.href);
   const form = page.locator('#boat-form');
-  await form.waitFor();
-  await page.locator('.vessel-lookup > summary').click();
-  const lookup = page.locator('#vessel-lookup');
-  const worldwide = 'https://www.wikidata.org/w/api.php?**';
-  await page.route(worldwide,route => route.abort('internetdisconnected'));
-  await lookup.locator('select').selectOption('wiki');
-  await lookup.getByRole('searchbox').fill('IMO 9241061');
-  await lookup.getByRole('button',{name:'Search vessels'}).click();
-  await lookup.getByRole('status').filter({hasText:'The vessel search could not be completed'}).waitFor();
-  assert.match(await lookup.getByRole('status').textContent(),/enter the particulars below/);
-  assert.equal(await form.locator('[name="flag"]').inputValue(),'');
-  await page.unroute(worldwide);
-  await lookup.getByRole('button',{name:'Clear search'}).click();
-  await lookup.locator('select').selectOption('no');
-  await lookup.getByRole('searchbox').fill(row[2]);
-  await lookup.getByRole('button',{name:'Search vessels'}).click();
-  await lookup.locator('[data-vessel-choice="'+row[0]+'"]').click();
-  assert.equal(await form.locator('[name="flag"]').inputValue(),'');
-  assert.equal(await form.locator('[name="lengthOverall"]').inputValue(),'');
-  await lookup.getByRole('button',{name:'Clear search'}).click();
-  assert.equal(await lookup.getByRole('searchbox').inputValue(),'');
-  assert.equal(await lookup.locator('[data-vessel-choice]').count(),0);
-  assert.equal(await lookup.getByRole('button',{name:'Apply selected particulars'}).count(),0);
-  await lookup.getByRole('searchbox').fill(row[2]);
-  await lookup.getByRole('button',{name:'Search vessels'}).click();
-  await lookup.locator('[data-vessel-choice="'+row[0]+'"]').click();
-  assert.match(await lookup.textContent(),/Norwegian Directorate of Fisheries/);
-  assert.equal(await lookup.getByRole('link',{name:'Open source record'}).getAttribute('href'),
-    'https://api.fiskeridir.no/vessel-api/api/v1/vessels/'+row[0]);
-  await lookup.locator('input[type="checkbox"][value="grossTonnage"]').uncheck();
-  await lookup.getByRole('button',{name:'Apply selected particulars'}).click();
-  assert.equal(await form.locator('[name="lengthOverall"]').inputValue(),String(row[4]));
-  assert.equal(await form.locator('[name="grossTonnage"]').inputValue(),'');
-  assert.equal(await form.locator('[name="flag"]').inputValue(),'NO');
-  assert.equal(await form.locator('[name="shipType"]').inputValue(),'fishing');
+  const name = 'Nordlys';
+  const registration = 'N-102';
+  await setField(form, 'flag', 'NO');
+  await setField(form, 'shipType', 'fishing');
+  await setField(form, 'lengthOverall', '24');
+  await setField(form, 'buildDate', '1998');
   await form.locator('[name="_remember"]').check();
-  const name = row[1]+' browser check';
   await form.locator('[name="_name"]').fill(name);
+  await form.locator('[name="_identifier"]').fill(registration);
+  await submitBoat(page);
+  const specs = await editBoat(page);
+  await setField(specs, 'grossTonnage', '432');
   await submitBoat(page);
   const cookies = await page.context().cookies();
   const cookie = cookies.find(c => c.name==='ship_law_boat');
   assert.match(cookie?.value || '',/^[a-f0-9-]{36}$/);
   assert.equal(cookie.path,base.pathname);
+  // Earlier saved profiles can carry evidence for a confirmed measurement.
+  await page.evaluate(id => {
+    const key='ship-law.boat.v1.'+id, boat=JSON.parse(localStorage.getItem(key));
+    boat.lookup={provider:'Previous register import', evidence:[{key:'grossTonnage', label:'Gross tonnage', value:432, sourceUrl:'https://example.test/registry/102'}]};
+    localStorage.setItem(key, JSON.stringify(boat));
+  }, cookie.value);
   await page.goto(new URL('#boats',base).href);
-  await page.locator('#fleet-query').fill(row[2]);
+  await page.locator('#fleet-query').fill(registration);
   const saved = page.locator('#fleet-list article').filter({hasText:name});
   await saved.waitFor();
   await saved.locator('[data-edit]').click();
   assert.equal(await form.locator('[name="_name"]').inputValue(),name);
-  assert.equal(await form.locator('[name="buildDate"]').inputValue(),row[6]);
+  assert.equal(await form.locator('[name="buildDate"]').inputValue(),'1998');
+  assert.equal(await form.locator('[name="grossTonnage"]').inputValue(),'432');
+  assert.match(await form.locator('.lookup-evidence').textContent(),/Previous register import/);
   await page.reload();
   await form.waitFor();
   assert.equal(await form.locator('[name="shipType"]').inputValue(),'fishing');
@@ -290,4 +347,91 @@ export async function checkSavedLookup(page, base) {
   await saved.locator('[data-forget]').click();
   await page.locator('#boats-view').filter({hasText:'Save your first boat'}).waitFor();
   assert.equal((await page.context().cookies()).some(c => c.name==='ship_law_boat'),false);
+}
+
+export async function checkRevisionPicker(page, base) {
+  let release;
+  const hold = new Promise(resolve => { release = resolve; });
+  const manifest = '**/data/solas-folios.json';
+  await page.route(manifest, async route => { await hold; await route.continue(); });
+  await page.goto(base.href, {waitUntil:'domcontentloaded'});
+  const form = page.locator('#boat-form');
+  const picker = page.getByRole('dialog', {name:'Choose a law date'});
+  try {
+    await setField(form, 'flag', 'NO');
+    await setField(form, 'shipType', 'cargo');
+    await form.locator('.date-picker-button').click();
+    await picker.getByText('Loading indexed editions…').waitFor();
+  } finally { release(); }
+  await picker.getByLabel('Revision year').selectOption('2015');
+  await page.unroute(manifest);
+  const earlier = picker.getByRole('button', {name:/2014 regulation · as issued/});
+  assert.match(await earlier.innerText(), /In force from 1 Jan 2015/);
+  await earlier.click();
+  assert.equal(await form.locator('[name="_asOf"]').inputValue(), '2015-01-01');
+  const results = await submitBoat(page);
+  await results.locator('[data-law-id="FOR-2014-12-19-1853"]').waitFor();
+  assert.equal(await results.locator(cargoCard).count(), 0);
+  assert.equal(await results.locator(':scope > :first-child').getAttribute('class'), 'owner-card specs-panel');
+  assert.equal(await page.getByRole('link',{name:'Regulations',exact:true}).getAttribute('aria-current'), 'page');
+  const specs = await editBoat(page);
+  await setField(specs, 'flag', 'NZ');
+  await specs.locator('.date-picker-button').click();
+  await picker.getByRole('heading', {name:'Revision dates for New Zealand'}).waitFor();
+  await picker.getByLabel('Revision year').selectOption('2003');
+  await picker.getByRole('button', {name:/Original signed Part 91/}).waitFor();
+  assert.equal(await picker.getByRole('button', {name:/Small cargo ships/}).count(), 0);
+  await page.keyboard.press('Escape');
+  assert.equal(await specs.locator('[name="_asOf"]').inputValue(), '2015-01-01');
+  await specs.locator('.date-picker-button').click();
+  const latest = picker.getByRole('button', {name:/Use latest indexed date/});
+  const latestLabel = (await latest.innerText()).split(' · ').at(-1);
+  await latest.click();
+  await submitBoat(page);
+  assert.equal(await specs.locator('[name="flag"]').inputValue(),'NZ');
+  assert.equal(await specs.locator('.date-picker-button').innerText(),latestLabel);
+}
+
+export async function checkEditionOverview(page, base) {
+  const bytes = await readFile(new URL('../site/pdf/2020-01-14-67.pdf', import.meta.url));
+  const family = {familyId:'passenger-editions', title:'Passenger source copies', jurisdiction:'NO'};
+  const documents = [
+    {...family, id:'printed', revision:'Printed notice', pdf:{base64:bytes.toString('base64')},
+      sections:[{key:'s1', label:'Section 1', fromPage:1, toPage:1, top:.46, bottom:.56}]},
+    {...family, id:'transcript', revision:'Port transcript', sections:[{key:'s1', label:'Section 1', text:'The port keeps a passenger register.'}]},
+  ];
+  await page.goto(new URL('#sources', base).href);
+  await page.locator('#pack-file').setInputFiles({name:'editions.json', mimeType:'application/json',
+    buffer:Buffer.from(JSON.stringify({format:'vessel-law-library', schemaVersion:1, documents}))});
+  await page.locator('#sources-view .source-list [data-open]').nth(1).waitFor();
+  await page.locator('nav a[href="#boat"]').click();
+  const form = page.locator('#boat-form');
+  await setField(form, 'flag', 'NO');
+  await setField(form, 'shipType', 'passenger');
+  const results = await submitBoat(page);
+  const editions = results.locator('[data-category="Uploaded documents"] [data-editions]');
+  await editions.locator('summary').click();
+  const printed = editions.getByRole('button', {name:/Printed notice/});
+  await printed.click();
+  assert.equal(await results.locator('.source-hunk').count(), 1);
+  await results.getByRole('button', {name:'Show text excerpt', exact:true}).waitFor();
+  const [tab] = await Promise.all([page.waitForEvent('popup'), results.locator('button.source-quote').click()]);
+  await tab.waitForURL(url => url.protocol === 'blob:');
+  const original = new URL(tab.url());
+  assert.equal(new URLSearchParams(original.hash.slice(1)).get('page'), '1');
+  const fingerprint = await page.evaluate(async url => {
+    const hash = await crypto.subtle.digest('SHA-256', await (await fetch(url)).arrayBuffer());
+    return Array.from(new Uint8Array(hash), byte => byte.toString(16).padStart(2, '0')).join('');
+  }, original.href);
+  assert.equal(fingerprint, createHash('sha256').update(bytes).digest('hex'));
+  await tab.close();
+  await editions.getByRole('button', {name:/Port transcript/}).click();
+  const quote = results.locator('.source-quote');
+  assert.match(await quote.innerText(), /keeps a passenger register/);
+  assert.equal(await results.locator('.source-hunk').count(), 1);
+  await quote.click();
+  await page.locator('#reader .lawtext').filter({hasText:'keeps a passenger register'}).waitFor();
+  assert.equal(new URLSearchParams(new URL(page.url()).hash.split('?')[1]).get('section'), 's1');
+  await page.goBack();
+  assert.equal(await editions.getByRole('button', {name:/Port transcript/}).getAttribute('aria-current'), 'true');
 }

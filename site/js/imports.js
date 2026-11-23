@@ -179,6 +179,17 @@ async function readPage(page, remaining) {
   }
 }
 
+export async function loadPdfBytes(bytes) {
+  const pdfjs = await import("../vendor/pdfjs.mjs");
+  pdfjs.GlobalWorkerOptions.workerSrc = new URL("../vendor/pdf.worker.mjs", import.meta.url).href;
+  return pdfjs.getDocument({
+    data: bytes, BinaryDataFactory: LocalPdfResources, useWorkerFetch: false,
+    disableFontFace: true, useSystemFonts: false, useWasm: false, useWasmSimd: false,
+    disableWorkerRendering: true, enableXfa: false, isEvalSupported: false,
+    verbosity: 0,
+  });
+}
+
 export async function inspectPdf(file, onProgress) {
   if (!(file instanceof Blob) || !file.size || file.size > importLimits.pdfBytes) {
     throw new Error("Choose a nonempty PDF up to 24 MiB.");
@@ -186,14 +197,7 @@ export async function inspectPdf(file, onProgress) {
   if (!(await file.slice(0, 1024).text()).includes("%PDF-")) throw new Error("The file has no PDF header.");
   const bytes = new Uint8Array(await file.arrayBuffer());
   const fingerprint = await sha256(bytes);
-  const pdfjs = await import("../vendor/pdfjs.mjs");
-  pdfjs.GlobalWorkerOptions.workerSrc = new URL("../vendor/pdf.worker.mjs", import.meta.url).href;
-  const task = pdfjs.getDocument({
-    data: bytes, BinaryDataFactory: LocalPdfResources, useWorkerFetch: false,
-    disableFontFace: true, useSystemFonts: false, useWasm: false, useWasmSimd: false,
-    disableWorkerRendering: true, enableXfa: false, isEvalSupported: false,
-    verbosity: 0,
-  });
+  const task = await loadPdfBytes(bytes);
   try {
     const pdf = await task.promise;
     if (pdf.numPages > importLimits.pages) throw new Error("The PDF exceeds the 600-page import limit.");

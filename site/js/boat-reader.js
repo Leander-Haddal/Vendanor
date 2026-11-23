@@ -54,7 +54,7 @@ function supportingTitle(url) {
   return [sourceName(url), name.replace(/[_-]/g, ' ')].filter(Boolean).join(' · ');
 }
 
-function pageCitation(numbers) {
+export function pageCitation(numbers) {
   const pages = [...new Set((numbers || []).filter(n => Number.isInteger(n) && n > 0))].sort((a, b) => a - b);
   const ranges = [];
   for (let i = 0; i < pages.length; i++) {
@@ -65,7 +65,7 @@ function pageCitation(numbers) {
   return ranges.length ? (pages.length === 1 ? 'page ' : 'pages ') + ranges.join(', ') : '';
 }
 
-function sourceWording(section, catalogue, documentTitle) {
+export function sourceWording(section, catalogue, documentTitle) {
   let text = String(section.text || '').trim();
   if (catalogue) return {heading: documentTitle, paragraphs: text.split(/\n\s*\n/).filter(p => p && p !== documentTitle)};
   const number = section.number || section.label || '';
@@ -105,35 +105,83 @@ function wordingBlock(paragraphs, language, catalogue) {
   return content;
 }
 
+async function openPreparedPdf(control, generate, feedback) {
+  const tab = window.open('about:blank', '_blank');
+  if (tab) {
+    tab.opener = null;
+    tab.document.title = 'Source PDF';
+    tab.document.body.textContent = 'Opening source PDF…';
+  }
+  if (control.tagName === 'BUTTON') control.disabled = true;
+  feedback.textContent = 'Opening source PDF…';
+  try {
+    const href = await generate();
+    if (tab && !tab.closed) {
+      tab.location.replace(href);
+      feedback.textContent = '';
+    } else {
+      feedback.replaceChildren(external('Open the prepared PDF', href));
+    }
+    if (href.startsWith('blob:')) window.setTimeout(() => revokeImportPdf(href), 120000);
+  } catch (error) {
+    if (tab && !tab.closed) tab.close();
+    feedback.textContent = error.message || 'The source PDF could not be opened.';
+  } finally {
+    if (control.tagName === 'BUTTON') control.disabled = false;
+  }
+}
+
 function pdfControl(label, href, generate, feedback) {
   if (!generate) return external(label, href);
   const button = node('button', label);
   button.type = 'button';
-  button.addEventListener('click', async () => {
-    const tab = window.open('about:blank', '_blank');
-    if (tab) {
-      tab.opener = null;
-      tab.document.title = 'Source PDF';
-      tab.document.body.textContent = 'Opening source PDF…';
-    }
-    button.disabled = true;
-    feedback.textContent = 'Opening source PDF…';
-    try {
-      const blob = await generate();
-      if (tab && !tab.closed) {
-        tab.location.replace(blob);
-        feedback.textContent = '';
-      } else {
-        const link = external('Open the prepared PDF', blob);
-        feedback.replaceChildren(link);
-      }
-      window.setTimeout(() => revokeImportPdf(blob), 120000);
-    } catch (error) {
-      if (tab && !tab.closed) tab.close();
-      feedback.textContent = error.message || 'The source PDF could not be opened.';
-    } finally { button.disabled = false; }
-  });
+  button.onclick = () => openPreparedPdf(button, generate, feedback);
   return button;
+}
+
+export function originalPassageControl(doc, section, phrase, feedback, locate) {
+  const {version} = doc;
+  const local = version.localId && version.hasPdf;
+  const pdf = address(version.pdf, true) || address(version.pdfUrl);
+  const caption = node('span', '', 'source-location');
+  if (!local && !pdf) {
+    const source = address(section.sourceUrl);
+    const control = source ? external('', source) : node('a');
+    if (!source) control.href = '#library?' + new URLSearchParams({doc:doc.key, section:section.id});
+    caption.textContent = source ? 'Open published provision' : 'Read source passage';
+    return {control, caption};
+  }
+  let page, pending;
+  function destination(source) {
+    const url = new URL(source);
+    if (page) {
+      const params = new URLSearchParams({page: String(page)});
+      if (phrase) { params.set('search', phrase); params.set('phrase', 'true'); }
+      url.hash = params.toString();
+    }
+    return url.href;
+  }
+  async function prepare() {
+    if (pending) {
+      try { setPage(await locate()); } catch { pending = false; }
+    }
+    return destination(local ? await openImportPdf(version.localId, page || 1) : pdf);
+  }
+  const control = local ? pdfControl('', '', prepare, feedback) : external('', pdf);
+  function setPage(number) {
+    if (Number.isInteger(number) && number > 0) page = number;
+    caption.textContent = page ? 'Open original page ' + page : 'Open original PDF';
+    if (!local) control.href = destination(pdf);
+    pending = false;
+  }
+  setPage(section.pages?.[0]);
+  pending = Boolean(locate);
+  if (!local && pending) control.onclick = event => {
+    if (!pending || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    openPreparedPdf(control, prepare, feedback);
+  };
+  return {control, caption, setPage};
 }
 
 function conditions(section, version, profile, fields) {

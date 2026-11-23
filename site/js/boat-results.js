@@ -1,5 +1,6 @@
 import {esc,fold,evaluate,describeRule,queryParts} from './model.js';
-import {boatControl,fieldName,readBoatValue,typeName,operationShortcuts,lookupEvidence} from './boat-form.js';
+import {boatControl,fieldName,readBoatValue,operationShortcuts} from './boat-form.js';
+import {passagePreview, resetPrintPreviews} from './boat-excerpts.js';
 import {searchBoat} from './boat-matches.js';
 import {conventionMarks} from './convention-history.js';
 import {registryGuides} from './registry-guides.js';
@@ -9,10 +10,6 @@ function preferred(rows,values) {
   return [...rows].sort((a,b)=>rank(a)-rank(b));
 }
 
-function passageButton(row) {
-  const s=row.section;
-  return '<button type="button" class="passage-choice" data-read-passage data-doc="'+esc(row.doc.key)+'" data-section="'+esc(s.id)+'"><span class="provision-number">'+esc(s.number||s.label||'Passage')+'</span><span>'+esc(s.title||s.number||'Read passage')+'</span><span aria-hidden="true">›</span></button>';
-}
 
 function decidingConditions(rule,profile,fields) {
   if(!rule||evaluate(rule,profile)!==true)return [];
@@ -42,25 +39,6 @@ export function nationalCandidates(records,profile) {
   }).sort((a,b)=>Number(Boolean(a.repealed))-Number(Boolean(b.repealed))||Number(b.year||0)-Number(a.year||0));
 }
 
-function listPassages(host,rows,values) {
-  if(!rows.length)return;
-  const ordered=preferred(rows,values);
-  const top=ordered[0];
-  host.innerHTML=passageButton(top)+(ordered.length>1?'<details class="more-passages"><summary>Browse all '+ordered.length+' passages</summary><div></div></details>':'');
-  const details=host.querySelector('details');if(!details)return;
-  details.ontoggle=()=>{
-    if(!details.open||details.dataset.loaded)return;details.dataset.loaded='1';
-    const body=details.querySelector('div');let limit=8;
-    body.innerHTML=(ordered.length>8?'<label>Find a passage in this law<input type="search" placeholder="Heading, section or word"></label>':'')+
-      '<div class="passage-options"></div><button type="button" class="text-action" data-more>Show more passages</button>';
-    const input=body.querySelector('input'),more=body.querySelector('[data-more]'),list=body.querySelector('.passage-options');
-    function draw() {
-      const term=fold(input?.value||''),subset=term?ordered.filter(r=>fold([r.section.number,r.section.title,r.section.text].join(' ')).includes(term)):ordered;
-      list.innerHTML=subset.slice(0,limit).map(passageButton).join('')||'<p>No passages match these words.</p>';more.hidden=subset.length<=limit;
-    }
-    if(input)input.oninput=()=>{limit=8;draw();};more.onclick=()=>{limit+=12;draw();};draw();
-  };
-}
 
 function followups(host,rows,ctx) {
   const anchor=preferred(rows,ctx.profile.values).find(r=>r.missing?.length);
@@ -88,29 +66,78 @@ function followups(host,rows,ctx) {
   disclosure.append(form);host.append(disclosure);
 }
 
-function lawCard(group,related,status,ctx,index) {
-  const card=document.createElement('article');card.className='owner-card law-card';card.dataset.lawId=group.instrument.id;
-  const rows=preferred(group.sections,ctx.profile.values),anchor=rows[0],publisher=group.instrument.authority||group.instrument.jurisdiction;
-  card.innerHTML='<div class="law-card-heading"><h3>'+esc(group.title)+'</h3><p>'+esc(publisher)+'</p></div>'+
-    '<div class="law-passages"></div><div class="law-questions" data-position="'+index+'"></div>';
-  listPassages(card.querySelector('.law-passages'),rows,ctx.profile.values);
-  const questions=card.querySelector('.law-questions');
-  if(status==='review'){
-    const missing=anchor.missing?.map(key=>ctx.fields.find(f=>f.key===key)).filter(Boolean).map(fieldName)||[];
-    const reason=document.createElement('p');reason.className='card-reason';
-    reason.textContent=missing.length?'Still needed for '+(anchor.section.number||'this passage')+' · '+missing.join(', '):anchor.reason||'Check the scope and dates in the source.';
-    questions.append(reason);followups(questions,rows,ctx);
-  }else{
-    const conditions=[...new Set(decidingConditions(anchor.section.criteria,ctx.profile.values,ctx.fields))].slice(0,4);
-    if(conditions.length){const why=document.createElement('p');why.className='card-reason';why.textContent=conditions.join(' · ');card.querySelector('.law-card-heading').append(why);}
+function lawCard(group, ctx, query, selected, index) {
+  const card = document.createElement('article');
+  card.className = 'owner-card law-card';
+  card.dataset.lawId = group.instrument.id;
+  const rows = group.sections;
+  card.innerHTML = '<header class="law-card-heading"><div><h3>' + esc(group.title) + '</h3><p>' +
+    esc(group.instrument.authority || group.category) + '</p></div><span class="passage-total">' +
+    rows.length + (rows.length === 1 ? ' passage' : ' passages') + '</span></header><div class="law-passages"></div>';
+  const list = card.querySelector('.law-passages');
+  const more = document.createElement('button');
+  more.type = 'button';
+  more.className = 'expand-passages';
+  let shown = 0;
+  function append(limit) {
+    const start = shown;
+    shown = Math.min(rows.length, limit);
+    for (const row of rows.slice(start, shown)) list.append(passagePreview(row, query));
+    const remaining = rows.length - shown;
+    more.hidden = remaining === 0;
+    more.textContent = remaining > 8 ? 'Show next 8 passages (' + remaining + ' remaining)' :
+      'Show ' + remaining + ' more ' + (remaining === 1 ? 'passage' : 'passages');
   }
-  if(status==='match'&&related?.sections.length){
-    const more=document.createElement('details');more.className='related-checks';
-    more.innerHTML='<summary>Other provisions to check ('+related.sections.length+')</summary><div></div>';
-    more.ontoggle=()=>{if(more.open&&!more.dataset.loaded){more.dataset.loaded='1';const target=more.querySelector('div');target.dataset.position=index+'-other';listPassages(target,related.sections,ctx.profile.values);followups(target,related.sections,ctx);}};
-    questions.append(more);
+  append(selected ? 5 : 1);
+  more.onclick = () => {
+    const first = shown;
+    append(shown + 8);
+    const heading = list.children[first].querySelector('h4');
+    heading.tabIndex = -1;
+    heading.focus({preventScroll:true});
+  };
+  card.append(more);
+
+  const questions = document.createElement('div');
+  questions.className = 'law-questions';
+  questions.dataset.position = String(index);
+  const review = rows.filter(row => row.state === 'review');
+  if (review.length) {
+    const anchor = preferred(review, ctx.profile.values).find(row => row.missing.length) || review[0];
+    const missing = anchor.missing.map(key => ctx.fields.find(field => field.key === key)).filter(Boolean).map(fieldName);
+    const note = document.createElement('p');
+    note.className = 'card-reason';
+    note.textContent = missing.length ? 'Still needed for ' + (anchor.section.number || 'this passage') + ' · ' + missing.join(', ') : anchor.reason;
+    questions.append(note);
+    followups(questions, review, ctx);
+  } else {
+    const conditions = [...new Set(decidingConditions(rows[0].section.criteria, ctx.profile.values, ctx.fields))].slice(0, 4);
+    if (conditions.length) {
+      const why = document.createElement('p');
+      why.className = 'card-reason';
+      why.textContent = conditions.join(' · ');
+      questions.append(why);
+    }
   }
+  if (questions.childElementCount) card.append(questions);
   return card;
+}
+
+function groupedLaws(documents, profile, countryName) {
+  const {matched, review} = searchBoat(documents, profile);
+  const laws = new Map();
+  for (const group of [...matched, ...review]) {
+    const rows = preferred(group.sections, profile.values);
+    const existing = laws.get(group.id);
+    if (existing) { existing.sections.push(...rows); continue; }
+    const instrument = group.instrument;
+    let category = countryName(instrument.jurisdiction) || 'National legislation';
+    if (instrument.local) category = 'Uploaded documents';
+    else if (instrument.flagState) category = 'International conventions';
+    else if (instrument.jurisdiction === 'EU') category = 'European Union';
+    laws.set(group.id, {...group, category, sections: rows});
+  }
+  return [...laws.values()].map(group => ({...group, multipleEditions:new Set(group.sections.map(row => row.doc.key)).size > 1}));
 }
 
 export function filteredLaws(groups,terms) {
@@ -118,8 +145,8 @@ export function filteredLaws(groups,terms) {
   return groups.flatMap(g=>{
     const family=fold([g.title,g.instrument.title,g.instrument.id,g.instrument.authority].join(' ')),remaining=terms.filter(t=>!family.includes(t));
     if(!remaining.length)return [g];
-    const sections=g.sections.filter(({section})=>{
-      const wording=fold([section.number,section.title,section.text].join(' '));
+    const sections=g.sections.filter(({doc,section})=>{
+      const wording=fold([doc.version.label,section.number,section.title,section.text].join(' '));
       return remaining.every(t=>wording.includes(t));
     });
     return sections.length?[{...g,sections}]:[];
@@ -137,38 +164,122 @@ function flagTreaties(book,profile,flagName) {
     items.map(i=>'<li><a href="#map?'+esc(new URLSearchParams({country:flag,convention:i.id}).toString())+'">'+esc(i.title)+'</a></li>').join('')+'</ul></details>';
 }
 
-export function renderBoatResults(container,ctx) {
-  const {profile,documents,countryName}=ctx;
-  const {matched,review}=searchBoat(documents,profile);
-  const values=profile.values,flagName=countryName(values.flag);
-  const particulars=[flagName,typeName(values),values.lengthOverall!=null?values.lengthOverall+' m overall':'',values.grossTonnage!=null?values.grossTonnage+' GT':''].filter(Boolean);
-  container.innerHTML='<header class="owner-heading result-heading"><div><h1 tabindex="-1">'+(ctx.name?'Laws for '+esc(ctx.name):'Laws for your boat')+'</h1><p>'+esc(particulars.join(' · '))+'</p></div><button type="button" id="edit-boat">Edit boat</button></header>'+
-    '<p class="results-date">Law date <time datetime="'+esc(profile.asOf)+'">'+esc(profile.asOf)+'</time></p>'+lookupEvidence(ctx.lookup,values)+
-    (ctx.failedCollections?.length?'<p class="note">Partial search. These collections could not be loaded: '+esc(ctx.failedCollections.join(', '))+'.</p>':'')+
-    (matched.length||review.length?'<label class="boat-word-search">Find within these laws<input type="search" placeholder="Keyword, phrase or section number" id="boat-law-keyword"></label>':'')+
-    '<section class="result-group" id="boat-matched"><h2>Matches your particulars</h2><div></div></section>'+
-    '<section class="result-group" id="boat-conditional"><h2>Needs checking</h2><div></div></section>'+
-    '<section class="source-bridge"><div><h2>'+esc(flagName)+' law sources</h2><p>Official registers, national legislation and earlier editions for this flag.</p></div><a class="button" href="#map?country='+encodeURIComponent(values.flag)+'">Open law map</a></section>'+
-    registryGuides(ctx.guides,values.flag,profile)+'<div id="boat-national-records"></div>'+flagTreaties(ctx.imo,profile,flagName);
-  const matchHost=container.querySelector('#boat-matched > div'),reviewSection=container.querySelector('#boat-conditional'),reviewHost=reviewSection.querySelector('div'),input=container.querySelector('#boat-law-keyword');
-  function showLaws(){
-    const terms=queryParts(input?.value||''),yes=filteredLaws(matched,terms),maybe=filteredLaws(review,terms);
-    const reviewById=new Map(maybe.map(g=>[g.id,g])),conditional=maybe.filter(g=>!yes.some(m=>m.id===g.id));
-    matchHost.replaceChildren();reviewHost.replaceChildren();reviewSection.hidden=!conditional.length;
-    if(!yes.length)matchHost.innerHTML='<p class="quiet-empty">'+(terms.length?'No matched provisions contain these words.':conditional.length?'No provision meets all the recorded conditions yet. Check the questions below.':'No fully screened provision was found for these particulars and date. The flag’s law sources are available below.')+'</p>';
-    yes.forEach((g,i)=>matchHost.append(lawCard(g,reviewById.get(g.id),'match',ctx,i)));
-    conditional.forEach((g,i)=>reviewHost.append(lawCard(g,null,'review',ctx,i+yes.length)));
+function lawTreeItem(group, openEditions) {
+  const editions = new Map();
+  for (const {doc} of group.sections) {
+    const entry = editions.get(doc.key);
+    if (entry) entry.count++;
+    else editions.set(doc.key, {label:doc.version.label, count:1});
   }
-  if(input)input.oninput=showLaws;showLaws();
-  container.querySelector('#edit-boat').onclick=ctx.onEdit;
-  showNationalSuggestions(container,ctx.records||[],profile);
-  container.onclick=e=>{const button=e.target.closest('[data-read-passage]');if(button)ctx.onRead(button.dataset.doc,button.dataset.section);};
+  const law = ' data-law="' + esc(group.id) + '"';
+  const button = '<button type="button"' + law + '><span>' + esc(group.title) +
+    '</span><small title="Passages">' + group.sections.length + '</small></button>';
+  if (!group.multipleEditions) return '<li>' + button + '</li>';
+  return '<li>' + button + '<details class="edition-tree" data-editions="' + esc(group.id) + '"' +
+    (openEditions.has(group.id) ? ' open' : '') + '><summary>' + editions.size + (editions.size === 1 ? ' source edition' : ' source editions') + '</summary><ul>' +
+    [...editions].map(([key, entry]) => '<li><button type="button"' + law + ' data-edition="' + esc(key) + '"><span>' +
+      esc(entry.label) + '</span><small title="Passages">' + entry.count + '</small></button></li>').join('') + '</ul></details></li>';
+}
+
+export function renderBoatResults(container, ctx) {
+  const {profile, state} = ctx;
+  const laws = groupedLaws(ctx.documents, profile, ctx.countryName);
+  const flagName = ctx.countryName(profile.values.flag);
+  const compact = matchMedia('(max-width:760px)').matches;
+  const lawMap = '#map?' + new URLSearchParams({country:profile.values.flag});
+  container.dataset.hasLaws = String(laws.length > 0);
+  container.innerHTML = '<details class="owner-card specs-panel"' + ((state.specsOpen ?? !compact) ? ' open' : '') +
+    '><summary><strong>Ship specifications</strong></summary><div class="specs-body"></div></details>' +
+    (ctx.failedCollections?.length ? '<p class="note">Partial search. Unavailable collections include ' + esc(ctx.failedCollections.join(', ')) + '.</p>' : '') +
+    '<div class="law-workspace"><aside class="law-sidebar"><details class="law-index" ' + (compact ? '' : 'open') +
+    '><summary><strong>Law index</strong><span class="index-count"></span></summary><nav class="law-tree" aria-label="Laws by category"></nav></details></aside>' +
+    '<section class="law-stream" aria-label="Source excerpts"><div class="overview-filters" role="search">' +
+    '<label>Search passages<input id="boat-law-keyword" type="search" maxlength="260" placeholder="Law, section number or wording"></label>' +
+    '<label>Screening result<select id="boat-outcome"><option value="all">All passages</option><option value="match">Matches your particulars</option>' +
+    '<option value="review">Needs checking</option></select></label></div>' +
+    '<h2 class="excerpt-count" tabindex="-1" aria-live="polite"></h2><div class="source-cards"></div></section></div>' +
+    '<section class="additional-sources"><h2>Other sources for ' + esc(flagName) + '</h2>' +
+    registryGuides(ctx.guides, profile.values.flag, profile) + '<div id="boat-national-records"></div>' +
+    flagTreaties(ctx.imo, profile, flagName) + '<a href="' + esc(lawMap) + '">Browse registers and earlier editions for ' + esc(flagName) + '</a></section>';
+  const specs = container.querySelector('.specs-panel');
+  specs.ontoggle = () => { state.specsOpen = specs.open; };
+  ctx.renderSpecifications(specs.querySelector('.specs-body'));
+  const input = container.querySelector('#boat-law-keyword'), outcome = container.querySelector('#boat-outcome');
+  const index = container.querySelector('.law-index'), tree = index.querySelector('nav');
+  const count = container.querySelector('.excerpt-count'), cards = container.querySelector('.source-cards');
+  input.value = state.query || '';
+  outcome.value = state.outcome || 'all';
+  let visible = [];
+
+  function drawCards() {
+    resetPrintPreviews();
+    let groups = state.selected ? visible.filter(group => group.id === state.selected) : visible;
+    if (state.edition) groups = groups.map(group => ({...group, sections:group.sections.filter(row => row.doc.key === state.edition)}));
+    const passages = groups.reduce((sum, group) => sum + group.sections.length, 0);
+    const title = state.edition ? groups[0].sections[0].doc.version.label : groups[0]?.title;
+    count.textContent = (state.selected ? title + ' · ' : '') + passages + (passages === 1 ? ' passage' : ' passages') +
+      (state.selected ? '' : ' in ' + groups.length + (groups.length === 1 ? ' law' : ' laws'));
+    cards.replaceChildren(...groups.map((group, i) => lawCard(group, ctx, input.value, Boolean(state.selected), i)));
+    if (!groups.length) {
+      cards.innerHTML = laws.length ? '<div class="overview-empty"><h3>No passages match these filters</h3><button type="button" data-reset-law>Clear filters</button></div>' :
+        '<div class="overview-empty"><h3>No screened laws for these specifications</h3><p>Check the ship details above or browse the other sources below.</p></div>';
+    }
+    for (const button of tree.querySelectorAll('[data-law]')) {
+      button.setAttribute('aria-current', String(button.dataset.law === state.selected && (button.dataset.edition || '') === state.edition));
+    }
+  }
+
+  function filter() {
+    state.query = input.value;
+    state.outcome = outcome.value;
+    visible = filteredLaws(laws, queryParts(input.value));
+    if (outcome.value !== 'all') visible = visible.flatMap(group => {
+      const sections = group.sections.filter(row => row.state === outcome.value);
+      return sections.length ? [{...group, sections}] : [];
+    });
+    const selected = visible.find(group => group.id === state.selected);
+    if (!selected) state.selected = '';
+    if (!selected?.sections.some(row => row.doc.key === state.edition)) state.edition = '';
+    const closed = new Set([...tree.querySelectorAll('[data-category]:not([open])')].map(folder => folder.dataset.category));
+    const openEditions = new Set([...tree.querySelectorAll('[data-editions][open]')].map(folder => folder.dataset.editions));
+    if (state.edition) openEditions.add(state.selected);
+    const folders = new Map();
+    for (const group of visible) {
+      if (!folders.has(group.category)) folders.set(group.category, []);
+      folders.get(group.category).push(group);
+    }
+    index.querySelector('.index-count').textContent = String(visible.length);
+    tree.innerHTML = '<button type="button" class="all-laws" data-law="">All laws</button>' + [...folders].map(([name, groups]) =>
+      '<details data-category="' + esc(name) + '" ' + (closed.has(name) ? '' : 'open') + '><summary>' + esc(name) +
+      '</summary><ul>' + groups.map(group => lawTreeItem(group, openEditions)).join('') + '</ul></details>').join('');
+    drawCards();
+  }
+  tree.onclick = event => {
+    const button = event.target.closest('[data-law]');
+    if (!button) return;
+    state.selected = button.dataset.law;
+    state.edition = button.dataset.edition || '';
+    drawCards();
+    if (matchMedia('(max-width:760px)').matches) {
+      index.open = false;
+      count.focus({preventScroll:true});
+    }
+    if (count.getBoundingClientRect().top < 0 || !index.open) count.scrollIntoView({block:'start'});
+  };
+  cards.onclick = event => {
+    if (!event.target.closest('[data-reset-law]')) return;
+    input.value = ''; outcome.value = 'all'; filter(); input.focus();
+  };
+  input.oninput = filter;
+  outcome.onchange = filter;
+  filter();
+  showNationalSuggestions(container, ctx.records || [], profile);
 }
 
 export function showNationalSuggestions(container,records,profile) {
   const target=container.querySelector('#boat-national-records');if(!target)return;
   const national=nationalCandidates(records,profile);
-  target.innerHTML=national.length?'<details class="owner-card national-suggestions" '+(!container.querySelector('.law-card')?'open':'')+'><summary>National records mentioning this type of boat ('+national.length+')</summary><p>These titles and subjects match your flag and boat type. Verify their scope in the source.</p><div></div><button type="button" class="text-action" data-national-more>Show more records</button></details>':'';
+  target.innerHTML=national.length?'<details class="owner-card national-suggestions" '+(container.dataset.hasLaws==='false'?'open':'')+'><summary>National records mentioning this type of boat ('+national.length+')</summary><p>These titles and subjects match your flag and boat type. Verify their scope in the source.</p><div></div><button type="button" class="text-action" data-national-more>Show more records</button></details>':'';
   if(national.length){
     const group=target.querySelector('.national-suggestions'),more=group.querySelector('[data-national-more]');let limit=3;
     function drawNational(){

@@ -4,7 +4,7 @@ Look up maritime regulations for a boat or search a legal document of your own. 
 
 ## Search your own document
 
-Choose a PDF or plain text (`.txt`) file in **My documents**. You can start here without entering any boat details. [Open My documents](https://leander-haddal.github.io/Vendanor/#documents)
+Choose a PDF or plain text (`.txt`) file in **Document search**. You can start here without entering any boat details. [Open Document search](https://leander-haddal.github.io/Vendanor/#documents)
 
 Search for a word, a section number, or a phrase in quotes such as `"port of registry"`. Use **From page** and **To page** to narrow a PDF search. For text files, the same controls use passage numbers.
 
@@ -14,13 +14,17 @@ Your documents stay in this browser. To keep a backup or take them to another de
 
 ## Find laws for a boat
 
-In **Boat search**, choose the flag and boat type, then select **Find laws**. Add the length, tonnage or operating area if you know them. To look up an earlier voyage, change **Find laws as of**. You can save the particulars under **My boats** for your next visit.
+In **Regulations**, choose the flag and boat type, then select **Find laws**. Add the length, tonnage or operating area if you know them. You can save the particulars under **My boats** for your next visit.
 
-Each match links to the relevant passage. **Needs checking** shows where a detail is missing or the wording needs a closer look. Check the original and its effective date before relying on a result.
+Open **Date and editions** to browse the indexed revisions for your flag. Choose a year to see each edition and its date. If an amendment was published before it took effect, choosing it uses its effective date. For a specific voyage, enter the date under **Exact date**.
+
+The **Law index** groups your results by jurisdiction or convention. Select a law to see its passages, or choose a particular source edition when several are listed. Search the wording or a section number, and use **Screening result** to narrow the list. **Needs checking** marks passages where a detail is missing or the scope needs a closer look.
+
+Click an excerpt to open the cited page in the full original. You can switch between the printed excerpt and its text, or open **Passage details** for the complete wording and its sources. To try a different length, flag or date, edit **Ship specifications** above the results and choose **Apply changes**.
 
 ## Browse the public sources
 
-The **Law map** links to national registers, treaty records and earlier editions. Under **Research tools**, use **Law library** to search by keyword or citation and **Revision changes** to read two editions side by side.
+Open **Flag registers** to find national registers, treaty records and earlier editions. Under **Research tools**, use **Law library** to search by keyword or citation and **Revision changes** to read two editions side by side.
 
 Norwegian public data is licensed under NLOD 2.0. National catalogue entries are adapted from FAO’s FAOLEX collection under CC BY-NC-SA 3.0 IGO. [Norwegian data licence](https://data.norge.no/nlod/en/2.0) · [FAOLEX credits and terms](https://www.fao.org/faolex/en/open-data)
 

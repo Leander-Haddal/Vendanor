@@ -286,33 +286,18 @@ async function checkEuropeanHistory() {
   return book.records.length;
 }
 
-async function checkVessels() {
-  const data=await json('vessels-no.json');
-  day(data.asOf);assert(Number.isFinite(Date.parse(data.publishedAt)));
-  assert.match(data.memberSha256,/^[a-f0-9]{64}$/);assert.equal(data.member,'fartoy.csv');
-  for(const name of ['download','documentation','scopeUrl','licenseUrl'])webUrl(data[name]);
-  assert.deepEqual(data.fields,['id','name','registrationMark','callSign','lengthOverallMetres','grossTonnage1969','buildYear']);
-  assert(data.rows.length);unique(data.rows.map(r=>r[0]),'Norwegian vessel ID');
-  for(const r of data.rows){
-    assert.equal(r.length,data.fields.length);assert.match(r[0],/^\d{10}$/);assert(r[1].trim());
-    for(const n of [r[4],r[5]])assert(n===null||Number.isFinite(n)&&n>0);
-    if(r[6]!==null)assert(/^\d{4}$/.test(r[6])&&r[6]<=data.asOf.slice(0,4),r[0]+' construction year');
-  }
-  return data.rows.length;
-}
-
 const codes=new Set((await json('countries.json')).countries.map(c=>c.code));
 const checked=await Promise.allSettled([
   checkFolios(codes),checkArchive(),checkWorld(),checkFlagSources(codes),checkTreaties(codes),
-  checkBritishHistory(),checkEuropeanHistory(),checkVessels()
+  checkBritishHistory(),checkEuropeanHistory()
 ]);
 const errors=checked.filter(r=>r.status==='rejected').map(r=>r.reason);
 if(errors.length)throw new AggregateError(errors,'Source validation failed');
-const [mapped,notices,national,flags,treatyEvents,ukActs,euActs,vessels]=checked.map(r=>r.value);
+const [mapped,notices,national,flags,treatyEvents,ukActs,euActs]=checked.map(r=>r.value);
 const files=await walk(site);
 for(const path of files.filter(p=>p.endsWith('.pdf')))assert(usedPdfs.has(resolve(path)),'Unreferenced source PDF '+path);
 for(const file of ['index.html','.nojekyll'])assert((await stat(join(root,file))).isFile());
 for(const file of ['index.html','js/app.js','vendor/pdfjs.mjs','vendor/pdf.worker.mjs','vendor/pdf-lib.mjs','vendor/LICENSES.txt','vendor/fonts.json','vendor/cmaps.json'])assert((await stat(join(site,file))).isFile());
 console.log(mapped.versions+' mapped editions, '+notices+' Norwegian records, '+national+' national records and '+usedPdfs.size+' PDF assets verified.');
-console.log(flags+' flag directories, '+treatyEvents+' IMO events, '+ukActs+' UK acts, '+euActs+' EU acts and '+vessels+' vessel records verified.');
+console.log(flags+' flag directories, '+treatyEvents+' IMO events, '+ukActs+' UK acts and '+euActs+' EU acts verified.');
 console.log(mapped.guides+' registry guide passages verified.');
