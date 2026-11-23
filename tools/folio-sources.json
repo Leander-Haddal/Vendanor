@@ -1,0 +1,1665 @@
+{
+  "version": 1,
+  "checkedAt": "2026-11-23",
+  "fields": [
+    {
+      "key": "flag",
+      "label": "Flag state",
+      "type": "select",
+      "options": [
+        {
+          "value": "NO",
+          "label": "Norway"
+        },
+        {
+          "value": "other",
+          "label": "Another flag state"
+        }
+      ],
+      "help": "The Norwegian cargo-ship rules specify Norwegian ships. The 12-passenger instrument also covers foreign vessels in the specified waters.",
+      "source": {
+        "versionId": "no-cargo-2025",
+        "sectionId": "s1"
+      }
+    },
+    {
+      "key": "shipType",
+      "label": "Ship type",
+      "type": "select",
+      "options": [
+        {
+          "value": "cargo",
+          "label": "Cargo ship"
+        },
+        {
+          "value": "passenger",
+          "label": "Passenger ship"
+        },
+        {
+          "value": "fishing",
+          "label": "Fishing vessel"
+        },
+        {
+          "value": "recreational",
+          "label": "Recreational craft"
+        },
+        {
+          "value": "other",
+          "label": "Other class"
+        }
+      ],
+      "help": "Use the vessel’s statutory class. The Norwegian small cargo-ship regulations name cargo ships.",
+      "source": {
+        "versionId": "no-cargo-2025",
+        "sectionId": "s1"
+      }
+    },
+    {
+      "key": "lengthL",
+      "label": "Regulatory length (L)",
+      "type": "number",
+      "unit": "m",
+      "help": "Use the length defined in the Load Lines Convention applicable when the ship was built. Consult the vessel’s statutory particulars.",
+      "source": {
+        "versionId": "no-cargo-2025",
+        "sectionId": "s5"
+      }
+    },
+    {
+      "key": "lengthOverall",
+      "label": "Length overall (største lengde)",
+      "type": "number",
+      "unit": "m",
+      "help": "Enter the overall length recorded for the vessel. Sections 1 and 2 use different length measurements.",
+      "source": {
+        "versionId": "no-cargo-2025",
+        "sectionId": "s2"
+      }
+    },
+    {
+      "key": "grossTonnage",
+      "label": "Gross tonnage",
+      "type": "number",
+      "unit": "GT",
+      "help": "Use the gross tonnage figure on the tonnage certificate. Cargo mass is recorded in a separate field.",
+      "source": {
+        "versionId": "no-cargo-2025",
+        "sectionId": "s1"
+      }
+    },
+    {
+      "key": "passengers",
+      "label": "Passengers carried",
+      "type": "number",
+      "unit": "people",
+      "help": "The original 12-passenger regulation sets an upper limit of 12 passengers, subject to its stated activities and exclusions.",
+      "source": {
+        "versionId": "no-pax-2020",
+        "sectionId": "s1"
+      }
+    },
+    {
+      "key": "norwegianWaters",
+      "label": "Operating in the waters of § 1",
+      "type": "select",
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "help": "Norwegian territorial waters, including those at Svalbard, and rivers and lakes covered by the Norwegian 12-passenger regulation.",
+      "source": {
+        "versionId": "no-pax-2020",
+        "sectionId": "s1"
+      }
+    },
+    {
+      "key": "buildDate",
+      "label": "Date built",
+      "type": "date",
+      "help": "Use the statutory build date. The post-1998 wheelhouse-visibility clause turns on the date built.",
+      "source": {
+        "versionId": "no-cargo-2025",
+        "sectionId": "s19-1"
+      }
+    },
+    {
+      "key": "contractDate",
+      "label": "Build contract signed",
+      "type": "date",
+      "help": "The transitional rule uses the contract date together with the date of delivery.",
+      "source": {
+        "versionId": "no-cargo-2025",
+        "sectionId": "s9"
+      }
+    },
+    {
+      "key": "deliveryDate",
+      "label": "Date delivered",
+      "type": "date",
+      "help": "Supply the contractual delivery record for the transition test in § 9.",
+      "source": {
+        "versionId": "no-cargo-2025",
+        "sectionId": "s9"
+      }
+    },
+    {
+      "key": "keelDate",
+      "label": "Keel laid or equivalent stage",
+      "type": "date",
+      "help": "The transition rule gives a separate date for ships built without a contract.",
+      "source": {
+        "versionId": "no-cargo-2025",
+        "sectionId": "s9"
+      }
+    },
+    {
+      "key": "hasBuildContract",
+      "label": "Built under a contract",
+      "type": "select",
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "help": "Select the applicable construction route before evaluating transitional dates.",
+      "source": {
+        "versionId": "no-cargo-2025",
+        "sectionId": "s9"
+      }
+    },
+    {
+      "key": "lastSurveyDate",
+      "label": "Last qualifying vessel-instruction survey",
+      "type": "date",
+      "help": "Use the full or periodic control by an approved undertaking under § 149. For the 2014 text see § 83, which refers to the full or periodic simplified control. The six-month early window may preserve an earlier anniversary.",
+      "source": {
+        "versionId": "no-cargo-2025",
+        "sectionId": "s149"
+      }
+    },
+    {
+      "key": "wheelhouse",
+      "label": "Has a wheelhouse",
+      "type": "select",
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "help": "Section 19(1) includes this condition for the post-1998 visibility requirements.",
+      "source": {
+        "versionId": "no-cargo-2025",
+        "sectionId": "s19-1"
+      }
+    },
+    {
+      "key": "tows",
+      "label": "Will tow",
+      "type": "select",
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "help": "Towing is one of the operations triggering a vessel instruction under § 2(1).",
+      "source": {
+        "versionId": "no-cargo-2025",
+        "sectionId": "s2"
+      }
+    },
+    {
+      "key": "anchorHandling",
+      "label": "Will handle anchors",
+      "type": "select",
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "help": "Apply the definition in § 5(a) when completing the § 2(1)(b) test.",
+      "source": {
+        "versionId": "no-cargo-2025",
+        "sectionId": "s2"
+      }
+    },
+    {
+      "key": "cargoMassKg",
+      "label": "Maximum cargo carried",
+      "type": "number",
+      "unit": "kg",
+      "help": "Use maximum carried cargo mass. The threshold in § 2(1)(c) is strictly greater than 1,000 kg.",
+      "source": {
+        "versionId": "no-cargo-2025",
+        "sectionId": "s2"
+      }
+    },
+    {
+      "key": "heelingArmM",
+      "label": "Heeling arm from lifting",
+      "type": "number",
+      "unit": "m",
+      "help": "Use the heeling arm from the lifting appliance. The original 2014 rule defines the arm as heeling moment divided by displacement.",
+      "source": {
+        "versionId": "no-cargo-2014",
+        "sectionId": "s1"
+      }
+    },
+    {
+      "key": "offshoreTransfer",
+      "label": "Transfers people to offshore renewable installations",
+      "type": "select",
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "help": "The activity described in § 2(1)(e) includes transfer between ship and an installation for offshore renewable electricity production.",
+      "source": {
+        "versionId": "no-cargo-2025",
+        "sectionId": "s2"
+      }
+    },
+    {
+      "key": "approvedTraining",
+      "label": "Approved recreational competency training",
+      "type": "select",
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "help": "Section 1(4) concerns approved educational establishments providing training for recreational-craft certificates of competence.",
+      "source": {
+        "versionId": "no-cargo-2025",
+        "sectionId": "s1"
+      }
+    },
+    {
+      "key": "onlyPassenger2020",
+      "label": "Exclusively within the 2020 passenger rules",
+      "type": "select",
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "help": "Confirm both coverage under Regulation 2020-01-14-63 and exclusive operation as described there, assessed at the relevant date.",
+      "source": {
+        "versionId": "no-cargo-2025",
+        "sectionId": "s1"
+      }
+    },
+    {
+      "key": "onlyPassenger2009",
+      "label": "Exclusively within the 2009 passenger rules",
+      "type": "select",
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "help": "Historical 2014 wording refers to Regulation 2009-11-24-1400 and exclusive operation as described there.",
+      "source": {
+        "versionId": "no-cargo-2014",
+        "sectionId": "s1"
+      }
+    },
+    {
+      "key": "ambulanceSchool",
+      "label": "Certified medical or school transport",
+      "type": "select",
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "help": "The passenger rule excludes medical or ambulance service or organized school transport where the vessel must hold a passenger certificate.",
+      "source": {
+        "versionId": "no-pax-2020",
+        "sectionId": "s1"
+      }
+    },
+    {
+      "key": "shipTender",
+      "label": "Ship’s tender carrying passengers ashore",
+      "type": "select",
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "help": "The passenger rule excludes boats forming part of a ship’s equipment and carrying passengers between ship and shore.",
+      "source": {
+        "versionId": "no-pax-2020",
+        "sectionId": "s1"
+      }
+    },
+    {
+      "key": "tradingCertificateRequired",
+      "label": "Trading certificate required",
+      "type": "select",
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "help": "Use the statutory requirement for a fartssertifikat. Section 1(2) limits chapters 6–14 to ships required to have a trading certificate or a vessel instruction.",
+      "source": {
+        "versionId": "no-cargo-2025",
+        "sectionId": "s1"
+      }
+    },
+    {
+      "key": "schoolSafetyActivities",
+      "label": "School or kindergarten boating-safety activity",
+      "type": "select",
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "help": "The 2020 passenger regulation treats sea-safety activities run by schools, school camps or kindergartens separately.",
+      "source": {
+        "versionId": "no-pax-2020",
+        "sectionId": "s2"
+      }
+    },
+    {
+      "key": "clubMemberRecreation",
+      "label": "Members’ club or association recreation",
+      "type": "select",
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "help": "This covers a vessel used by members of a club or association for leisure activities under the passenger regulation.",
+      "source": {
+        "versionId": "no-pax-2020",
+        "sectionId": "s2"
+      }
+    },
+    {
+      "key": "mainlandTerritorialWaters",
+      "label": "Norwegian mainland territorial waters",
+      "type": "select",
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "help": "The small-vessel power table in § 2(1)(c) specifies mainland territorial waters. The jurisdiction in § 1 is broader.",
+      "source": {
+        "versionId": "no-pax-2020",
+        "sectionId": "s2"
+      }
+    },
+    {
+      "key": "maxPropulsionKw",
+      "label": "Maximum propulsion power",
+      "type": "number",
+      "unit": "kW",
+      "help": "Use the rated maximum in kW for the power table in § 2(1)(c). Use zero for an unpowered boat. The four overall-length bands have different limits.",
+      "source": {
+        "versionId": "no-pax-2020",
+        "sectionId": "s2"
+      }
+    }
+  ],
+  "criteria": {
+    "base25": {
+      "all": [
+        [
+          "flag",
+          "eq",
+          "NO",
+          "2025/2652 § 1(1)"
+        ],
+        [
+          "shipType",
+          "eq",
+          "cargo",
+          "2025/2652 § 1(1)"
+        ],
+        [
+          "lengthL",
+          "lt",
+          24,
+          "2025/2652 § 1(1)"
+        ],
+        [
+          "grossTonnage",
+          "lt",
+          500,
+          "2025/2652 § 1(1)"
+        ],
+        [
+          "onlyPassenger2020",
+          "eq",
+          "no",
+          "2025/2652 § 1(3)"
+        ],
+        [
+          "approvedTraining",
+          "eq",
+          "no",
+          "2025/2652 § 1(4)"
+        ]
+      ]
+    },
+    "base14": {
+      "all": [
+        [
+          "flag",
+          "eq",
+          "NO",
+          "2014/1853 § 1(1)"
+        ],
+        [
+          "shipType",
+          "eq",
+          "cargo",
+          "2014/1853 § 1(1)"
+        ],
+        [
+          "lengthOverall",
+          "gte",
+          8,
+          "2014/1853 § 1(1)"
+        ],
+        [
+          "lengthL",
+          "lt",
+          24,
+          "2014/1853 § 1(1)"
+        ],
+        [
+          "grossTonnage",
+          "lt",
+          500,
+          "2014/1853 § 1(2)(c)"
+        ],
+        [
+          "onlyPassenger2009",
+          "eq",
+          "no",
+          "2014/1853 § 1(2)(b)"
+        ],
+        {
+          "not": {
+            "all": [
+              [
+                "lengthOverall",
+                "lt",
+                15,
+                "2014/1853 § 1(2)(a)"
+              ],
+              [
+                "tows",
+                "eq",
+                "no",
+                "2014/1853 § 1(2)(a)"
+              ],
+              [
+                "cargoMassKg",
+                "lte",
+                1000,
+                "2014/1853 § 1(2)(a)(i)"
+              ],
+              [
+                "heelingArmM",
+                "lte",
+                0.1,
+                "2014/1853 § 1(2)(a)(ii)"
+              ]
+            ]
+          }
+        }
+      ]
+    },
+    "basePax": {
+      "all": [
+        [
+          "lengthOverall",
+          "lt",
+          24,
+          "2020/63 § 1(1)"
+        ],
+        [
+          "passengers",
+          "lte",
+          12,
+          "2020/63 § 1(1)"
+        ],
+        [
+          "norwegianWaters",
+          "eq",
+          "yes",
+          "2020/63 § 1(1)"
+        ],
+        [
+          "ambulanceSchool",
+          "eq",
+          "no",
+          "2020/63 § 1(2)(a)"
+        ],
+        [
+          "shipTender",
+          "eq",
+          "no",
+          "2020/63 § 1(2)(b)"
+        ]
+      ]
+    },
+    "instruction25": {
+      "all": [
+        [
+          "lengthOverall",
+          "gte",
+          8,
+          "2025/2652 § 2(1)"
+        ],
+        [
+          "lengthOverall",
+          "lt",
+          15,
+          "2025/2652 § 2(1)"
+        ],
+        {
+          "any": [
+            [
+              "tows",
+              "eq",
+              "yes",
+              "2025/2652 § 2(1)(a)"
+            ],
+            [
+              "anchorHandling",
+              "eq",
+              "yes",
+              "2025/2652 § 2(1)(b)"
+            ],
+            [
+              "cargoMassKg",
+              "gt",
+              1000,
+              "2025/2652 § 2(1)(c)"
+            ],
+            [
+              "heelingArmM",
+              "gt",
+              0.1,
+              "2025/2652 § 2(1)(d)"
+            ],
+            [
+              "offshoreTransfer",
+              "eq",
+              "yes",
+              "2025/2652 § 2(1)(e)"
+            ]
+          ]
+        }
+      ]
+    },
+    "vesselInstruction25": {
+      "all": [
+        "base25",
+        "instruction25"
+      ]
+    },
+    "vesselInstruction14": {
+      "all": [
+        "base14",
+        [
+          "lengthOverall",
+          "lt",
+          15,
+          "2014/1853 § 82"
+        ]
+      ]
+    },
+    "small25": {
+      "all": [
+        "base25",
+        [
+          "lengthOverall",
+          "lt",
+          15,
+          "2025/2652 § 4"
+        ],
+        {
+          "not": "instruction25"
+        }
+      ]
+    },
+    "bridge25": {
+      "all": [
+        "base25",
+        [
+          "lengthOverall",
+          "gte",
+          12,
+          "2025/2652 § 18"
+        ]
+      ]
+    },
+    "bridgeBuild25": {
+      "all": [
+        "base25",
+        [
+          "lengthOverall",
+          "gte",
+          12,
+          "2025/2652 § 19(1)"
+        ],
+        [
+          "buildDate",
+          "gte",
+          "1998-07-01",
+          "2025/2652 § 19(1)"
+        ],
+        [
+          "wheelhouse",
+          "eq",
+          "yes",
+          "2025/2652 § 19(1)"
+        ]
+      ]
+    },
+    "transition14": {
+      "all": [
+        "base14",
+        {
+          "any": [
+            {
+              "all": [
+                [
+                  "hasBuildContract",
+                  "eq",
+                  "yes",
+                  "2014/1853 § 3(1)"
+                ],
+                [
+                  "contractDate",
+                  "lt",
+                  "2015-01-01",
+                  "2014/1853 § 3(1)"
+                ],
+                [
+                  "deliveryDate",
+                  "lt",
+                  "2016-01-01",
+                  "2014/1853 § 3(1)"
+                ]
+              ]
+            },
+            {
+              "all": [
+                [
+                  "hasBuildContract",
+                  "eq",
+                  "no",
+                  "2014/1853 § 3(1)"
+                ],
+                [
+                  "keelDate",
+                  "lt",
+                  "2015-04-01",
+                  "2014/1853 § 3(1)"
+                ]
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "transition25": {
+      "all": [
+        "base25",
+        {
+          "any": [
+            {
+              "all": [
+                [
+                  "hasBuildContract",
+                  "eq",
+                  "yes",
+                  "2025/2652 § 9(1)"
+                ],
+                [
+                  "contractDate",
+                  "lt",
+                  "2026-01-01",
+                  "2025/2652 § 9(1)"
+                ],
+                [
+                  "deliveryDate",
+                  "lt",
+                  "2027-01-01",
+                  "2025/2652 § 9(1)"
+                ]
+              ]
+            },
+            {
+              "all": [
+                [
+                  "hasBuildContract",
+                  "eq",
+                  "no",
+                  "2025/2652 § 9(1)"
+                ],
+                [
+                  "keelDate",
+                  "lt",
+                  "2026-04-01",
+                  "2025/2652 § 9(1)"
+                ]
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "chapterRadio25": {
+      "all": [
+        "base25",
+        [
+          "grossTonnage",
+          "lt",
+          300,
+          "2025/2652 § 43"
+        ]
+      ]
+    },
+    "offshore25": {
+      "all": [
+        "base25",
+        [
+          "offshoreTransfer",
+          "eq",
+          "yes",
+          "2025/2652 § 52(1)"
+        ]
+      ]
+    },
+    "certificate25": {
+      "all": [
+        "base25",
+        {
+          "any": [
+            "instruction25",
+            [
+              "tradingCertificateRequired",
+              "eq",
+              "yes",
+              "2025/2652 § 1(2)"
+            ]
+          ]
+        }
+      ]
+    },
+    "specialPax": {
+      "any": [
+        [
+          "schoolSafetyActivities",
+          "eq",
+          "yes",
+          "2020/63 § 2(1)(a)"
+        ],
+        [
+          "clubMemberRecreation",
+          "eq",
+          "yes",
+          "2020/63 § 2(1)(b)"
+        ],
+        {
+          "all": [
+            [
+              "mainlandTerritorialWaters",
+              "eq",
+              "yes",
+              "2020/63 § 2(1)(c)"
+            ],
+            {
+              "any": [
+                {
+                  "all": [
+                    [
+                      "lengthOverall",
+                      "lte",
+                      4,
+                      "2020/63 § 2(1)(c)"
+                    ],
+                    [
+                      "maxPropulsionKw",
+                      "lte",
+                      12,
+                      "2020/63 § 2(1)(c)"
+                    ]
+                  ]
+                },
+                {
+                  "all": [
+                    [
+                      "lengthOverall",
+                      "gt",
+                      4,
+                      "2020/63 § 2(1)(c)"
+                    ],
+                    [
+                      "lengthOverall",
+                      "lte",
+                      6,
+                      "2020/63 § 2(1)(c)"
+                    ],
+                    [
+                      "maxPropulsionKw",
+                      "lte",
+                      19,
+                      "2020/63 § 2(1)(c)"
+                    ]
+                  ]
+                },
+                {
+                  "all": [
+                    [
+                      "lengthOverall",
+                      "gt",
+                      6,
+                      "2020/63 § 2(1)(c)"
+                    ],
+                    [
+                      "lengthOverall",
+                      "lte",
+                      8,
+                      "2020/63 § 2(1)(c)"
+                    ],
+                    [
+                      "maxPropulsionKw",
+                      "lte",
+                      30,
+                      "2020/63 § 2(1)(c)"
+                    ]
+                  ]
+                },
+                {
+                  "all": [
+                    [
+                      "lengthOverall",
+                      "gt",
+                      8,
+                      "2020/63 § 2(1)(c)"
+                    ],
+                    [
+                      "lengthOverall",
+                      "lte",
+                      10,
+                      "2020/63 § 2(1)(c)"
+                    ],
+                    [
+                      "maxPropulsionKw",
+                      "lte",
+                      45,
+                      "2020/63 § 2(1)(c)"
+                    ]
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "standardPax": {
+      "all": [
+        "basePax",
+        {
+          "not": "specialPax"
+        }
+      ]
+    }
+  },
+  "sources": {
+    "2025-12-16-2652": {
+      "id": "2025-12-16-2652",
+      "url": "https://lovdata.no/static/lovtidend/ltavd1/2025/sf-20251216-2652.pdf",
+      "page": "https://lovdata.no/dokument/LTI/forskrift/2025-12-16-2652",
+      "publisher": "gazette",
+      "sha256": "eedab4c406938f78c498e550d9dbac90def6c8ad8de1b3bdea858135dd1da9a7",
+      "sectionCount": 158,
+      "excerpts": [
+        {
+          "id": "s19-1",
+          "number": "§ 19(1)",
+          "title": "Sikt fra styrehus – skip bygget 1. juli 1998 eller senere",
+          "begin": [
+            5,
+            "(1) Skip med største lengde 12 meter eller mer som er bygget"
+          ],
+          "end": [
+            6,
+            "(2) Skip med største lengde 12 meter eller mer som er bygget"
+          ],
+          "rule": "bridgeBuild25",
+          "caveat": "This extract is § 19(1). Section 19(2) separately addresses ships built before 1 July 1998."
+        },
+        {
+          "id": "s1-2-c",
+          "number": "§ 1(2)(c)",
+          "title": "Overføring til anlegg for fornybar energiproduksjon",
+          "begin": [
+            52,
+            "Ny § 1 annet ledd bokstav c skal lyde"
+          ],
+          "end": [
+            52,
+            "For ev. rettelser"
+          ],
+          "caveat": "Section 158(5) of the cargo-ship regulation inserts this exception into the 12-passenger regulation."
+        }
+      ]
+    },
+    "2014-12-19-1853": {
+      "id": "2014-12-19-1853",
+      "url": "https://www.sdir.no/contentassets/cc1da28a1df949bf9b3e4d54ec743058/forskrift-om-bygging-og-tilsyn-av-mindre-lasteskip-rev20.pdf",
+      "page": "https://www.sdir.no/regelverk/rundskriv/fastsettelse-av-forskrift-om-bygging-og-tilsyn-av-mindre-lasteskip/",
+      "publisher": "nma",
+      "sha256": "6e9a0183a0533c8408e110b23b366e6108c7d4e9b38d6b8b9886ccb5a9e53024",
+      "firstSectionPage": 4,
+      "sectionCount": 91,
+      "bodyEnd": [
+        33,
+        "Vedlegg 1 Tegningsliste"
+      ],
+      "excerpts": [
+        {
+          "id": "s1-2-b",
+          "number": "§ 1(2)(b)",
+          "title": "Unntak for virksomhet etter 2009-forskriften",
+          "begin": [
+            4,
+            "b) omfattet av virkeområdet"
+          ],
+          "end": [
+            4,
+            "c) med bruttotonnasje"
+          ],
+          "rule": [
+            "onlyPassenger2009",
+            "eq",
+            "yes",
+            "2014/1853 § 1(2)(b)"
+          ],
+          "caveat": "A positive result identifies a vessel described by this exclusion."
+        }
+      ]
+    },
+    "2020-01-14-63": {
+      "id": "2020-01-14-63",
+      "url": "https://lovdata.no/static/lovtidend/ltavd1/2020/sf-20200114-0063.pdf",
+      "page": "https://lovdata.no/dokument/LTI/forskrift/2020-01-14-63",
+      "publisher": "gazette",
+      "sha256": "e3cd7a05db8e89da52a4811d1220324906c1ca44bc7b4df9df7472b463c72ae7",
+      "sectionCount": 19,
+      "excerpts": [
+        {
+          "id": "s2-1",
+          "number": "§ 2(1)",
+          "title": "Unntak fra §§ 3–18",
+          "begin": [
+            1,
+            "(1) Bestemmelsene i § 3"
+          ],
+          "end": [
+            1,
+            "(2) Fartøy nevnt"
+          ],
+          "rule": {
+            "all": [
+              "basePax",
+              "specialPax"
+            ]
+          },
+          "caveat": "A positive result identifies an exemption from §§ 3–18. See § 2(2) for the recreational-craft requirements."
+        },
+        {
+          "id": "s9-3",
+          "number": "§ 9(3)",
+          "title": "Utendørs styreposisjon",
+          "begin": [
+            3,
+            "(3) Fartøy som bare har utendørs styreposisjon"
+          ],
+          "end": [
+            3,
+            "§ 10."
+          ],
+          "rule": "standardPax",
+          "caveat": "This paragraph concerns vessels with only an outdoor steering position and excepts sailing vessels and vessels protected by Riksantikvaren."
+        }
+      ]
+    },
+    "2020-01-14-67": {
+      "id": "2020-01-14-67",
+      "url": "https://lovdata.no/static/lovtidend/ltavd1/2020/sf-20200114-0067.pdf",
+      "page": "https://lovdata.no/dokument/LTI/forskrift/2020-01-14-67",
+      "publisher": "gazette",
+      "sha256": "3305c4a976463e1cea249ba0fc9d523a5e39c757511f2e50adf09958088ec806",
+      "excerpts": [
+        {
+          "id": "s1-2-b",
+          "number": "§ 1(2)(b)",
+          "title": "Unntak for virksomhet etter 2020-forskriften",
+          "begin": [
+            1,
+            "§ 1 annet ledd bokstav b skal lyde"
+          ],
+          "end": [
+            1,
+            "II"
+          ]
+        }
+      ]
+    },
+    "2023-03-27-459": {
+      "id": "2023-03-27-459",
+      "url": "https://lovdata.no/static/lovtidend/ltavd1/2023/sf-20230327-0459.pdf",
+      "page": "https://lovdata.no/dokument/LTI/forskrift/2023-03-27-459",
+      "publisher": "gazette",
+      "sha256": "cde76d295a08e99f5f7b3b2e8670d75918ea591b42ae002f35d0cb177b3b6981",
+      "excerpts": [
+        {
+          "id": "s2-1",
+          "number": "§ 2(1)",
+          "title": "Unntak fra §§ 3–18",
+          "begin": [
+            11,
+            "§ 2 første ledd skal lyde"
+          ],
+          "end": [
+            11,
+            "§ 16 sjette ledd første punktum"
+          ]
+        },
+        {
+          "id": "s16-6",
+          "number": "§ 16(6), første punktum",
+          "title": "CE-merking og standarder for flyteutstyr",
+          "begin": [
+            11,
+            "§ 16 sjette ledd første punktum"
+          ],
+          "end": [
+            11,
+            "XXV"
+          ]
+        }
+      ]
+    },
+    "2025-06-26-1372": {
+      "id": "2025-06-26-1372",
+      "url": "https://lovdata.no/static/lovtidend/ltavd1/2025/sf-20250626-1372.pdf",
+      "page": "https://lovdata.no/dokument/LTI/forskrift/2025-06-26-1372",
+      "publisher": "gazette",
+      "sha256": "9f734f735e4b4d15e85a40f06d5c894cf16542a1e38437231cd90e56ffeb026d",
+      "excerpts": [
+        {
+          "id": "s9-3",
+          "number": "§ 9(3)",
+          "title": "Nødstoppmekanisme ved utendørs styreposisjon",
+          "begin": [
+            33,
+            "§ 9 tredje ledd skal lyde"
+          ],
+          "end": [
+            33,
+            "XLIX"
+          ]
+        }
+      ]
+    },
+    "2014-12-19-1853-annex-1": {
+      "id": "2014-12-19-1853-annex-1",
+      "sha256": "3c60d4c2843d37b42869641dcae8d79657a4b1669e708d093fa04f6c9c4fb2d3",
+      "url": "https://www.sdir.no/contentassets/cc1da28a1df949bf9b3e4d54ec743058/vedlegg-1-tegningsliste---endelig.pdf",
+      "page": "https://www.sdir.no/regelverk/rundskriv/fastsettelse-av-forskrift-om-bygging-og-tilsyn-av-mindre-lasteskip/",
+      "publisher": "nma-annex",
+      "excerpts": [
+        {
+          "id": "a1",
+          "number": "Vedlegg 1",
+          "title": "Liste over dokumentasjon",
+          "begin": [
+            1,
+            "Vedlegg 1"
+          ],
+          "end": null
+        }
+      ]
+    },
+    "2015-12-18-1769": {
+      "id": "2015-12-18-1769",
+      "sha256": "bbb8205f79635ea50f578445d705141c25cbb2b9c9d4aa1cfa737a09e897411f",
+      "url": "https://www.sdir.no/contentassets/ba697116aeb64b8f89668be330b70138/rsr-14-2015.pdf",
+      "page": "https://www.sdir.no/regelverk/rundskriv/endring-av-sertifikatforskriften-byggeforskriften-og-forskriften-om-mindre-lasteskip--for-skip-som-skal-slepe/",
+      "publisher": "nma",
+      "excerpts": [
+        {
+          "id": "s89-2",
+          "number": "§ 89(2)",
+          "title": "Overgangsbestemmelser",
+          "begin": [
+            6,
+            "§ 89 annet ledd skal lyde"
+          ],
+          "end": [
+            6,
+            "Ny § 89a skal lyde"
+          ]
+        },
+        {
+          "id": "s89a",
+          "number": "§ 89a",
+          "title": "Slepetillatelse for skip under 15 meter uten fartøyinstruks",
+          "begin": [
+            6,
+            "Ny § 89a skal lyde"
+          ],
+          "end": [
+            6,
+            "III"
+          ]
+        }
+      ]
+    },
+    "2017-12-20-2379": {
+      "id": "2017-12-20-2379",
+      "sha256": "cd8309247a274b1be0055b15291edcf59b69f87b994174a1d44d7eb0d6f2724a",
+      "url": "https://lovdata.no/static/lovtidend/ltavd1/2017/sf-20171220-2379.pdf",
+      "page": "https://lovdata.no/dokument/LTI/forskrift/2017-12-20-2379",
+      "publisher": "gazette",
+      "excerpts": [
+        {
+          "id": "s78",
+          "number": "§ 78 · del XXVII",
+          "title": "Endret henvisning til skipsutstyrsforskriften",
+          "begin": [
+            11,
+            "XXVII"
+          ],
+          "end": [
+            11,
+            "XXVIII"
+          ]
+        }
+      ]
+    },
+    "2022-01-24-118": {
+      "id": "2022-01-24-118",
+      "sha256": "2e23cf0bcf4801d2710297a1d0f7aadbbacbde7af499c9f36d71f013154c8120",
+      "url": "https://lovdata.no/static/lovtidend/ltavd1/2022/sf-20220124-0118.pdf",
+      "page": "https://lovdata.no/dokument/LTI/forskrift/2022-01-24-118",
+      "publisher": "gazette",
+      "excerpts": [
+        {
+          "id": "a1-r2-3",
+          "number": "Vedlegg 1 · del XV",
+          "title": "Rad 2 og 3, kolonne 5",
+          "begin": [
+            5,
+            "I forskrift 19. desember 2014 nr. 1853"
+          ],
+          "end": [
+            5,
+            "XVI"
+          ]
+        }
+      ]
+    }
+  },
+  "instruments": [
+    {
+      "id": "FOR-2025-12-16-2652",
+      "title": "Forskrift om bygging, utrustning og tilsyn av mindre lasteskip",
+      "shortTitle": "Small cargo ships · 2025",
+      "jurisdiction": "NO",
+      "authority": "Sjøfartsdirektoratet",
+      "language": "nb",
+      "versions": [
+        {
+          "id": "no-cargo-2025",
+          "file": "2025-12-16-2652",
+          "label": "2025 regulation · as issued",
+          "publishedOn": "2025-12-18",
+          "effectiveFrom": "2026-01-01",
+          "effectiveTo": null,
+          "kind": "Norwegian Gazette original",
+          "language": "nb",
+          "notes": "Section 157 gives commencement and repeals the 2014 regulation. The Gazette PDF is the promulgated Norwegian text. Sections 9 and 153 preserve or adjust earlier requirements for specified ships. The current register records the as-issued regulation at the catalogue check date.",
+          "scope": "base25",
+          "scopeNote": "Instrument screen from § 1. Section 9 and chapter 15 govern older ships. Check each section’s operations, equipment and exceptions.",
+          "exclude": [
+            "s1-2-c"
+          ],
+          "rules": {
+            "1": {
+              "rule": "base25"
+            },
+            "2": {
+              "rule": "vesselInstruction25",
+              "caveat": "The operating triggers in § 2(1)(a)–(e) are alternatives."
+            },
+            "4": {
+              "rule": "small25"
+            },
+            "9": {
+              "rule": "transition25",
+              "caveat": "§ 9(2) also permits orders concerning new requirements after major work. The indexed dates describe the first paragraph."
+            },
+            "18": {
+              "rule": "bridge25"
+            },
+            "52": {
+              "rule": "offshore25"
+            },
+            "149": {
+              "rule": "vesselInstruction25",
+              "caveat": "Renew before 30 months from the last full or periodic control. Controls up to six months early can preserve the anniversary. Check the instruction and approved undertaking’s record.",
+              "survey": {
+                "field": "lastSurveyDate",
+                "intervalMonths": 30,
+                "earlyWindowMonths": 6,
+                "anniversaryMayBePreserved": true,
+                "source": "2025/2652 § 149(2)–(3)",
+                "qualifying": "Full or periodic control by an approved undertaking"
+              }
+            },
+            "153": {
+              "rule": "transition25",
+              "caveat": "Verify the conditions and staged deadlines in every applicable paragraph."
+            },
+            "157": {
+              "rule": null
+            },
+            "158": {
+              "rule": null,
+              "caveat": "Section 158 amends other instruments. Each amendment has the scope of its target regulation."
+            }
+          },
+          "ruleGroups": [
+            {
+              "first": 43,
+              "last": 51,
+              "rule": "chapterRadio25",
+              "screeningLevel": "chapter",
+              "caveat": "Chapter 4 applies below 300 GT under § 43. Read the equipment, voyage or watchkeeping conditions in the section."
+            },
+            {
+              "first": 53,
+              "last": 148,
+              "rule": "certificate25",
+              "screeningLevel": "chapter",
+              "caveat": "For chapters 6–13 the index also tests the certificate requirement in § 1(2). Check any construction date, operation and equipment conditions in this section."
+            },
+            {
+              "first": 150,
+              "last": 152,
+              "rule": "vesselInstruction25",
+              "screeningLevel": "chapter",
+              "caveat": "Chapter 14 concerns ships required to have a vessel instruction. Read the circumstances and equipment specified by this section."
+            }
+          ],
+          "verifiedThrough": "2026-11-23",
+          "currentRegister": "https://lovdata.no/dokument/SF/forskrift/2025-12-16-2652"
+        }
+      ],
+      "register": "https://lovdata.no/dokument/SF/forskrift/2025-12-16-2652"
+    },
+    {
+      "id": "FOR-2014-12-19-1853",
+      "title": "Forskrift om bygging og tilsyn av mindre lasteskip",
+      "shortTitle": "Small cargo ships · 2014",
+      "jurisdiction": "NO",
+      "authority": "Sjøfartsdirektoratet",
+      "language": "nb",
+      "versions": [
+        {
+          "id": "no-cargo-2014",
+          "file": "2014-12-19-1853",
+          "label": "2014 regulation · as issued",
+          "publishedOn": "2015-01-08",
+          "effectiveFrom": "2015-01-01",
+          "effectiveTo": "2016-01-01",
+          "kind": "Norwegian authority original",
+          "language": "nb",
+          "notes": "Publisher attachment to NMA circular RSR 28-2014. Gazette notice FOR-2014-12-19-1853 was announced 8 January 2015. This is the initial text. The first amendment took effect 1 January 2016, and the regulation as subsequently amended was repealed 1 January 2026. The separately published drawing list is indexed as Annex 1. The end date describes the complete as-issued text. Unchanged provisions can continue under later amendments.",
+          "scope": "base14",
+          "scopeNote": "Instrument screen from § 1 as originally issued. Read the section’s own conditions, §§ 2–3 and the transitional provisions in chapter 11.",
+          "rules": {
+            "1": {
+              "rule": "base14"
+            },
+            "3": {
+              "rule": "transition14",
+              "caveat": "The first paragraph contains the indexed transition dates. Verify the authority’s powers in the following paragraphs."
+            },
+            "82": {
+              "rule": "vesselInstruction14"
+            },
+            "83": {
+              "rule": "vesselInstruction14",
+              "caveat": "For the original § 83, use the last full or periodic simplified control by an approved undertaking. The early-control window can preserve the scheduled anniversary.",
+              "survey": {
+                "field": "lastSurveyDate",
+                "intervalMonths": 30,
+                "earlyWindowMonths": 6,
+                "anniversaryMayBePreserved": true,
+                "source": "2014/1853 § 83(2)–(3)",
+                "qualifying": "Full or periodic simplified control by an approved undertaking"
+              }
+            },
+            "91": {
+              "rule": null,
+              "caveat": "This commencement provision and its amendments to other instruments serve a documentary purpose."
+            }
+          }
+        },
+        {
+          "id": "no-cargo-annex-2014",
+          "file": "2014-12-19-1853-annex-1",
+          "label": "Drawing list · original Annex 1",
+          "publishedOn": "2015-01-08",
+          "effectiveFrom": "2015-01-01",
+          "effectiveTo": "2022-01-24",
+          "kind": "Norwegian authority annex",
+          "language": "nb",
+          "notes": "The NMA published the 14-page drawing and documentation list separately with its 2014 adoption materials. The 2022 notice subsequently changes two entries in column 5."
+        },
+        {
+          "id": "no-cargo-amend-2015",
+          "file": "2015-12-18-1769",
+          "label": "2015 amendment · transition and tow permits",
+          "publishedOn": "2015-12-29",
+          "effectiveFrom": "2016-01-01",
+          "effectiveTo": "2018-01-01",
+          "kind": "Norwegian authority amendment",
+          "language": "nb",
+          "notes": "NMA circular RSR 14-2015 includes the adopted amendment on PDF pages 5–6. Part II replaces § 89(2) and introduces § 89a. Part IV repeals § 89a on 1 January 2018. The end date records the expiry of the temporary towing provision. Section 89(2) has a separate legal history."
+        },
+        {
+          "id": "no-cargo-amend-2017",
+          "file": "2017-12-20-2379",
+          "label": "2017 amendment · marine equipment reference",
+          "publishedOn": "2017-12-29",
+          "effectiveFrom": "2018-01-01",
+          "effectiveTo": "2026-01-01",
+          "kind": "Norwegian Gazette amendment",
+          "language": "nb",
+          "notes": "Part XXVII gives a common textual substitution and lists § 78 of the 2014 regulation among its targets. The complete part is included to preserve the instruction and its list. The target regulation was repealed 1 January 2026."
+        },
+        {
+          "id": "no-cargo-amend-2020",
+          "file": "2020-01-14-67",
+          "label": "2020 amendment · passenger activity exclusion",
+          "publishedOn": "2020-01-24",
+          "effectiveFrom": "2020-02-01",
+          "effectiveTo": "2026-01-01",
+          "kind": "Norwegian Gazette amendment",
+          "language": "nb",
+          "notes": "The amending instrument replaces only § 1(2)(b). Its targeted wording is shown separately from the complete 2014 regulation. Section 157 of the 2025 replacement repealed the target instrument on 1 January 2026."
+        },
+        {
+          "id": "no-cargo-amend-2022",
+          "file": "2022-01-24-118",
+          "label": "2022 amendment · drawing-list references",
+          "publishedOn": "2022-01-26",
+          "effectiveFrom": "2022-01-24",
+          "effectiveTo": "2026-01-01",
+          "kind": "Norwegian Gazette amendment",
+          "language": "nb",
+          "notes": "Part XV changes column 5 of rows 2 and 3 of the drawing-list annex. The target regulation was repealed 1 January 2026."
+        }
+      ],
+      "register": "https://lovdata.no/dokument/SF/forskrift/2014-12-19-1853"
+    },
+    {
+      "id": "FOR-2020-01-14-63",
+      "title": "Forskrift om fartøy under 24 meter som fører 12 eller færre passasjerer",
+      "shortTitle": "Vessels carrying up to 12 passengers",
+      "jurisdiction": "NO",
+      "authority": "Sjøfartsdirektoratet",
+      "language": "nb",
+      "versions": [
+        {
+          "id": "no-pax-2020",
+          "file": "2020-01-14-63",
+          "label": "2020 regulation · as issued",
+          "publishedOn": "2020-01-24",
+          "effectiveFrom": "2020-02-01",
+          "effectiveTo": "2023-03-27",
+          "kind": "Norwegian Gazette original",
+          "language": "nb",
+          "notes": "As issued under the original title spelling “24 m”. The next amending notice was FOR-2023-03-27-459. Later amendment excerpts are indexed separately.",
+          "scope": "basePax",
+          "scopeNote": "Instrument screen from the 2020 wording of § 1. Section 2 gives special treatment for school or club activities and certain small mainland vessels.",
+          "rules": {
+            "1": {
+              "rule": "basePax"
+            },
+            "19": {
+              "rule": null
+            }
+          },
+          "ruleGroups": [
+            {
+              "first": 3,
+              "last": 18,
+              "rule": "standardPax",
+              "screeningLevel": "chapter",
+              "caveat": "This screen includes the school, association and mainland vessel length-and-power exceptions from § 2(1). Read the operating conditions in the selected provision."
+            }
+          ]
+        },
+        {
+          "id": "no-pax-amend-2023",
+          "file": "2023-03-27-459",
+          "label": "2023 amendment · exemptions and buoyancy equipment",
+          "publishedOn": "2023-04-03",
+          "effectiveFrom": "2023-03-27",
+          "effectiveTo": null,
+          "kind": "Norwegian Gazette amendment",
+          "language": "nb",
+          "notes": "Part XXIV amends the title, § 2(1) and the first sentence of § 16(6). Part XXV provides for immediate commencement. These excerpts contain only the amended clauses. Consult the publisher’s record for later changes."
+        },
+        {
+          "id": "no-pax-amend-2025",
+          "file": "2025-06-26-1372",
+          "label": "2025 amendment · emergency stop",
+          "publishedOn": "2025-07-01",
+          "effectiveFrom": "2025-06-26",
+          "effectiveTo": null,
+          "kind": "Norwegian Gazette amendment",
+          "language": "nb",
+          "notes": "Part XLVIII replaces only § 9(3). The final provision gives immediate commencement. Compare the same paragraph of the 2020 PDF."
+        },
+        {
+          "id": "no-pax-amend-2026",
+          "file": "2025-12-16-2652",
+          "label": "2026 amendment · offshore transfers",
+          "publishedOn": "2025-12-18",
+          "effectiveFrom": "2026-01-01",
+          "effectiveTo": null,
+          "kind": "Norwegian Gazette amendment",
+          "language": "nb",
+          "notes": "FOR-2025-12-16-2652 § 158(5) inserts § 1(2)(c) in the passenger regulation. The clip shows this addition in the original amending instrument.",
+          "include": [
+            "s1-2-c"
+          ]
+        }
+      ],
+      "register": "https://lovdata.no/dokument/SF/forskrift/2020-01-14-63"
+    }
+  ],
+  "comparisons": [
+    {
+      "id": "cargo-scope",
+      "title": "Small cargo ships · scope",
+      "before": {
+        "versionId": "no-cargo-2014",
+        "sectionId": "s1"
+      },
+      "after": {
+        "versionId": "no-cargo-2025",
+        "sectionId": "s1"
+      },
+      "kind": "Replacement",
+      "notes": "Compare each regulation as originally issued. The 2014 extract predates intermediate amendments. The regulation adopted in 2025 repealed the older instrument under § 157."
+    },
+    {
+      "id": "cargo-surveys",
+      "title": "Survey for a vessel instruction",
+      "before": {
+        "versionId": "no-cargo-2014",
+        "sectionId": "s83"
+      },
+      "after": {
+        "versionId": "no-cargo-2025",
+        "sectionId": "s149"
+      },
+      "kind": "Replacement",
+      "notes": "The 2014 and 2025 as-issued sections describe surveys for a vessel instruction, including the 30-month cycle. Review their differing terms for periodic control, self-checks and bottom inspections."
+    },
+    {
+      "id": "cargo-maintenance",
+      "title": "Maintenance of small cargo ships",
+      "before": {
+        "versionId": "no-cargo-2014",
+        "sectionId": "s6"
+      },
+      "after": {
+        "versionId": "no-cargo-2025",
+        "sectionId": "s8"
+      },
+      "kind": "Replacement",
+      "notes": "Compare the maintenance provisions as issued in each regulation. Section numbering changed when the older regulation was replaced."
+    },
+    {
+      "id": "cargo-pax-exclusion",
+      "title": "Change of passenger-regulation reference",
+      "before": {
+        "versionId": "no-cargo-2014",
+        "sectionId": "s1-2-b"
+      },
+      "after": {
+        "versionId": "no-cargo-amend-2020",
+        "sectionId": "s1-2-b"
+      },
+      "kind": "Amendment",
+      "notes": "The 2015 and 2017 amending acts changed other provisions. Compare the original wording of § 1(2)(b) with its express replacement, effective 1 February 2020."
+    },
+    {
+      "id": "pax-exceptions",
+      "title": "School, club and small-vessel exceptions",
+      "before": {
+        "versionId": "no-pax-2020",
+        "sectionId": "s2-1"
+      },
+      "after": {
+        "versionId": "no-pax-amend-2023",
+        "sectionId": "s2-1"
+      },
+      "kind": "Amendment",
+      "notes": "Compare the same first paragraph of § 2, including the original power-and-length table, with its explicit replacement in the 2023 Gazette notice."
+    },
+    {
+      "id": "pax-stop",
+      "title": "Emergency stop at outdoor steering positions",
+      "before": {
+        "versionId": "no-pax-2020",
+        "sectionId": "s9-3"
+      },
+      "after": {
+        "versionId": "no-pax-amend-2025",
+        "sectionId": "s9-3"
+      },
+      "kind": "Amendment",
+      "notes": "The 2023 amendment changed other provisions. The 2025 Gazette notice replaces the term for the stop device in § 9(3) and retains express exceptions for sailing and protected vessels."
+    }
+  ]
+}

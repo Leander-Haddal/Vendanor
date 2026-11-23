@@ -1,0 +1,52 @@
+name: Publish Ship Law Index
+on:
+  workflow_dispatch:
+
+permissions: {}
+concurrency:
+  group: ship-law-pages
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: read
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm ci
+      - run: npm test
+      - run: npm run check
+      - run: npm run inventory -- --check
+      - run: npm exec -- playwright-core install --with-deps chromium
+      - name: Exercise the published project path in Chromium
+        shell: bash
+        run: |
+          node tools/serve.mjs > "$RUNNER_TEMP/ship-law-server.log" 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid"' EXIT
+          curl --fail --retry 10 --retry-connrefused --retry-delay 1 http://127.0.0.1:4173/Vendanor/ --output /dev/null
+          npm run test:browser
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: site
+  deploy:
+    runs-on: ubuntu-latest
+    needs: verify
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.publication.outputs.page_url }}
+    steps:
+      - id: publication
+        uses: actions/deploy-pages@v4

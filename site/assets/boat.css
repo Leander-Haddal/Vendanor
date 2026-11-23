@@ -1,0 +1,96 @@
+/* Owner workspaces share the typography and focus treatment with the source library. */
+body{background:#f4f6f6}
+.mast{min-height:4rem;justify-content:space-between;gap:2rem;background:#19333d;border-bottom:0}
+.mast .brand{color:#fff;text-decoration:none;gap:.65rem}
+.mast .brandmark{width:1.95rem;height:2rem;font-size:1.4rem}
+.mast nav{align-items:stretch;gap:1.55rem;margin:0}
+.mast nav>a,.mast nav summary{color:#d8e3e5;white-space:nowrap;font-weight:550;font-size:.92rem}
+.mast nav details{align-self:center;position:relative;padding:0;border:0;background:transparent}
+.mast nav summary{cursor:pointer;list-style:none;padding:.5rem 0}
+.mast nav summary::-webkit-details-marker,.owner-disclosure>summary::-webkit-details-marker{display:none}
+.mast nav summary:after{content:"⌄";padding-left:.35rem}
+.mast nav details>div{position:absolute;right:0;top:100%;z-index:4;background:#fff;min-width:14rem;border:1px solid var(--line);border-radius:5px;padding:.3rem;box-shadow:0 7px 20px #19333d1c}
+.mast nav details a{color:var(--ink);padding:.6rem .7rem;min-height:2.5rem}
+.mast nav details a:hover,.mast nav details a[aria-current=page]{color:var(--blue);background:var(--tint)}
+.owner-view{max-width:53rem;margin:clamp(.7rem,2vw,2rem) auto 3rem}
+.owner-heading{margin:0 0 1.4rem}
+.owner-heading h1{max-width:28ch;font-size:clamp(1.9rem,3.3vw,2.6rem);font-weight:660;letter-spacing:-.045em;line-height:1.14}
+.owner-heading p{font-size:1rem;margin:.55rem 0 0;color:#4b6169}
+.owner-card,.source-bridge,.map-sections>section:not(:empty){background:#fff;border:1px solid #ccd8da;border-radius:8px}
+.owner-view button,.owner-view a.button,.owner-view summary,.owner-view select{touch-action:manipulation}
+.owner-view h2{font-size:1.25rem;font-weight:640;letter-spacing:-.02em}
+.owner-card fieldset{border:0;margin:0;padding:0;min-width:0}
+.owner-card legend{padding:0;margin:0 0 .95rem;color:#1d3742;font-size:1.1rem;font-weight:650}
+.owner-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem 1.3rem}
+.owner-view label,.owner-field label{font-size:.9rem;font-weight:600;color:#213e47;display:block}
+.owner-view input:not([type=checkbox]),.owner-view select{width:100%;box-sizing:border-box;min-width:0;min-height:2.75rem;padding:.53rem .68rem;border:1px solid #a4b7bc;border-radius:4px;background-color:white;font-weight:400;font-size:.98rem;color:#152d39}
+.owner-view select{padding-right:1.6rem}
+.owner-view label>input,.owner-view label>select,.owner-field label{margin:.22rem 0}
+.owner-view input::placeholder{color:#657b83}
+.owner-input{position:relative}.owner-input>span{position:absolute;right:.72rem;top:50%;transform:translateY(-50%);font-size:.85rem;color:#526970;pointer-events:none}
+.owner-view .owner-input:has(>span)>input{padding-right:3.35rem}
+.owner-input input::-webkit-inner-spin-button{margin-right:.12rem}
+.owner-view .boat-primary{display:inline-flex;align-items:center;justify-content:center;min-height:2.85rem;padding:.65rem 1.5rem;border:1px solid #07595c;border-radius:5px;background:#075d60;color:#fff;font-size:.97rem;font-weight:650}
+.owner-view .boat-primary:hover{background:#044a4d}
+.text-action,.owner-view .text-action{color:#075c69;background:transparent;border:0;text-decoration:underline;text-underline-offset:.2em;padding:.38rem .14rem;font-weight:550}
+.vessel-lookup{margin:0;padding:0;border:0;border-bottom:1px solid #dce5e6;border-radius:8px 8px 0 0;background:#f7fafa}
+.vessel-lookup>summary{list-style:revert;padding:.85rem 1.55rem;cursor:pointer;font-weight:600;color:#15535d}
+.vessel-lookup>#vessel-lookup:not(:empty){padding:0 1.55rem 1rem;overflow-wrap:anywhere}
+.boat-form-body{padding:1.1rem 1.55rem .15rem}
+#boat-core{margin-bottom:1.1rem}
+.owner-disclosure,.more-passages,.related-checks,.map-fold{border:0;border-top:1px solid #d9e2e3;border-radius:0;margin:0;padding:0;background:transparent}
+.owner-disclosure>summary,.more-passages>summary,.related-checks>summary,.map-fold>summary{padding:.75rem 0;cursor:pointer;list-style:revert;color:#214b56;font-size:.92rem;font-weight:600}
+.owner-disclosure>div,.more-passages>div,.map-fold>div{padding:.2rem 0 .85rem}
+.owner-disclosure .owner-disclosure{margin-left:.6rem}
+.owner-grid.detail-fields{padding-top:.4rem;padding-bottom:1rem}
+.field-note,.owner-view .field-note{font-weight:400;color:#5d6f75;font-size:.84rem}
+#boat-definitions dt{font-weight:600}#boat-definitions dd{margin:.25rem 0 .8rem;max-width:62ch}#boat-definitions .text-action{display:block}
+.remember-row{padding:.65rem 0 .35rem;border-top:1px solid #d9e2e3}
+.owner-view .owner-check{display:flex;align-items:center;gap:.48rem;font-weight:500}
+.owner-check input{width:1.1rem;height:1.1rem;accent-color:#075d60}
+#boat-identity:not([hidden]){margin:.7rem 0}
+.owner-form-foot{border-top:1px solid #d9e2e3;padding:1rem 1.55rem;display:flex;align-items:center;gap:1rem}
+.form-status,.results-date{font-size:.88rem;color:#526970}.form-status:empty{display:none}.form-status:not(:empty){padding:.3rem 1.55rem .8rem}
+.result-heading,.fleet-bar,.map-country-heading,.source-bridge,.fleet-row{display:flex;justify-content:space-between;align-items:center;gap:1.2rem}
+.results-date{margin:-.55rem 0 1.45rem}
+.results-date time{font-variant-numeric:tabular-nums;margin-left:.2rem}
+.boat-word-search{display:block;max-width:30rem;margin:0 0 1.3rem}.boat-word-search input{width:100%}
+.lookup-evidence{margin:.4rem 0 1rem}.lookup-evidence p,.lookup-evidence li{font-size:.9rem}.lookup-evidence ul{padding-left:1.2rem}
+.result-group{margin:0 0 1.5rem}.result-group>h2{margin:0 0 .7rem}
+.law-card{margin:.65rem 0;padding:1.15rem 1.3rem}
+.law-card-heading{margin-bottom:.7rem}
+.law-card-heading h3,.fleet-row h3{font-size:1.12rem;font-weight:650}
+.law-card-heading p,.map-national p,.fleet-row p,.card-reason{font-size:.88rem;color:#526970;margin:.24rem 0 .55rem}
+.passage-choice{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:baseline;gap:.65rem;width:100%;text-align:left;color:#164e58;padding:.65rem .75rem;border:0;border-radius:4px;background:#f0f6f6;font-size:.95rem}
+.provision-number{font-variant-numeric:tabular-nums;font-weight:550}
+.more-passages{border:0}.passage-options{display:grid;gap:.28rem}.passage-options:has(+button){margin:.5rem 0}
+.followup-form{padding:.8rem 0 0}.followup-form legend{font-size:.94rem;margin-bottom:.38rem}.followup-form button{margin:.7rem .6rem 0 0}.followup-form [role=status]{font-size:.85rem}
+.quiet-empty{padding:1rem 1.2rem;background:#f9fbfb;border-left:3px solid #acc5c6}
+.source-bridge,.fleet-card,.map-picker,.map-sections>section:not(:empty),.register-grid{padding:1.15rem 1.35rem}
+.source-bridge p,.map-sections>section>p,.fleet-card>p{color:#526970;margin:.35rem 0 .6rem}
+.source-bridge>a{flex-shrink:0}
+.fleet-bar label{flex:1}.fleet-row{padding:1rem 0;border-top:1px solid var(--line)}#fleet-list:not(:empty){margin-top:1rem}
+.owner-actions{display:flex;flex-wrap:wrap;gap:.55rem;align-items:center}
+.register-grid,.map-sections>section:not(:empty){margin-top:1rem}
+.register-grid>a{display:inline-block;padding:.35rem .7rem .25rem 0}
+.map-picker{max-width:100%}.map-picker select{max-width:32rem;display:block}
+.map-country-heading{margin-top:1.4rem}.map-authority>div,.map-national,.edition-list li{border-top:1px solid var(--line);padding:.65rem 0}
+.map-authority h3{margin:.5rem 0}.map-authority span,.edition-list span{display:block;color:#546970;font-size:.84rem}
+.map-filters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.65rem;margin:.75rem 0}
+.map-national p{margin:0}.edition-list{padding:0;list-style:none}
+.map-sections label,.map-fold .owner-actions{margin-bottom:.55rem}
+.map-jumps{display:flex;flex-wrap:wrap;gap:.4rem;margin:.8rem 0}.map-jumps button{font-size:.86rem}.map-sections h2{scroll-margin-top:1.1rem}
+.treaty-list{padding-left:1.25rem}.treaty-list li{margin:.42rem 0}
+.register-links{display:grid;grid-template-columns:repeat(auto-fit,minmax(10rem,1fr));gap:.4rem .75rem;margin:.6rem 0}.register-links a{display:block;padding:.35rem 0}
+.national-suggestions{margin:.65rem 0;padding:.65rem 1.25rem}.national-suggestions summary{font-weight:600}.national-suggestions>p,.operation-shortcut p{color:var(--muted);margin:.55rem 0;font-size:.90rem}.operation-shortcut{margin-bottom:.8rem}
+@media(max-width:760px){
+  .mast{padding:.65rem 1rem 0;gap:.25rem}.mast nav{gap:1.15rem;justify-content:flex-start;width:100%;order:2;min-height:2.8rem}
+  .mast nav>a,.mast nav summary{font-size:.88rem}.mast nav details{margin-left:auto}
+  .owner-view{margin:.55rem auto 2rem}.owner-heading{margin-bottom:1rem}
+  .boat-form-body,.fleet-card,.map-picker,.map-sections>section:not(:empty),.source-bridge{padding:1rem}.owner-form-foot{padding:.85rem 1rem}
+  .vessel-lookup>summary{padding:.8rem 1rem}.owner-grid{gap:.78rem}.source-bridge,.fleet-row{align-items:start;flex-direction:column}
+  .map-filters{grid-template-columns:1fr 1fr}.result-heading{align-items:flex-start}.result-heading>button{white-space:nowrap}
+}
+@media(max-width:520px){.owner-grid,.map-filters{grid-template-columns:1fr}.owner-form-foot .boat-primary{width:100%}.owner-form-foot,.fleet-bar{align-items:stretch;flex-direction:column}.form-status:empty{display:none}.owner-view select,.owner-view input:not([type=checkbox]){font-size:1rem}}
+@media(min-width:350px) and (max-width:520px){#boat-core{grid-template-columns:repeat(2,minmax(0,1fr))}.owner-form-foot{gap:.6rem}}
+@media print{.owner-form-foot,.owner-actions,.owner-view button,.vessel-lookup{display:none}.owner-card{break-inside:avoid}}

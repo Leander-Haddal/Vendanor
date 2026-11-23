@@ -1,0 +1,42 @@
+name: Prepare a legal source update
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: npm ci
+      - run: sudo apt-get update && sudo apt-get install -y poppler-utils
+      - run: python -m pip install pymupdf==1.26.7
+      - run: python tools/gazette.py
+      - run: python tools/archive_pdfs.py --offline --limit 100 --byte-budget 100000000
+      - run: python tools/countries.py
+      - run: python tools/world_laws.py --refresh
+      - run: python tools/vessels.py
+      - run: python tools/uk_history.py
+      - run: python tools/eu_history.py
+      - run: python tools/flag_sources.py && python tools/registry_guides.py --refresh && python tools/imo_history.py
+      - run: python tools/folios.py && python tools/eu_folios.py && python tools/flag_folios.py
+      - run: python tools/mlc_folios.py && python tools/colreg_folios.py && python tools/solas_folios.py
+      - run: node tools/boat_fields.mjs
+      - run: npm test && npm run check && npm run inventory -- --check
+      - uses: actions/upload-artifact@v4
+        with:
+          name: legal-source-review
+          path: |
+            site/data/
+            site/pdf/
+          retention-days: 14

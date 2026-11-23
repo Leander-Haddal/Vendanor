@@ -1,0 +1,124 @@
+.boat-passage {
+  width: min(100%, 58rem);
+  margin: 0 auto;
+  color: var(--ink, #152d39);
+  overflow-wrap: anywhere;
+}
+
+.boat-passage .boat-passage__back,
+.boat-passage .boat-passage__library {
+  padding: .4rem 0;
+  color: var(--blue, #0a5269);
+  background: transparent;
+  border: 0;
+  font-weight: 600;
+}
+
+.boat-passage .boat-passage__back { margin-bottom: .75rem; }
+.boat-passage .boat-passage__back:hover,
+.boat-passage .boat-passage__library:hover { text-decoration: underline; }
+
+.boat-passage .boat-passage__paper {
+  padding: clamp(1.1rem, 4vw, 3rem);
+  background: var(--paper, white);
+  border: 1px solid var(--line, #d7e0e2);
+  border-radius: var(--radius, 5px);
+}
+
+.boat-passage .boat-passage__header {
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--line, #d7e0e2);
+}
+
+.boat-passage .boat-passage__instrument {
+  max-width: 66ch;
+  margin: 0 0 .45rem;
+  color: var(--muted, #546970);
+  font-size: .92rem;
+  font-weight: 600;
+}
+
+.boat-passage h2 {
+  margin: 0;
+  font-size: clamp(1.6rem, 3.6vw, 2.25rem);
+  line-height: 1.15;
+  letter-spacing: -.035em;
+}
+
+.boat-passage .boat-passage__byline {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: .25rem .9rem;
+  margin: .65rem 0 0;
+  color: var(--muted, #546970);
+  font-size: .86rem;
+}
+
+.boat-passage .boat-passage__pdf {
+  display: inline-block;
+  margin-top: .95rem;
+  padding: .58rem .9rem;
+  border: 1px solid var(--blue, #0a5269);
+  border-radius: var(--radius, 5px);
+  background: var(--blue, #0a5269);
+  color: white;
+  font: inherit;
+  font-size: .92rem;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.boat-passage .boat-passage__pdf:hover { filter: brightness(.88); }
+.boat-passage .boat-passage__feedback:empty { display: none; }
+.boat-passage .boat-passage__feedback { margin: .65rem 0 0; font-size: .9rem; }
+
+.boat-passage .boat-passage__wording {
+  max-width: 72ch;
+  padding: 1.3rem 0;
+  font-size: clamp(1rem, 1.7vw, 1.1rem);
+  line-height: 1.64;
+}
+
+.boat-passage .boat-passage__wording p { margin: 0 0 .9rem; white-space: pre-line; }
+.boat-passage .boat-passage__wording p:last-child { margin-bottom: 0; }
+.boat-passage .boat-passage__continuation,
+.boat-passage .boat-passage__disclosure { margin: 0; padding: 0; border: 0; background: transparent; }
+
+.boat-passage details > summary {
+  padding: .8rem 0;
+  cursor: pointer;
+  color: var(--blue, #0a5269);
+  font-size: .94rem;
+  font-weight: 650;
+}
+
+.boat-passage .boat-passage__scope {
+  margin: 0 0 1.1rem;
+  padding: .75rem 1rem;
+  border-inline-start: 3px solid var(--line-dark, #bac9cd);
+  background: var(--wash, #f2f5f5);
+}
+
+.boat-passage .boat-passage__scope h3 { margin-bottom: .15rem; font-size: .87rem; }
+.boat-passage .boat-passage__scope p,
+.boat-passage .boat-passage__disclosure p { font-size: .92rem; line-height: 1.5; }
+.boat-passage .boat-passage__disclosure { border-top: 1px solid var(--line, #d7e0e2); }
+.boat-passage .boat-passage__disclosure[open] { padding-bottom: .9rem; }
+.boat-passage .boat-passage__disclosure p { margin: 0 0 .55rem; }
+.boat-passage .boat-passage__condition-state { font-weight: 650; }
+.boat-passage .boat-passage__conditions { margin: .85rem 0 0; }
+.boat-passage .boat-passage__conditions > div { padding: .5rem 0; border-top: 1px solid var(--line, #d7e0e2); }
+.boat-passage .boat-passage__conditions dt { font-weight: 600; }
+.boat-passage .boat-passage__conditions dd { margin: .12rem 0; }
+.boat-passage .boat-passage__citation,
+.boat-passage .boat-passage__fingerprint { color: var(--muted, #546970); font-size: .82rem; }
+.boat-passage .boat-passage__library { margin-top: .55rem; }
+.boat-passage .boat-passage__flag { margin: 0 0 1rem; font-size: .92rem; }
+.boat-passage .boat-passage__sources { padding-inline-start: 1.2rem; overflow-wrap: anywhere; }
+.boat-passage .boat-passage__sources li { margin-block: .3rem; }
+
+@media (max-width: 42rem) {
+  .boat-passage .boat-passage__paper { padding: 1rem; }
+  .boat-passage .boat-passage__byline { gap: .25rem .65rem; }
+}

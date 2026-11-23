@@ -1,0 +1,567 @@
+{
+  "version": 1,
+  "checkedAt": "2026-11-23",
+  "fields": [
+    {
+      "key": "deadweightTonnes",
+      "label": "Deadweight",
+      "help": "Use the ship’s deadweight in metric tonnes from its particulars. Article 3(3) refers to MARPOL Annex I, regulation 1.23. Gross tonnage and cargo on board are different measurements.",
+      "source": {
+        "versionId": "eu-530-2012",
+        "sectionId": "definitions"
+      },
+      "type": "number",
+      "unit": "t DWT"
+    },
+    {
+      "key": "euOilTanker",
+      "label": "Oil tanker as defined by MARPOL",
+      "help": "Use the statutory vessel classification specified in the cited edition. A cargo ship entry alone does not establish oil tanker status.",
+      "source": {
+        "versionId": "eu-530-2012",
+        "sectionId": "definitions"
+      },
+      "type": "select",
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ]
+    },
+    {
+      "key": "euMemberFlag",
+      "label": "Flag of an EU Member State",
+      "help": "Identify EU membership of the flag state at the date being researched. This field implements the EU text without inferring EEA adaptations.",
+      "source": {
+        "versionId": "eu-530-2012",
+        "sectionId": "scope"
+      },
+      "type": "select",
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ]
+    },
+    {
+      "key": "euPortActivity",
+      "label": "Operation under EU Member State jurisdiction",
+      "help": "Select the operation being researched. For port or terminal calls, the port or terminal must be under Member State jurisdiction.",
+      "source": {
+        "versionId": "eu-530-2012",
+        "sectionId": "scope"
+      },
+      "type": "select",
+      "options": [
+        {
+          "value": "enter",
+          "label": "Entering a port or offshore terminal"
+        },
+        {
+          "value": "leave",
+          "label": "Leaving a port or offshore terminal"
+        },
+        {
+          "value": "anchor",
+          "label": "Anchoring in an area under Member State jurisdiction"
+        },
+        {
+          "value": "none",
+          "label": "None of these operations"
+        }
+      ]
+    },
+    {
+      "key": "euGovernmentService",
+      "label": "Ship in the Article 2(2) state-service exclusion",
+      "help": "Check the complete wording for warships, naval auxiliaries and other state ships used for government non-commercial service.",
+      "source": {
+        "versionId": "eu-530-2012",
+        "sectionId": "state-service"
+      },
+      "type": "select",
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ]
+    },
+    {
+      "key": "euHeavyGradeOil",
+      "label": "Carrying heavy grade oil as cargo",
+      "help": "Use the cargo definition in Article 3(12), including the density or viscosity requirements and the named bitumen, tar and emulsions.",
+      "source": {
+        "versionId": "eu-530-2012",
+        "sectionId": "heavy-grade-definition"
+      },
+      "type": "select",
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "authority": "European Parliament and Council of the European Union",
+      "jurisdiction": "EU",
+      "language": "en",
+      "id": "eu-tanker-417",
+      "shortTitle": "Oil tanker double hulls · 417/2002",
+      "title": "Regulation (EC) No 417/2002 on double-hull requirements for single-hull oil tankers",
+      "versions": [
+        {
+          "label": "417/2002 as adopted · OJ L 64, pp. 1–5",
+          "publishedOn": "2002-03-07",
+          "effectiveFrom": "2002-09-01",
+          "effectiveTo": "2003-10-21",
+          "kind": "Original regulation",
+          "notes": "Article 13 sets entry into force on 27 March 2002 and application from 1 September 2002. The interval follows the application of the selected scope wording until its replacement by Regulation 1726/2003.",
+          "id": "eu-417-2002",
+          "language": "en",
+          "sourcePage": "https://eur-lex.europa.eu/eli/reg/2002/417/oj/eng",
+          "sourceUrl": "https://publications.europa.eu/resource/cellar/c8b9ef02-4841-4a88-8f8b-4b664682a441.0004.02/DOC_1",
+          "pdf": "pdf/eu-417-2002-oj.pdf",
+          "pdfSha256": "68a31f8553e50524bf11302b6526da48fa1a2e89d20b39d26b87e173b6eb9dde",
+          "sections": [
+            {
+              "id": "scope",
+              "number": "Article 2(1)",
+              "title": "Oil tanker scope",
+              "criteria": {
+                "all": [
+                  {
+                    "field": "euOilTanker",
+                    "op": "eq",
+                    "value": "yes",
+                    "source": "417/2002 Article 3"
+                  },
+                  {
+                    "field": "deadweightTonnes",
+                    "op": "gte",
+                    "value": 5000,
+                    "source": "417/2002 Article 2(1)"
+                  },
+                  {
+                    "any": [
+                      {
+                        "field": "euMemberFlag",
+                        "op": "eq",
+                        "value": "yes",
+                        "source": "417/2002 Article 2(1)"
+                      },
+                      {
+                        "field": "euPortActivity",
+                        "op": "eq",
+                        "value": "enter",
+                        "source": "417/2002 Article 2(1)"
+                      }
+                    ]
+                  },
+                  {
+                    "field": "euGovernmentService",
+                    "op": "eq",
+                    "value": "no",
+                    "source": "417/2002 Article 2(2)"
+                  }
+                ]
+              },
+              "caveat": "The original 5,000-ton threshold refers to Member State flags or entry into a Member State port or offshore terminal. See Article 2(2) for the public-service exclusion.",
+              "pages": [
+                3
+              ],
+              "clip": "pdf/eu-417-2002-scope.pdf",
+              "text": "1. This Regulation shall apply to oil tankers of 5 000 tons deadweight and above: — entering into a port or offshore terminal under the jurisdiction of a Member State, irrespective of their flag, or — flying the flag of a Member State.",
+              "screeningLevel": "instrument"
+            },
+            {
+              "id": "state-service",
+              "number": "Article 2(2)",
+              "title": "Warships and government non-commercial service",
+              "criteria": {
+                "field": "euGovernmentService",
+                "op": "eq",
+                "value": "yes",
+                "source": "Article 2(2) of the selected regulation"
+              },
+              "caveat": "This exclusion includes a duty for Member States to endeavour to respect the regulation for the ships it covers.",
+              "pages": [
+                3
+              ],
+              "clip": "pdf/eu-417-2002-state-service.pdf",
+              "text": "2. This Regulation shall not apply to any warship, naval auxiliary or other ship, owned or operated by a State and used, for the time being, only on government non-commercial service. Member States shall, so far as is reasonable and practicable, endeavour to respect this Regulation for the ships referred to in this paragraph.",
+              "screeningLevel": "section"
+            },
+            {
+              "id": "definitions",
+              "number": "Article 3, points 3–4",
+              "title": "Meaning of oil tanker and deadweight",
+              "criteria": null,
+              "caveat": "The text incorporates MARPOL definitions by reference. Consult the referenced Annex I regulation for the selected date.",
+              "pages": [
+                3
+              ],
+              "clip": "pdf/eu-417-2002-definitions.pdf",
+              "text": "3. ‘oil tanker’ shall mean an oil tanker as defined in Regulation 1(4) of Annex I of MARPOL 73/78; 4. ‘deadweight’ shall mean deadweight as defined in Regulation 1(22) of Annex I of MARPOL 73/78;",
+              "screeningLevel": "unmapped"
+            }
+          ]
+        },
+        {
+          "label": "417/2002 as amended by 1726/2003 · OJ L 249, pp. 1–4",
+          "publishedOn": "2003-10-01",
+          "effectiveFrom": "2003-10-21",
+          "effectiveTo": "2012-07-20",
+          "kind": "Amending regulation",
+          "notes": "Article 1, point 2 replaces Article 2(1) of 417/2002. This interval follows that scope paragraph through the 2012 repeal. Other provisions changed during this period. The PDF contains the amending act as published.",
+          "id": "eu-1726-2003",
+          "language": "en",
+          "sourcePage": "https://eur-lex.europa.eu/eli/reg/2003/1726/oj/eng",
+          "sourceUrl": "https://publications.europa.eu/resource/cellar/70b3b629-bb3f-45f3-8b5b-d8e02650aed9.0004.02/DOC_1",
+          "pdf": "pdf/eu-1726-2003-oj.pdf",
+          "pdfSha256": "fe41176bdf5646f1ac5d1a3a9c1723b6cf5872a40481ac991165386ee9b6ea76",
+          "sections": [
+            {
+              "id": "scope",
+              "number": "Article 1, point 2",
+              "title": "Replacement of Article 2(1) on oil tanker scope",
+              "criteria": {
+                "all": [
+                  {
+                    "field": "euOilTanker",
+                    "op": "eq",
+                    "value": "yes",
+                    "source": "417/2002 Article 3"
+                  },
+                  {
+                    "field": "deadweightTonnes",
+                    "op": "gte",
+                    "value": 600,
+                    "source": "1726/2003 Article 1, point 2"
+                  },
+                  {
+                    "any": [
+                      {
+                        "field": "euMemberFlag",
+                        "op": "eq",
+                        "value": "yes",
+                        "source": "1726/2003 Article 1, point 2"
+                      },
+                      {
+                        "field": "euPortActivity",
+                        "op": "neq",
+                        "value": "none",
+                        "source": "1726/2003 Article 1, point 2"
+                      }
+                    ]
+                  },
+                  {
+                    "field": "euGovernmentService",
+                    "op": "eq",
+                    "value": "no",
+                    "source": "417/2002 Article 2(2)"
+                  }
+                ]
+              },
+              "caveat": "The general threshold is 5,000 t DWT. The 600 t DWT threshold is only for Article 4(3) on heavy grade oil. An instrument-level match includes that narrower case. Read the relevant operational provision and exemptions. Article 2(2) in the 2002 publication supplies the state-service exclusion. The amending act also introduced transitional provisions, including Article 4(5) and (6).",
+              "pages": [
+                2
+              ],
+              "clip": "pdf/eu-1726-2003-scope.pdf",
+              "text": "‘1. This Regulation shall apply to oil tankers of 5 000 tonnes deadweight and above: — entering or leaving a port or offshore terminal or anchoring in an area under the jurisdiction of a Member State, irrespective of their flag, or — flying the flag of a Member State. For the purpose of Article 4(3), this Regulation shall apply to oil tankers of 600 tonnes deadweight and above.’",
+              "screeningLevel": "instrument"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "authority": "European Parliament and Council of the European Union",
+      "jurisdiction": "EU",
+      "language": "en",
+      "id": "eu-tanker-530",
+      "shortTitle": "Oil tanker double hulls · 530/2012",
+      "title": "Regulation (EU) No 530/2012 on double-hull requirements for single-hull oil tankers (recast)",
+      "versions": [
+        {
+          "label": "530/2012 recast · OJ L 172, pp. 3–9",
+          "publishedOn": "2012-06-30",
+          "effectiveFrom": "2012-07-20",
+          "effectiveTo": null,
+          "kind": "Recast regulation",
+          "notes": "Articles 12 and 13 repeal 417/2002 and bring the recast into force on 20 July 2012. Annex II maps the prior provisions to this instrument. This index screens the EU text. EEA incorporation, national measures and individual exemptions require separate evidence.",
+          "id": "eu-530-2012",
+          "language": "en",
+          "sourcePage": "https://eur-lex.europa.eu/eli/reg/2012/530/oj/eng",
+          "sourceUrl": "https://publications.europa.eu/resource/cellar/068c2d29-c59e-11e1-b84a-01aa75ed71a1.0006.01/DOC_1",
+          "pdf": "pdf/eu-530-2012-oj.pdf",
+          "pdfSha256": "8a39ba51d33a237088c1453b0197ba9fe81737a27a7766c25c54025aab7c92b1",
+          "sections": [
+            {
+              "id": "scope",
+              "number": "Article 2(1)",
+              "title": "Oil tanker scope",
+              "criteria": {
+                "all": [
+                  {
+                    "field": "euOilTanker",
+                    "op": "eq",
+                    "value": "yes",
+                    "source": "530/2012 Article 3"
+                  },
+                  {
+                    "any": [
+                      {
+                        "field": "deadweightTonnes",
+                        "op": "gte",
+                        "value": 5000,
+                        "source": "530/2012 Article 2(1)"
+                      },
+                      {
+                        "all": [
+                          {
+                            "field": "deadweightTonnes",
+                            "op": "gte",
+                            "value": 600,
+                            "source": "530/2012 Article 2(1)"
+                          },
+                          {
+                            "field": "euHeavyGradeOil",
+                            "op": "eq",
+                            "value": "yes",
+                            "source": "530/2012 Articles 3(12) and 4(3)"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "any": [
+                      {
+                        "field": "euMemberFlag",
+                        "op": "eq",
+                        "value": "yes",
+                        "source": "530/2012 Article 2(1)"
+                      },
+                      {
+                        "field": "euPortActivity",
+                        "op": "neq",
+                        "value": "none",
+                        "source": "530/2012 Article 2(1)"
+                      }
+                    ]
+                  },
+                  {
+                    "field": "euGovernmentService",
+                    "op": "eq",
+                    "value": "no",
+                    "source": "530/2012 Article 2(2)"
+                  }
+                ]
+              },
+              "caveat": "The general threshold is 5,000 t DWT. The 600 t DWT threshold is only for Article 4(3) on heavy grade oil. An instrument-level match includes that narrower case. Read the relevant operational provision and exemptions.",
+              "pages": [
+                3
+              ],
+              "clip": "pdf/eu-530-2012-scope.pdf",
+              "text": "1. This Regulation shall apply to oil tankers of 5 000 tonnes deadweight and above: (a) which fly the flag of a Member State; (b) irrespective of their flag, which enter or leave a port or offshore terminal or anchor in an area under the jurisdiction of a Member State. For the purposes of Article 4(3), this Regulation shall apply to oil tankers of 600 tonnes deadweight and above.",
+              "screeningLevel": "instrument"
+            },
+            {
+              "id": "state-service",
+              "number": "Article 2(2)",
+              "title": "Warships and government non-commercial service",
+              "criteria": {
+                "field": "euGovernmentService",
+                "op": "eq",
+                "value": "yes",
+                "source": "Article 2(2) of the selected regulation"
+              },
+              "caveat": "This exclusion includes a duty for Member States to endeavour to respect the regulation for the ships it covers.",
+              "pages": [
+                3
+              ],
+              "clip": "pdf/eu-530-2012-state-service.pdf",
+              "text": "2. This Regulation shall not apply to any warship, naval auxiliary or other ship, owned or operated by a State and used, for the time being, only on government non-commercial service. Member States shall, so far as is reasonable and practicable, endeavour to respect this Regulation for the ships referred to in this paragraph.",
+              "screeningLevel": "section"
+            },
+            {
+              "id": "definitions",
+              "number": "Article 3, points 2–3",
+              "title": "Meaning of oil tanker and deadweight",
+              "criteria": null,
+              "caveat": "The text incorporates MARPOL definitions by reference. Consult the referenced Annex I regulation for the selected date.",
+              "pages": [
+                3
+              ],
+              "clip": "pdf/eu-530-2012-definitions.pdf",
+              "text": "(2) ‘oil tanker’ means an oil tanker as defined in Regulation 1.5 of Annex I to MARPOL 73/78; (3) ‘deadweight’ means deadweight as defined in Regulation 1.23 of Annex I to MARPOL 73/78;",
+              "screeningLevel": "unmapped"
+            },
+            {
+              "id": "categories",
+              "number": "Article 3, points 4–6",
+              "title": "Oil tanker categories by deadweight, cargo and design",
+              "criteria": null,
+              "caveat": "Classification combines deadweight, cargo and MARPOL design specifications. The weight thresholds alone cannot assign a category.",
+              "pages": [
+                3
+              ],
+              "clip": "pdf/eu-530-2012-categories.pdf",
+              "text": "(4) ‘Category 1 oil tanker’ means an oil tanker of 20 000 tonnes deadweight or above and carrying crude oil, fuel oil, heavy diesel oil or lubricating oil as cargo or of 30 000 tonnes deadweight or above and carrying oil other than the above and which does not comply with the requirements in Regulations 18.1 to 18.9, 18.12 to 18.15, 30.4, 33.1, 33.2, 33.3, 35.1, 35.2 and 35.3 of Annex I to MARPOL 73/78; (5) ‘Category 2 oil tanker’ means an oil tanker of 20 000 tonnes deadweight or above and carrying crude oil, fuel oil, heavy diesel oil or lubricating oil as cargo or of 30 000 tonnes deadweight or above and carrying oil other than the above and which complies with the requirements in Regulations 18.1 to 18.9, 18.12 to 18.15, 30.4, 33.1, 33.2, 33.3, 35.1, 35.2 and 35.3 of Annex I to MARPOL 73/78 and is fitted with segregated ballast tanks protectively located (SBT/PL); (6) ‘Category 3 oil tanker’ means an oil tanker of 5 000 tonnes deadweight or above but less than that specified in points (4) and (5);",
+              "screeningLevel": "unmapped"
+            },
+            {
+              "id": "heavy-grade-definition",
+              "number": "Article 3, point 12",
+              "title": "Heavy grade oil",
+              "criteria": null,
+              "caveat": "Use the cargo's measured density or kinematic viscosity at the stated reference temperatures. The original PDF preserves the unit exponents.",
+              "pages": [
+                4
+              ],
+              "clip": "pdf/eu-530-2012-heavy-grade-definition.pdf",
+              "text": "(12) ‘heavy grade oil’ means: (a) crude oils of a density at 15 °C of over 900 kg/m³ (corresponding to an API grade of less than 25,7); (b) oils other than crude oils and of a density at 15 °C of over 900 kg/m³ or a kinematic viscosity at 50 °C of over 180 mm²/s (corresponding to a kinematic viscosity of over 180 cSt); (c) bitumen and tar and emulsions thereof.",
+              "screeningLevel": "unmapped"
+            },
+            {
+              "id": "heavy-grade-carriage",
+              "number": "Article 4(3)–(4)",
+              "title": "Carriage of heavy grade oil and inland navigation",
+              "criteria": {
+                "all": [
+                  {
+                    "field": "euOilTanker",
+                    "op": "eq",
+                    "value": "yes",
+                    "source": "530/2012 Article 3"
+                  },
+                  {
+                    "field": "deadweightTonnes",
+                    "op": "gte",
+                    "value": 600,
+                    "source": "530/2012 Article 2(1)"
+                  },
+                  {
+                    "any": [
+                      {
+                        "field": "euMemberFlag",
+                        "op": "eq",
+                        "value": "yes",
+                        "source": "530/2012 Article 2(1)"
+                      },
+                      {
+                        "field": "euPortActivity",
+                        "op": "neq",
+                        "value": "none",
+                        "source": "530/2012 Article 2(1)"
+                      }
+                    ]
+                  },
+                  {
+                    "field": "euGovernmentService",
+                    "op": "eq",
+                    "value": "no",
+                    "source": "530/2012 Article 2(2)"
+                  },
+                  {
+                    "field": "euHeavyGradeOil",
+                    "op": "eq",
+                    "value": "yes",
+                    "source": "530/2012 Articles 3(12) and 4(3)"
+                  }
+                ]
+              },
+              "caveat": "The screen identifies vessels to review. Paragraph 4 permits an exemption for certain certified vessels used exclusively in ports and inland navigation. Article 8 addresses exceptional permission for an individual ship.",
+              "pages": [
+                4
+              ],
+              "clip": "pdf/eu-530-2012-heavy-grade-carriage.pdf",
+              "text": "3. No oil tanker carrying heavy grade oil shall be allowed to fly the flag of a Member State unless such tanker is a double-hull oil tanker. No oil tanker carrying heavy grade oil, irrespective of its flag, shall be allowed to enter or leave ports or offshore terminals or to anchor in areas under the jurisdiction of a Member State, unless such tanker is a double-hull oil tanker. 4. Oil tankers operated exclusively in ports and inland navigation may be exempted from paragraph 3 provided that they are duly certified under inland waterway legislation.",
+              "screeningLevel": "section"
+            },
+            {
+              "id": "exceptional-entry",
+              "number": "Article 8",
+              "title": "Exemptions for ships in difficulty or for repair",
+              "criteria": null,
+              "caveat": "A competent authority may permit an individual ship under the stated conditions. The index carries no grant of permission.",
+              "pages": [
+                4
+              ],
+              "clip": "pdf/eu-530-2012-exceptional-entry.pdf",
+              "text": "Article 8 Exemptions for ships in difficulty or for ships to be repaired By way of derogation from Articles 4, 5 and 7, the competent authority of a Member State may, subject to national provisions, allow, under exceptional circumstances, an individual ship to enter or leave a port or offshore terminal or anchor in an area under the jurisdiction of that Member State, when: (a) an oil tanker is in difficulty and in search of a place of refuge; (b) an unloaded oil tanker is proceeding to a port of repair.",
+              "screeningLevel": "unmapped"
+            },
+            {
+              "id": "amendments",
+              "number": "Annex I",
+              "title": "Successive amendments to the repealed regulation",
+              "criteria": null,
+              "caveat": "The recast lists all six amending regulations for 417/2002. This collection excerpts the 2003 change to scope. The source PDF also contains the Annex II correlation table.",
+              "pages": [
+                6
+              ],
+              "clip": "pdf/eu-530-2012-amendments.pdf",
+              "text": "ANNEX I Repealed Regulation with list of its successive amendments (referred to in Article 12) Regulation (EC) No 417/2002 of the European Parliament and of the Council (OJ L 64, 7.3.2002, p. 1) Regulation (EC) No 2099/2002 of the European Parliament and of the Council (OJ L 324, 29.11.2002, p. 1) Only Article 11 Regulation (EC) No 1726/2003 of the European Parliament and of the Council (OJ L 249, 1.10.2003, p. 1) Commission Regulation (EC) No 2172/2004 (OJ L 371, 18.12.2004, p. 26) Regulation (EC) No 457/2007 of the European Parliament and of the Council (OJ L 113, 30.4.2007, p. 1) Regulation (EC) No 219/2009 of the European Parliament and of the Council (OJ L 87, 31.3.2009, p. 109) Only point 7.4 of the Annex Commission Regulation (EC) No 1163/2009 (OJ L 314, 1.12.2009, p. 13)",
+              "screeningLevel": "unmapped"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "id": "eu-tanker-scope-2003",
+      "title": "Oil tanker scope · 2002 to 2003",
+      "kind": "Amendment",
+      "before": {
+        "versionId": "eu-417-2002",
+        "sectionId": "scope"
+      },
+      "after": {
+        "versionId": "eu-1726-2003",
+        "sectionId": "scope"
+      },
+      "notes": "Article 1, point 2 of 1726/2003 replaced Article 2(1). It added departure and anchoring, and a 600 t DWT threshold specific to Article 4(3)."
+    },
+    {
+      "id": "eu-tanker-scope-recast",
+      "title": "Oil tanker scope · 2003 amendment to 2012 recast",
+      "kind": "Recast",
+      "before": {
+        "versionId": "eu-1726-2003",
+        "sectionId": "scope"
+      },
+      "after": {
+        "versionId": "eu-530-2012",
+        "sectionId": "scope"
+      },
+      "notes": "Annex II of the recast maps the two scope paragraphs and reverses the order of the flag and geographic clauses. The 5,000 and 600 t DWT thresholds are retained."
+    }
+  ],
+  "publisher": "Publications Office of the European Union",
+  "reuse": "https://eur-lex.europa.eu/content/legal-notice/legal-notice.html"
+}

@@ -1,0 +1,8 @@
+InfoTemp/
+node_modules/
+.work/
+__pycache__/
+*.pyc
+test-results/
+playwright-report/
+PLAN.md
