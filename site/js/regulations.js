@@ -6,6 +6,8 @@ import {sourceThresholds} from './source-thresholds.js';
 import {sourceConditions} from './source-conditions.js';
 import {encodeWording,findWording,readWording,sameWording,wordingControls,wordingResults} from './wording-filters.js';
 import {resetPrintPreviews} from './boat-excerpts.js';
+import {mountResearch,showDatedHits,showLibraryHits,sourceLink} from './research-panel.js';
+import {interpretQuestion,provisionTerms} from './legal-research.js';
 
 function collectKeys(rule, keys) {
   if(!rule)return;
@@ -49,30 +51,39 @@ export function renderRegulations(container,ctx){
   const groupsSelected=new Set(params.getAll('collection'));
   const state={includeUnspecified:params.has('unfiltered')?params.get('unfiltered')==='1':!Object.keys(values).length,
     selected:params.get('instrument')||'',edition:params.get('edition')||''};
-  let asOf=isoDay(params.get('date'))||ctx.latest, laws=[], visible=[], shown=10;
+  let editionDate=isoDay(params.get('date')), asOf=editionDate||ctx.latest, laws=[], visible=[], shown=10;
   const narrow=matchMedia('(max-width:760px)').matches;
   container.innerHTML='<div class="law-workspace"><aside class="law-sidebar"><details class="facet-panel" '+(narrow?'':'open')+'><summary>Filters</summary>'+
     '<div class="facet-content"><div class="facet-fields"></div><div class="wording-fields"></div><details class="facet-chooser"><summary>Add a filter</summary><label>Find a condition<input type="search" class="facet-lookup"></label><div class="facet-options"></div></details>'+
     '<button type="button" class="date-picker-button" data-date></button><dialog class="revision-dialog"></dialog><details class="collection-filters"><summary>Collections</summary><div></div></details></div></details>'+
     '<details class="law-index" '+(narrow?'':'open')+'><summary><strong>Instrument index</strong><span class="index-count"></span></summary><nav class="law-tree" aria-label="Instruments by collection"></nav></details></aside>'+
-    '<section class="law-stream" aria-label="Provisions"><div class="overview-filters"><label>Search provisions<input id="rule-query" type="search" placeholder="Wording, title or citation" maxlength="260"></label>'+
+    '<section class="law-stream" aria-label="Regulatory research"><div class="overview-filters"><label>Search regulations<input id="rule-query" type="search" placeholder="Wording, citation or question" maxlength="260"></label>'+
     '<label class="unfiltered-control"><input id="rule-broad" type="checkbox"><span>Show unfiltered content</span></label></div>'+
-    '<div class="active-facets"></div><h2 class="excerpt-count" tabindex="-1" aria-live="polite"></h2><div class="source-cards"></div><div class="national-discovery" tabindex="-1"></div></section></div>';
+    '<div class="research-switch" role="group" aria-label="Research view"></div><div class="active-facets"></div>'+
+    '<div class="research-panel" hidden></div><section class="dated-provision-hits" hidden></section><div class="instrument-source" hidden></div>'+
+    '<h2 class="excerpt-count" tabindex="-1" aria-live="polite"></h2><div class="source-cards"></div>'+
+    '<div class="library-provisions" hidden></div><div class="national-discovery" tabindex="-1"></div></section></div>';
   const el=s=>container.querySelector(s), fieldBox=el('.facet-fields'), tree=el('.law-tree'), cards=el('.source-cards');
   const input=el('#rule-query'), broad=el('#rule-broad'), date=el('[data-date]');
   input.value=params.get('q')||'';broad.checked=state.includeUnspecified;
   const categories=new Set(groupedLaws(documents,{values:{},asOf},countryName).map(g=>g.category));
+  const research=mountResearch(el('.research-panel'),el('.research-switch'),{
+    catalogue:ctx.researchCatalogue,events:ctx.researchEvents,today:ctx.today,params,countryName,changed:()=>update(false)
+  });
+  let libraryTimer, cancelLibrary, libraryKey='', activeMode='provisions';
+  let typed={}, keywords='';
 
   function sync(){
     const p=new URLSearchParams();
     for(const [key,value] of Object.entries(values))p.set('f.'+key,value);
     for(const f of wording)p.append('where',encodeWording(f));
     if(input.value)p.set('q',input.value);
-    if(asOf!==ctx.latest)p.set('date',asOf);
+    if(editionDate)p.set('date',editionDate);
     if(state.includeUnspecified!==!Object.keys(values).length)p.set('unfiltered',state.includeUnspecified?'1':'0');
     for(const category of groupsSelected)p.append('collection',category);
     if(state.selected)p.set('instrument',state.selected);
     if(state.edition)p.set('edition',state.edition);
+    research.save(p);
     ctx.changed(p,{values,asOf});
   }
   function drawFields(){
@@ -114,6 +125,13 @@ export function renderRegulations(container,ctx){
       (tags.length?'<button type="button" class="text-action" data-reset>Clear all</button>':'');
   }
   function drawCards(){
+    const source=el('.instrument-source');
+    const fixed=documents.find(d=>d.key===state.edition)||laws.find(g=>g.id===state.selected)?.sections[0]?.doc||
+      documents.find(d=>d.instrument.id===state.selected);
+    const scope=fixed?.sections.find(s=>['s1','scope','application'].includes(s.id));
+    source.hidden=!scope;
+    source.innerHTML=scope?'<p>'+esc(fixed.instrument.shortTitle||fixed.instrument.title)+' · '+
+      sourceLink({doc:fixed.key,section:scope.id},'Read scope in Library')+'</p>':'';
     resetPrintPreviews();
     if(wording.length){
       el('.excerpt-count').textContent='Selected source wording';
@@ -152,32 +170,66 @@ export function renderRegulations(container,ctx){
         '<a href="#library?'+esc(p.toString())+'">Browse collection in Library</a>';detail.append(div);
     };host.append(detail);
   }
+  function closeLibrary(){
+    clearTimeout(libraryTimer);
+    cancelLibrary?.();
+    libraryKey='';
+  }
+  function searchLibrary(){
+    const host=el('.library-provisions'),query=keywords.trim(),country=values.flag||typed.factFlag||'';
+    if(!ctx.ready||activeMode!=='provisions'||!query||wording.length||state.selected){
+      closeLibrary();host.hidden=true;return;
+    }
+    const key=JSON.stringify([query,country,asOf]);
+    if(key===libraryKey)return;
+    closeLibrary();libraryKey=key;
+    showLibraryHits(host,[],{query,country,pending:true});
+    libraryTimer=setTimeout(()=>{
+      cancelLibrary=ctx.searchProvisions(query,country,asOf,result=>{
+        if(libraryKey!==key)return;
+        showLibraryHits(host,result.rows||[],{query,country,pending:result.type==='results'&&!result.done,error:result.type==='error'||Boolean(result.errors)});
+      });
+    },220);
+  }
   function update(recompute=true){
+    typed=interpretQuestion(input.value,ctx.researchCatalogue.regimes,ctx.today);
+    keywords=provisionTerms(input.value,typed.factFlag,ctx.researchCatalogue.regimes);
+    const day=editionDate||typed.date||ctx.latest;
+    if(day!==asOf){asOf=day;recompute=true;}
     if(recompute)laws=groupedLaws(documents,{values,asOf},countryName);
     state.includeUnspecified=broad.checked;
-    el('.collection-filters').hidden=Boolean(wording.length);
+    activeMode=research.draw({query:input.value,values,asOf});
+    const provisions=activeMode==='provisions';
+    showDatedHits(el('.dated-provision-hits'),ctx.researchEvents,{query:provisions&&!wording.length&&!state.selected?keywords:'',
+      facts:{...typed.facts,...values},vessel:values,authority:typed.authority,today:ctx.today});
+    for(const selector of ['.excerpt-count','.source-cards','.national-discovery','.unfiltered-control'])el(selector).hidden=!provisions;
+    el('.law-index').hidden=!provisions;
+    el('.collection-filters').hidden=!provisions||Boolean(wording.length);
+    date.hidden=activeMode==='timeline';
+    if(!provisions){el('.instrument-source').hidden=true;drawChips();searchLibrary();sync();return;}
     if(wording.length){
       const docs=[...new Set(wording.map(f=>f.doc))];
       if(!docs.includes(state.selected))state.selected='';
       tree.innerHTML='<button type="button" data-law="" class="all-laws">All selected instruments</button>'+docs.map(id=>'<button type="button" data-law="'+esc(id)+'">'+esc(ctx.lookup(id)?.title||id)+'</button>').join('');
       el('.index-count').textContent=docs.length;date.textContent='Editions · '+dateLabel(asOf);
-      drawChips();drawCards();national();sync();return;
+      drawChips();drawCards();national();searchLibrary();sync();return;
     }
-    visible=filteredLaws(laws,queryParts(input.value)).flatMap(g=>{
+    visible=filteredLaws(laws,queryParts(keywords)).flatMap(g=>{
       if(groupsSelected.size&&!groupsSelected.has(g.category))return [];
       const sections=broad.checked?g.sections:g.sections.filter(r=>r.state==='match');
       return sections.length?[{...g,sections}]:[];
     });
     const selected=visible.find(g=>g.id===state.selected);
-    if(!selected)state.selected='';
-    if(!selected?.sections.some(r=>r.doc.key===state.edition))state.edition='';
+    if(!selected&&!documents.some(d=>d.instrument.id===state.selected||
+      (d.instrument.flagState&&d.instrument.id.slice(0,-d.instrument.flagState.length-1)===state.selected)))state.selected='';
+    if(state.edition&&!documents.some(d=>d.key===state.edition))state.edition='';
     const closed=new Set([...tree.querySelectorAll('[data-category]:not([open])')].map(n=>n.dataset.category));
     const editions=new Set([...tree.querySelectorAll('[data-editions][open]')].map(n=>n.dataset.editions));if(state.edition)editions.add(state.selected);
     tree.innerHTML='<button type="button" data-law="" class="all-laws">All instruments</button>'+[...Map.groupBy(visible,g=>g.category)].map(([name,groups])=>'<details data-category="'+esc(name)+'" '+(closed.has(name)?'':'open')+'><summary>'+esc(name)+'</summary><ul>'+groups.map(g=>lawTreeItem(g,editions)).join('')+'</ul></details>').join('');
     const sourceShortcut=document.createElement('button');sourceShortcut.type='button';sourceShortcut.dataset.sourceSearch='';sourceShortcut.textContent='Additional source texts';tree.append(sourceShortcut);
-    el('.index-count').textContent=visible.length;date.textContent='Editions · '+dateLabel(asOf);shown=10;drawChips();drawCards();national();sync();
+    el('.index-count').textContent=visible.length;date.textContent='Editions · '+dateLabel(asOf);shown=10;drawChips();drawCards();national();searchLibrary();sync();
   }
-  const picker=mountRevisionPicker(el('dialog'),{flagName:()=>countryName(values.flag),getRevisions:()=>revisionDates(documents,values,ctx.editions(values)),latestDay:()=>ctx.latest,onChoose:day=>{asOf=day;update();}});
+  const picker=mountRevisionPicker(el('dialog'),{flagName:()=>countryName(values.flag),getRevisions:()=>revisionDates(documents,values,ctx.editions(values)),latestDay:()=>ctx.latest,onChoose:day=>{editionDate=day===ctx.latest?'':day;update();}});
   date.onclick=()=>picker.open(asOf);
   el('.facet-lookup').oninput=drawChoices;
   el('.wording-fields').onchange=e=>{const f=wording[Number(e.target.dataset.wording)];if(f){f.value=e.target.value;update(false);}};
@@ -194,21 +246,23 @@ export function renderRegulations(container,ctx){
     if(b.hasAttribute('data-add')){chosen.add(b.dataset.add);drawFields();el('.facet-chooser').open=false;fieldBox.querySelector('[name="'+CSS.escape(b.dataset.add)+'"]').focus();}
     if(b.hasAttribute('data-clear')){
       const key=b.dataset.clear;
-      if(key==='date')asOf=ctx.latest;else if(key.startsWith('w.'))wording.splice(Number(key.slice(2)),1);else if(key.startsWith('c.'))groupsSelected.delete(key.slice(2));else{delete values[key.slice(2)];if(!core.includes(key.slice(2)))chosen.delete(key.slice(2));}
+      if(key==='date')editionDate='';else if(key.startsWith('w.'))wording.splice(Number(key.slice(2)),1);else if(key.startsWith('c.'))groupsSelected.delete(key.slice(2));else{delete values[key.slice(2)];if(!core.includes(key.slice(2)))chosen.delete(key.slice(2));}
       drawFields();collectionOptions();update();
     }
-    if(b.hasAttribute('data-reset')){for(const k of Object.keys(values))delete values[k];chosen.clear();core.forEach(k=>chosen.add(k));wording.length=0;groupsSelected.clear();input.value='';asOf=ctx.latest;broad.checked=true;state.selected='';state.edition='';drawFields();collectionOptions();update();}
+    if(b.hasAttribute('data-reset')){for(const k of Object.keys(values))delete values[k];chosen.clear();core.forEach(k=>chosen.add(k));wording.length=0;groupsSelected.clear();input.value='';editionDate='';broad.checked=true;state.selected='';state.edition='';drawFields();collectionOptions();update();}
     if(b.hasAttribute('data-broaden')){broad.checked=true;update(false);}
     if(b.hasAttribute('data-source-search')){
       const host=el('.national-discovery'),first=host.querySelector('details');if(!first)return;
       if(narrow)el('.law-index').open=false;first.open=true;host.scrollIntoView({block:'start'});first.querySelector('summary').focus({preventScroll:true});
     }
-    if(b.hasAttribute('data-law')){state.selected=b.dataset.law;state.edition=b.dataset.edition||'';drawCards();national();sync();if(narrow){el('.law-index').open=false;el('.excerpt-count').focus();}}
+    if(b.hasAttribute('data-law')){state.selected=b.dataset.law;state.edition=b.dataset.edition||'';update(false);if(narrow){el('.law-index').open=false;el('.excerpt-count').focus();}}
   };
   input.oninput=()=>update(false);broad.onchange=()=>update(false);
   drawFields();collectionOptions();update();
-  return {updateRecords(records,collections){
+  return {close:closeLibrary,updateRecords(records,collections,events){
     ctx.records=records;ctx.conditionCollections=collections;ctx.ready=true;picker.refresh();
-    if(wording.length){drawFields();update(false);}else{drawChoices();national();}
+    ctx.researchEvents=events;
+    research.updateEvents(events);
+    if(wording.length||activeMode==='timeline'){drawFields();update(false);}else{drawChoices();if(activeMode==='provisions')national();closeLibrary();searchLibrary();}
   }};
 }

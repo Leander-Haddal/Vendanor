@@ -312,6 +312,82 @@ async function verifyMobile(page) {
   await verifyRegulations(page); await verifyDirectory(page);
 }
 
+async function verifyLegalResearch(page) {
+  await page.clock.setFixedTime(new Date('2026-11-23T12:00:00+01:00'));
+  await page.goto(base.href+'#regulations');
+  const query=page.locator('#rule-query');
+  await query.fill('Finn ut hvilke krav NOR flagg har til lasteskip over 500 grt som er strengere enn SOLAS?');
+  const comparisons=page.locator('.research-comparison');
+  assert.equal(await comparisons.count(),5);
+  assert.equal(await comparisons.first().locator('a').count(),2);
+
+  await query.fill('Skipsrelaterte konvensjoner fra IMO: Hvilke nye krav er vedtatt og vil tre i kraft de neste 3 årene? Opplisting per ikrafttredelsedato.');
+  const dates=await page.locator('.research-day time').allTextContents();
+  assert.ok(await page.locator('.research-row').count()>=24);
+  assert.ok(dates.length>=10);
+  assert.deepEqual(dates,[...dates].sort());
+  assert.equal(await page.getByLabel('From',{exact:true}).inputValue(),'2026-11-23');
+  assert.equal(await page.getByLabel('Through',{exact:true}).inputValue(),'2029-11-23');
+  await page.getByLabel('Date type').selectOption('entry-into-force');
+  assert.ok((await page.locator('.research-row').allTextContents()).every(row=>row.includes('Entry into force')));
+  await page.getByLabel('Date type').selectOption('recommendation');
+  await visibleText(page,'.research-timeline','FAL Recommended Practice 6.24');
+
+  await query.fill('Compare Canada vs SOLAS for polar shipping');
+  await visibleText(page,'.research-comparison','SOLAS chapter XIV in polar waters');
+  await page.setViewportSize({width:390,height:844});
+  await widthFits(page);
+  await comparisons.first().getByRole('link',{name:'Read provision'}).first().click();
+  await visibleText(page,'#reader','SOLAS chapter XIV in polar waters');
+
+  await page.goto(base.href+'#library?source=imo');
+  await page.locator('#q').fill('2029');
+  await page.getByRole('link',{name:'Browse changes in this period'}).click();
+  const issuer=page.locator('[data-control="authority"]');
+  assert.equal(await issuer.inputValue(),'IMO');
+  assert.equal(await page.getByLabel('From',{exact:true}).inputValue(),'2029-01-01');
+  assert.equal(await page.getByLabel('Through',{exact:true}).inputValue(),'2029-12-31');
+  const timeline=page.locator('.research-timeline');
+  await visibleText(page,'.research-timeline','Enclosed lifeboat ventilation');
+  await page.getByLabel('Topic',{exact:true}).fill('ventilasjon');
+  const quote=timeline.locator('blockquote').filter({hasText:'1 January 2029'});
+  await quote.waitFor();
+  assert.match(await timeline.getByRole('link',{name:/MSC\.535\(107\) · paragraph 4/}).getAttribute('href'),/\.pdf#page=2$/);
+  await widthFits(page);
+  await page.reload();
+  await visibleText(page,'.research-timeline','Enclosed lifeboat ventilation');
+  assert.equal(await page.getByLabel('Topic',{exact:true}).inputValue(),'ventilasjon');
+
+  await issuer.selectOption('NO');
+  await page.getByLabel('From',{exact:true}).fill('2027-01-01');
+  await page.getByLabel('Through',{exact:true}).fill('2027-12-31');
+  await page.getByLabel('Topic',{exact:true}).fill('FOR-2025-12-19-2820');
+  await visibleText(page,'.research-timeline','sikkerhetstiltak for skip som opererer i polare farvann');
+  assert.match(await timeline.getByRole('link',{name:'Publisher source'}).getAttribute('href'),/2025-12-19-2820$/);
+
+  await page.goto(base.href+'#regulations');
+  await query.fill('roro brann 2028');
+  const requirements=page.locator('.dated-provision-hits');
+  await visibleText(page,'.dated-provision-hits','first survey');
+  assert.equal(await requirements.locator('time').getAttribute('datetime'),'2028-01-01');
+  assert.equal(await requirements.locator('blockquote').count(),3);
+  await widthFits(page);
+
+  await page.goto(base.href+'#library?source=imo&q=igf+ventilasjon');
+  const libraryHits=page.locator('#dated-library-hits');
+  await libraryHits.getByRole('link',{name:'IGF Code · natural gas fuel safety'}).first().click();
+  await visibleText(page,'.research-selection','IGF Code');
+  assert.deepEqual(await timeline.locator('time').allTextContents(),['2028-01-01','2028-07-01','2032-01-01']);
+  await widthFits(page);
+
+  await page.goto(base.href+'#regulations');
+  await query.fill('IMO 2027-2029');
+  await requirements.getByRole('link',{name:'View all 49 results'}).click();
+  await timeline.locator('time[datetime="2029-07-01"]').waitFor();
+  assert.equal(await timeline.locator('.research-row').count(),49);
+  assert.equal(await timeline.locator('time').count(),12);
+}
+
 async function verifyHistory(page){await checkLawHistory(page,base);}
 
 async function verifyDocuments(page) {
@@ -326,7 +402,7 @@ const browser = await chromium.launch({executablePath:browserPath(),headless:tru
 try {
   const faults = [];
   const requested = process.argv.slice(2);
-  const checks = [verifyRegulations,verifySourceFilters,verifyPublishedWordingFilter,verifyEditionPicker,verifyFolio,verifyArchive,verifyComparison,verifyImports,verifyDocuments,verifyLegacyDocuments,verifyDirectory,verifyTreatyPdf,verifyNationalPassage,verifyHistory,verifyMobile];
+  const checks = [verifyRegulations,verifyLegalResearch,verifySourceFilters,verifyPublishedWordingFilter,verifyEditionPicker,verifyFolio,verifyArchive,verifyComparison,verifyImports,verifyDocuments,verifyLegacyDocuments,verifyDirectory,verifyTreatyPdf,verifyNationalPassage,verifyHistory,verifyMobile];
   assert.ok(requested.every(name => checks.some(check => check.name===name)), 'Unknown browser check name');
   for (const check of checks.filter(item => !requested.length || requested.includes(item.name))) {
     const context = await browser.newContext(check === verifyMobile

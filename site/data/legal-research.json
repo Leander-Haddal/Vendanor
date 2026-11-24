@@ -1,0 +1,335 @@
+{
+  "checkedAt": "2026-11-23",
+  "regimes": {
+    "NO": {
+      "label": "Norway",
+      "flag": "NO",
+      "aliases": [
+        "Norway",
+        "Norge",
+        "Norwegian",
+        "norske",
+        "norsk",
+        "NOR",
+        "NIS"
+      ],
+      "registers": [
+        "NOR",
+        "NIS"
+      ]
+    },
+    "GB": {
+      "label": "United Kingdom",
+      "flag": "GB",
+      "aliases": [
+        "UK",
+        "Storbritannia",
+        "British"
+      ]
+    },
+    "CA": {
+      "label": "Canada",
+      "flag": "CA",
+      "aliases": [
+        "Canadian",
+        "kanadisk",
+        "kanadiske"
+      ]
+    },
+    "SOLAS": {
+      "label": "SOLAS",
+      "aliases": [
+        "Safety of Life at Sea",
+        "LSA",
+        "IMDG",
+        "IMSBC",
+        "Polar Code",
+        "polarkoden"
+      ]
+    },
+    "MARPOL": {
+      "label": "MARPOL",
+      "aliases": [
+        "MARPOL",
+        "NOx Technical Code"
+      ]
+    },
+    "IMO": {
+      "label": "IMO",
+      "aliases": [
+        "International Maritime Organization"
+      ]
+    },
+    "LOAD LINES": {
+      "label": "Load Lines",
+      "aliases": [
+        "lastelinjer",
+        "lastelinjeprotokollen"
+      ]
+    },
+    "FAL": {
+      "label": "FAL",
+      "aliases": [
+        "Facilitation Convention"
+      ]
+    },
+    "HNS": {
+      "label": "HNS",
+      "aliases": [
+        "Hazardous and Noxious Substances"
+      ]
+    },
+    "CAPE": {
+      "label": "Cape Town Agreement",
+      "aliases": [
+        "Cape Town",
+        "Cape Town-avtalen"
+      ]
+    },
+    "STCW": {
+      "label": "STCW",
+      "aliases": [
+        "Standards of Training, Certification and Watchkeeping"
+      ]
+    },
+    "BWM": {
+      "label": "BWM",
+      "aliases": [
+        "Ballast Water Management",
+        "ballastvannkonvensjonen"
+      ]
+    }
+  },
+  "provisions": [
+    {
+      "id": "no-immersion",
+      "regime": "NO",
+      "title": "Thermally insulated immersion suits",
+      "citation": "FOR-2014-07-01-1019 § 12(3)",
+      "text": "Thermally insulated suits for everyone aboard cargo ships carrying bulk cargo, and cargo ships operating north of 30° N or south of 30° S.",
+      "url": "https://lovdata.no/dokument/SF/forskrift/2014-07-01-1019/%C2%A712",
+      "scope": {
+        "field": "shipType",
+        "op": "eq",
+        "value": "cargo"
+      },
+      "effectiveFrom": "2014-09-15"
+    },
+    {
+      "id": "lsa-immersion",
+      "regime": "SOLAS",
+      "title": "Immersion suits and insulation",
+      "citation": "SOLAS III/32.3 and LSA Code § 2.3.2",
+      "text": "SOLAS refers to the LSA Code. The Code sets out separate performance standards for suits with and without inherent insulation.",
+      "url": "https://wwwcdn.imo.org/localresources/en/KnowledgeCentre/IndexofIMOResolutions/MSCResolutions/MSC.48%2866%29.pdf",
+      "scope": {
+        "field": "shipType",
+        "op": "eq",
+        "value": "cargo"
+      }
+    },
+    {
+      "id": "no-bridge",
+      "regime": "NO",
+      "title": "Navigation bridge visibility",
+      "citation": "FOR-2014-09-05-1157 § 14",
+      "text": "The full visibility requirements cover qualifying ships built from 1 July 1998, including ships shorter than 55 m. The regulation specifies arrangements and exceptions.",
+      "url": "https://lovdata.no/dokument/SF/forskrift/2014-09-05-1157/%C2%A714",
+      "effectiveFrom": "2022-07-01"
+    },
+    {
+      "id": "solas-bridge",
+      "regime": "SOLAS",
+      "title": "Navigation bridge visibility",
+      "citation": "SOLAS V/22.1 as amended by MSC.142(77)",
+      "text": "The full standard applies to ships of at least 55 m length overall built on or after 1 July 1998.",
+      "url": "https://wwwcdn.imo.org/localresources/en/KnowledgeCentre/IndexofIMOResolutions/MSCResolutions/MSC.142%2877%29.pdf"
+    },
+    {
+      "id": "no-noise",
+      "regime": "NO",
+      "title": "Noise risk assessment and survey report",
+      "citation": "FOR-2005-01-01-8 §§ 15-3 and 15-28",
+      "text": "Assess noise before the vessel enters service and when significant changes affect exposure. Keep the survey report available aboard.",
+      "url": "https://www.sdir.no/en/regelverk/circulars/noise-on-vessels-of-less-than-1600-gross-tonnage/"
+    },
+    {
+      "id": "solas-noise",
+      "regime": "SOLAS",
+      "title": "Construction standard for protection against noise",
+      "citation": "SOLAS II-1/3-12.1",
+      "text": "The mandatory construction standard normally starts at 1,600 GT and has construction-date conditions.",
+      "url": "https://wwwcdn.imo.org/localresources/en/KnowledgeCentre/IndexofIMOResolutions/Documents/MSC%20-%20Maritime%20Safety/338%2891%29.pdf"
+    },
+    {
+      "id": "no-stability",
+      "regime": "NO",
+      "title": "Stability and tonnage calculations",
+      "citation": "FOR-2014-07-01-1072 § 17",
+      "text": "Use approved calculation software and the same database for stability and tonnage calculations.",
+      "url": "https://lovdata.no/dokument/SF/forskrift/2014-07-01-1072/%C2%A717"
+    },
+    {
+      "id": "solas-stability",
+      "regime": "SOLAS",
+      "title": "Stability information for the master",
+      "citation": "SOLAS II-1/5-1",
+      "text": "Provide the master with stability information satisfactory to the administration and furnish a copy to the administration.",
+      "url": "https://wwwcdn.imo.org/localresources/en/publications/Documents/Supplements/English/QQQQQQF110E_122019.pdf"
+    },
+    {
+      "id": "no-towing",
+      "regime": "NO",
+      "title": "Intact stability when towing",
+      "citation": "FOR-2014-07-01-1072 § 34",
+      "text": "A vessel that tows must meet additional intact stability criteria, including the test at 65% of its maximum towing force.",
+      "url": "https://lovdata.no/dokument/SF/forskrift/2014-07-01-1072/%C2%A734"
+    },
+    {
+      "id": "solas-towing",
+      "regime": "SOLAS",
+      "title": "Stability guidance for towing",
+      "citation": "2008 IS Code, Part B § 2.8",
+      "text": "The IMO towing stability criteria are in Part B of the 2008 IS Code, which contains recommendations.",
+      "url": "https://wwwcdn.imo.org/localresources/en/KnowledgeCentre/IndexofIMOResolutions/MSCResolutions/MSC.415%2897%29.pdf"
+    },
+    {
+      "id": "gb-pilot",
+      "regime": "GB",
+      "title": "Pilot-transfer exceptions",
+      "citation": "SI 2020/673 regulation 5(3)(g)",
+      "text": "The UK regulation states exceptions to SOLAS V/23 for ships under 150 GT, ships under 500 GT on non-international voyages, and fishing vessels.",
+      "url": "https://www.legislation.gov.uk/uksi/2020/673/regulation/5",
+      "doc": "uk-navigation-2025|2025-12-12",
+      "section": "pilot-transfer",
+      "effectiveFrom": "2025-12-12",
+      "effectiveTo": "2028-01-01"
+    },
+    {
+      "id": "solas-pilot",
+      "regime": "SOLAS",
+      "title": "Pilot transfer arrangements",
+      "citation": "SOLAS V/23",
+      "text": "Regulation V/23 governs transfers of pilots and other personnel.",
+      "url": "https://www.imo.org/en/ourwork/safety/pages/pilotage.aspx",
+      "effectiveTo": "2028-01-01"
+    }
+  ],
+  "relations": [
+    {
+      "rule": "no-immersion",
+      "baseline": "lsa-immersion",
+      "kind": "stricter",
+      "difference": "Norway requires built-in thermal insulation for these routes or cargoes.",
+      "keywords": "redningsdrakt redningsdrakter lsa immersion life-saving",
+      "scope": {
+        "any": [
+          {
+            "field": "bulkCargo",
+            "op": "eq",
+            "value": "yes"
+          },
+          {
+            "field": "outsideWarmLatitude",
+            "op": "eq",
+            "value": "yes"
+          }
+        ]
+      }
+    },
+    {
+      "rule": "no-bridge",
+      "baseline": "solas-bridge",
+      "kind": "stricter",
+      "difference": "Norway extends the visibility standard to qualifying shorter ships.",
+      "keywords": "bridge navigation sikt broutforming bro",
+      "scope": {
+        "all": [
+          {
+            "field": "lengthOverall",
+            "op": "lt",
+            "value": 55
+          },
+          {
+            "field": "yearBuilt",
+            "op": "gte",
+            "value": "1998-07-01"
+          }
+        ]
+      }
+    },
+    {
+      "rule": "no-noise",
+      "baseline": "solas-noise",
+      "kind": "additional",
+      "difference": "Norwegian workplace noise assessment and documentation also cover the 500–1,599 GT range.",
+      "keywords": "noise stoy arbeidsmiljo dokumentasjon",
+      "scope": {
+        "all": [
+          {
+            "field": "grossTonnage",
+            "op": "gte",
+            "value": 500
+          },
+          {
+            "field": "grossTonnage",
+            "op": "lt",
+            "value": 1600
+          }
+        ]
+      }
+    },
+    {
+      "rule": "no-stability",
+      "baseline": "solas-stability",
+      "kind": "additional",
+      "difference": "Norway specifies the approval of the software and use of a common database.",
+      "keywords": "stabilitet tonnasje beregninger"
+    },
+    {
+      "rule": "no-towing",
+      "baseline": "solas-towing",
+      "kind": "additional",
+      "difference": "Norway makes specific additional towing stability criteria mandatory for vessels that tow.",
+      "keywords": "tow stability slep taubat",
+      "scope": {
+        "field": "tows",
+        "op": "eq",
+        "value": "yes"
+      }
+    },
+    {
+      "rule": "gb-pilot",
+      "baseline": "solas-pilot",
+      "kind": "exception",
+      "difference": "The UK regulation states tonnage, voyage and fishing-vessel exceptions to the identified SOLAS rule.",
+      "keywords": "pilot navigation los navigasjon"
+    }
+  ],
+  "events": [
+    {
+      "id": "fal-vaccination-2028",
+      "date": "2028-01-01",
+      "kind": "recommendation",
+      "authority": "IMO",
+      "regime": "FAL",
+      "instrument": "fal-1965",
+      "citation": "FAL.19(50)",
+      "title": "FAL Recommended Practice 6.24",
+      "description": "Recommendations for governments on vaccination and access to medical care for seafarers during international public health emergencies.",
+      "url": "https://www.imo.org/en/mediacentre/meetingsummaries/pages/fal-50th-session.aspx"
+    },
+    {
+      "id": "reporting-straits",
+      "instrument": "solas-1974",
+      "regime": "SOLAS",
+      "authority": "IMO",
+      "date": "2026-12-01",
+      "kind": "application",
+      "citation": "MSC.598(111) and associated resolutions",
+      "title": "Ship reporting systems",
+      "description": "Revised mandatory reporting in the Adriatic Sea, the Sound and Great Belt.",
+      "url": "https://www.mpa.gov.sg/api/media/3679142b-70fa-407b-a8fb-6eebd86be579/MSC-111-22-Add.2---Report-Of-The-Maritime-Safety-Committee-On-Its-111Th-Session-(Secretariat).pdf#page=143"
+    }
+  ]
+}

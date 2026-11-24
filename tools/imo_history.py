@@ -396,6 +396,7 @@ def chronology(lines, books):
         if not instrument["entries"]:
             raise ValueError("No treaty event for " + instrument["id"])
     records = [item for _, item, _ in headings]
+    reconcile_msc_111(records, books[1])
     for key, day in (("cape-town-2012", "2027-02-24"), ("hns-2010-protocol", "2027-11-29")):
         instrument = next(r for r in records if r["id"] == key)
         if books[instrument["volume"]]["openingDates"].get(instrument["page"]) != day:
@@ -404,6 +405,36 @@ def chronology(lines, books):
                                       "date": day, "kind": "Status book update", "reportedAsOf": "2026-10-30",
                                       **book_location(instrument["volume"], instrument["page"])})
     return records
+
+
+def reconcile_msc_111(records, book):
+    # The July list misfiles several of these amendments. The October
+    # depositary book names the instruments and records the operative date.
+    destinations = {
+        "MSC.583(111)": "solas-1974",
+        "MSC.588(111)": "solas-1974-ip",
+        "MSC.589(111)": "solas-1974-lsa",
+        "MSC.590(111)": "solas-1974-lifeboat-maintenance",
+    }
+    by_instrument = {instrument["id"]: instrument for instrument in records}
+    for instrument in records:
+        instrument["entries"] = [
+            entry for entry in instrument["entries"]
+            if not any(resolution in destinations for resolution in entry.get("resolutions", []))
+        ]
+    for resolution, instrument_id in destinations.items():
+        pages = book["resolutions"][resolution]
+        if len(pages) != 1:
+            raise ValueError("Check October depositary entry for " + resolution)
+        by_instrument[instrument_id]["entries"].append({
+            "label": "2026 amendments · " + resolution,
+            "kind": "Amendment",
+            "date": "2028-01-01",
+            "resolutions": [resolution],
+            "amendmentYear": 2026,
+            "reportedAsOf": "2026-10-30",
+            **book_location(1, next(iter(pages))),
+        })
 
 
 def build(directory, country_rows, refresh=False):

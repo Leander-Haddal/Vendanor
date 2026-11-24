@@ -1,0 +1,1610 @@
+{
+  "sources": {
+    "msc575": {
+      "citation": "MSC.575(110)",
+      "url": "https://wwwcdn.imo.org/localresources/en/KnowledgeCentre/IndexofIMOResolutions/MSCResolutions/MSC.575%28110%29.pdf"
+    },
+    "msc532": {
+      "citation": "MSC.532(107)",
+      "url": "https://wwwcdn.imo.org/localresources/en/KnowledgeCentre/IndexofIMOResolutions/MSCResolutions/MSC.532%28107%29.pdf"
+    },
+    "msc549": {
+      "citation": "MSC.549(108)",
+      "url": "https://wwwcdn.imo.org/localresources/en/KnowledgeCentre/IndexofIMOResolutions/MSCResolutions/MSC.549%28108%29.pdf"
+    },
+    "msc550": {
+      "citation": "MSC.550(108)",
+      "url": "https://wwwcdn.imo.org/localresources/en/KnowledgeCentre/IndexofIMOResolutions/MSCResolutions/MSC.550%28108%29.pdf"
+    },
+    "msc572": {
+      "citation": "MSC.572(110)",
+      "url": "https://wwwcdn.imo.org/localresources/en/KnowledgeCentre/IndexofIMOResolutions/MSCResolutions/MSC.572%28110%29.pdf"
+    },
+    "msc573": {
+      "citation": "MSC.573(110)",
+      "url": "https://wwwcdn.imo.org/localresources/en/KnowledgeCentre/IndexofIMOResolutions/MSCResolutions/MSC.573%28110%29.pdf"
+    },
+    "msc574": {
+      "citation": "MSC.574(110)",
+      "url": "https://wwwcdn.imo.org/localresources/en/KnowledgeCentre/IndexofIMOResolutions/MSCResolutions/MSC.574%28110%29.pdf"
+    },
+    "msc576": {
+      "citation": "MSC.576(110)",
+      "url": "https://wwwcdn.imo.org/localresources/en/KnowledgeCentre/IndexofIMOResolutions/MSCResolutions/MSC.576%28110%29.pdf"
+    },
+    "msc567": {
+      "citation": "MSC.567(109)",
+      "url": "https://wwwcdn.imo.org/localresources/en/KnowledgeCentre/IndexofIMOResolutions/MSCResolutions/MSC.567%28109%29.pdf"
+    },
+    "msc570": {
+      "citation": "MSC.570(109)",
+      "url": "https://wwwcdn.imo.org/localresources/en/KnowledgeCentre/IndexofIMOResolutions/MSCResolutions/MSC.570%28109%29.pdf"
+    },
+    "msc535": {
+      "citation": "MSC.535(107)",
+      "url": "https://wwwcdn.imo.org/localresources/en/KnowledgeCentre/IndexofIMOResolutions/MSCResolutions/MSC.535%28107%29.pdf"
+    },
+    "mepc400": {
+      "citation": "MEPC.400(83)",
+      "url": "https://wwwcdn.imo.org/localresources/en/KnowledgeCentre/IndexofIMOResolutions/MEPCDocuments/MEPC.400%2883%29.pdf"
+    },
+    "mepc329": {
+      "citation": "MEPC.329(76)",
+      "url": "https://wwwcdn.imo.org/localresources/en/KnowledgeCentre/IndexofIMOResolutions/MEPCDocuments/MEPC.329%2876%29.pdf"
+    },
+    "cape": {
+      "citation": "IMO treaty status · vol. II",
+      "url": "https://wwwcdn.imo.org/localresources/en/About/Conventions/StatusOfConventions/Status%202026%20-%20Vol.%20II.pdf"
+    },
+    "eca-notice": {
+      "citation": "IMO · Sulphur 2020",
+      "url": "https://www.imo.org/en/mediacentre/hottopics/pages/sulphur-2020.aspx"
+    },
+    "mepc397": {
+      "citation": "MEPC.397(83)",
+      "url": "https://wwwcdn.imo.org/localresources/en/OurWork/Environment/Documents/MEPC%2083-17-Add.1%20-%20Annex%201.pdf"
+    },
+    "mepc407": {
+      "citation": "MEPC.407(84)",
+      "url": "https://wwwcdn.imo.org/localresources/en/OurWork/Environment/Documents/Annex%203.pdf"
+    },
+    "mepc408": {
+      "citation": "MEPC.408(84)",
+      "url": "https://wwwcdn.imo.org/localresources/en/OurWork/Environment/Documents/Annex%204.pdf"
+    },
+    "hns": {
+      "citation": "IMO · 2010 HNS Protocol",
+      "url": "https://www.imo.org/en/mediacentre/pressbriefings/pages/imo-hns-treaty-to-enter-into-force-in-2027-.aspx"
+    },
+    "msc110": {
+      "citation": "IMO · MSC 110 summary",
+      "url": "https://www.imo.org/en/mediacentre/meetingsummaries/pages/msc-110th-session.aspx"
+    },
+    "msc111": {
+      "citation": "IMO · MSC 111 summary",
+      "url": "https://www.imo.org/en/mediacentre/meetingsummaries/pages/temporary-msc-111.aspx"
+    },
+    "msc584": {
+      "citation": "MSC.584(111)",
+      "url": "https://www.mpa.gov.sg/api/media/cfd61030-4bf0-4995-b8d9-3f87d3600cf8/MSC-111-22-Add.1---Report-Of-The-Maritime-Safety-Committee-On-Its-111Th-Session-(Secretariat).pdf"
+    },
+    "msc588": {
+      "citation": "MSC.588(111)",
+      "url": "https://www.mpa.gov.sg/api/media/cfd61030-4bf0-4995-b8d9-3f87d3600cf8/MSC-111-22-Add.1---Report-Of-The-Maritime-Safety-Committee-On-Its-111Th-Session-(Secretariat).pdf"
+    },
+    "msc589": {
+      "citation": "MSC.589(111)",
+      "url": "https://www.mpa.gov.sg/api/media/cfd61030-4bf0-4995-b8d9-3f87d3600cf8/MSC-111-22-Add.1---Report-Of-The-Maritime-Safety-Committee-On-Its-111Th-Session-(Secretariat).pdf"
+    },
+    "msc590": {
+      "citation": "MSC.590(111)",
+      "url": "https://www.mpa.gov.sg/api/media/cfd61030-4bf0-4995-b8d9-3f87d3600cf8/MSC-111-22-Add.1---Report-Of-The-Maritime-Safety-Committee-On-Its-111Th-Session-(Secretariat).pdf"
+    },
+    "beidou": {
+      "citation": "MSC.379(93)/Rev.1",
+      "url": "https://www.mpa.gov.sg/api/media/3679142b-70fa-407b-a8fb-6eebd86be579/MSC-111-22-Add.2---Report-Of-The-Maritime-Safety-Committee-On-Its-111Th-Session-(Secretariat).pdf"
+    },
+    "gmdss": {
+      "citation": "MSC.1/Circ.1676",
+      "url": "https://wwwcdn.imo.org/localresources/en/OurWork/Safety/Documents/Documents%20relevant%20to%20GMDSS/MSC.1-Circ.1676.pdf"
+    },
+    "vhf": {
+      "citation": "MSC.1/Circ.1460/Rev.5",
+      "url": "https://wwwcdn.imo.org/localresources/en/OurWork/Safety/Documents/Documents%20relevant%20to%20GMDSS/MSC.1-Circ.1460-Rev.5.pdf"
+    },
+    "ecdis": {
+      "citation": "IMO · MSC.530(106)/Rev.1",
+      "url": "https://www.imo.org/en/mediacentre/pressbriefings/pages/raft-of-shipping-rules-in-force-from-1-january-2026.aspx"
+    },
+    "mepc84": {
+      "citation": "IMO · MEPC 84 summary",
+      "url": "https://www.imo.org/en/mediacentre/meetingsummaries/pages/temporary-mepc-84th-session.aspx"
+    }
+  },
+  "provisions": [
+    {
+      "id": "imsbc-08-25",
+      "authority": "IMO",
+      "regime": "SOLAS",
+      "instrument": "solas-1974-imsbc",
+      "citation": "MSC.575(110)",
+      "title": "Solid bulk cargoes · IMSBC 08-25",
+      "description": "The amendment updates cargo schedules and segregation from packaged dangerous goods.",
+      "keywords": "fast bulklast bulkskip separasjon",
+      "dates": [
+        {
+          "id": "force",
+          "date": "2027-01-01",
+          "kind": "entry-into-force",
+          "condition": "Carriage of solid bulk cargoes under SOLAS chapter VI.",
+          "evidence": [
+            {
+              "source": "msc575",
+              "reference": "paragraph 3",
+              "quote": "the amendments shall enter into force on 1 January 2027",
+              "page": 2
+            }
+          ]
+        },
+        {
+          "id": "early-use",
+          "date": "2026-01-01",
+          "kind": "early-use",
+          "condition": "Contracting governments may use the amendments in whole or in part.",
+          "evidence": [
+            {
+              "source": "msc575",
+              "reference": "paragraph 4",
+              "quote": "on a voluntary basis as from 1 January 2026",
+              "page": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "polar-code-navigation",
+      "authority": "IMO",
+      "regime": "SOLAS",
+      "instrument": "solas-1974",
+      "citation": "MSC.532(107)",
+      "title": "Polar Code · navigation and voyage planning",
+      "description": "SOLAS XIV/3-1 applies Polar Code Part I-A chapters 9-1 and 11-1 on Antarctic voyages and in Arctic waters beyond the outer limit of the flag State’s territorial sea. The Administration determines the extent of exemptions under XIV/3-1.2.",
+      "keywords": "polarkoden polare farvann navigasjon reiseplanlegging 24 meter 300 bt 500 bt",
+      "scope": {
+        "any": [
+          {
+            "all": [
+              {
+                "field": "shipType",
+                "op": "eq",
+                "value": "fishing"
+              },
+              {
+                "field": "lengthOverall",
+                "op": "gte",
+                "value": 24
+              }
+            ]
+          },
+          {
+            "all": [
+              {
+                "field": "shipType",
+                "op": "eq",
+                "value": "recreational"
+              },
+              {
+                "field": "grossTonnage",
+                "op": "gte",
+                "value": 300
+              }
+            ]
+          },
+          {
+            "all": [
+              {
+                "field": "shipType",
+                "op": "eq",
+                "value": "cargo"
+              },
+              {
+                "field": "grossTonnage",
+                "op": "gte",
+                "value": 300
+              },
+              {
+                "field": "grossTonnage",
+                "op": "lt",
+                "value": 500
+              }
+            ]
+          }
+        ]
+      },
+      "dates": [
+        {
+          "id": "existing",
+          "date": "2027-01-01",
+          "kind": "application",
+          "condition": "Ships built before 1 January 2026. Fishing vessels from 24 m overall, pleasure yachts from 300 GT outside trade and cargo ships from 300 to under 500 GT. Government non-commercial ships are excluded under SOLAS XIV/2.5.",
+          "scope": {
+            "field": "buildDate",
+            "op": "lt",
+            "value": "2026-01-01"
+          },
+          "evidence": [
+            {
+              "source": "msc532",
+              "reference": "SOLAS XIV/2.3",
+              "quote": "part I-A of the Polar Code by 1 January 2027",
+              "page": 7
+            }
+          ]
+        },
+        {
+          "id": "new",
+          "date": "2026-01-01",
+          "kind": "application",
+          "condition": "Ships built from 1 January 2026 in the same classes. Government non-commercial ships are excluded under SOLAS XIV/2.5.",
+          "scope": {
+            "field": "buildDate",
+            "op": "gte",
+            "value": "2026-01-01"
+          },
+          "evidence": [
+            {
+              "source": "msc532",
+              "reference": "SOLAS XIV/3-1.1",
+              "quote": "shall comply with the provisions of chapters 9-1 and 11-1",
+              "page": 8
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cii-reduction-factors",
+      "authority": "IMO",
+      "regime": "MARPOL",
+      "instrument": "marpol-1997-protocol",
+      "citation": "MEPC.400(83)",
+      "title": "Annual operational carbon intensity · CII",
+      "description": "Reference line is the 2019 operational carbon intensity.",
+      "keywords": "karbonintensitet reduksjonsfaktor utslipp",
+      "scope": {
+        "field": "grossTonnage",
+        "op": "gte",
+        "value": 5000
+      },
+      "dates": [
+        {
+          "id": "2027",
+          "date": "2027-01-01",
+          "kind": "reporting-year",
+          "condition": "The reduction factor for this reporting year is 13.625% for ships covered by MARPOL VI/28.",
+          "title": "CII reduction factor · 13.625% in 2027",
+          "evidence": [
+            {
+              "source": "mepc400",
+              "reference": "table 1",
+              "quote": "2027 13.625%",
+              "page": 3
+            }
+          ]
+        },
+        {
+          "id": "2028",
+          "date": "2028-01-01",
+          "kind": "reporting-year",
+          "condition": "The reduction factor for this reporting year is 16.250% for ships covered by MARPOL VI/28.",
+          "title": "CII reduction factor · 16.250% in 2028",
+          "evidence": [
+            {
+              "source": "mepc400",
+              "reference": "table 1",
+              "quote": "2028 16.250%",
+              "page": 3
+            }
+          ]
+        },
+        {
+          "id": "2029",
+          "date": "2029-01-01",
+          "kind": "reporting-year",
+          "condition": "The reduction factor for this reporting year is 18.875% for ships covered by MARPOL VI/28.",
+          "title": "CII reduction factor · 18.875% in 2029",
+          "evidence": [
+            {
+              "source": "mepc400",
+              "reference": "table 1",
+              "quote": "2029 18.875%",
+              "page": 3
+            }
+          ]
+        },
+        {
+          "id": "2030",
+          "date": "2030-01-01",
+          "kind": "reporting-year",
+          "condition": "The reduction factor for this reporting year is 21.500% for ships covered by MARPOL VI/28.",
+          "title": "CII reduction factor · 21.500% in 2030",
+          "evidence": [
+            {
+              "source": "mepc400",
+              "reference": "table 1",
+              "quote": "2030 21.500%",
+              "page": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cape-town-entry",
+      "authority": "IMO",
+      "regime": "CAPE",
+      "instrument": "cape-town-2012",
+      "citation": "",
+      "title": "Cape Town Agreement · fishing vessel safety",
+      "description": "Construction, stability, machinery and safety equipment requirements under the Torremolinos framework.",
+      "keywords": "fiskefartøy fiskeskip 24 meter sikkerhet",
+      "scope": {
+        "field": "shipType",
+        "op": "eq",
+        "value": "fishing"
+      },
+      "dates": [
+        {
+          "id": "force",
+          "date": "2027-02-24",
+          "kind": "entry-into-force",
+          "condition": "Fishing vessels of 24 m in length and over within the Agreement’s scope. The definition of length is in regulation I/2.",
+          "evidence": [
+            {
+              "source": "cape",
+              "reference": "Cape Town Agreement · entry into force",
+              "quote": "Entry into force: 24 February 2027"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "northern-eca-sulphur",
+      "authority": "IMO",
+      "regime": "MARPOL",
+      "instrument": "marpol-1997-protocol",
+      "citation": "MEPC.392(82)",
+      "title": "Sulphur limit · Norwegian Sea and Canadian Arctic",
+      "description": "The 0.10% sulphur limit applies in both emission control areas. MARPOL VI also allows approved equivalent compliance methods.",
+      "keywords": "svovel svovelgrense norskehavet canadisk kanadisk arktis",
+      "dates": [
+        {
+          "id": "application",
+          "date": "2027-03-01",
+          "kind": "application",
+          "condition": "Ships operating inside the designated areas in the Norwegian Sea or Canadian Arctic.",
+          "evidence": [
+            {
+              "source": "eca-notice",
+              "reference": "emission control areas",
+              "quote": "taking effect from 1 March 2027"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "nox-engine-profiles",
+      "authority": "IMO",
+      "regime": "MARPOL",
+      "instrument": "marpol-1997-protocol",
+      "citation": "MEPC.397(83)",
+      "title": "NOx Technical Code · multiple engine operating profiles",
+      "description": "The amendment defines substantial modification and adds chapter 8 for engines with multiple operating profiles.",
+      "keywords": "dieselmotor diesel engines prøvesyklus test cycles EIAPP sertifisering førstegangssertifisering nitrogenoksid",
+      "dates": [
+        {
+          "id": "force",
+          "date": "2027-03-01",
+          "kind": "entry-into-force",
+          "condition": "The Code amendments take effect for the engine categories on the separate dates specified in paragraph 4.",
+          "evidence": [
+            {
+              "source": "mepc397",
+              "reference": "paragraph 3",
+              "quote": "shall enter into force on 1 March 2027",
+              "page": 1
+            }
+          ]
+        },
+        {
+          "id": "first-certificate",
+          "date": "2028-01-01",
+          "kind": "certification",
+          "condition": "New individual engines and parent engines of previously uncertified families or groups. The issue date of the EIAPP certificate controls.",
+          "title": "NOx profiles · first EIAPP certification",
+          "evidence": [
+            {
+              "source": "mepc397",
+              "reference": "paragraph 4(a)",
+              "quote": "apply no later than 1 January 2028",
+              "page": 1
+            }
+          ]
+        },
+        {
+          "id": "modified-engines",
+          "date": "2028-01-01",
+          "kind": "application",
+          "condition": "For an already certified engine, a substantial modification on or after this date is assessed under amended paragraph 1.3.2, using the EIAPP issue date.",
+          "title": "NOx profiles · substantial engine modification",
+          "evidence": [
+            {
+              "source": "mepc397",
+              "reference": "paragraph 4(c)(i)",
+              "quote": "substantial modification",
+              "page": 2
+            }
+          ]
+        },
+        {
+          "id": "replacement-engines",
+          "date": "2028-01-01",
+          "kind": "installation",
+          "condition": "An identical replacement installed from this date follows the Code at original EIAPP issue. If the replaced engine had multiple profiles, amended chapter 8 applies.",
+          "title": "NOx profiles · identical replacement engines",
+          "evidence": [
+            {
+              "source": "mepc397",
+              "reference": "paragraph 4(c)(ii)",
+              "quote": "identical replacement engine",
+              "page": 2
+            }
+          ]
+        },
+        {
+          "id": "member-engines",
+          "date": "2030-01-01",
+          "kind": "certification",
+          "condition": "New member engines in families or groups whose parent engine was certified before 1 January 2028. Compliance must be shown before member-engine certification, using the EIAPP issue date.",
+          "title": "NOx profiles · certification of new member engines",
+          "evidence": [
+            {
+              "source": "mepc397",
+              "reference": "paragraph 4(b)",
+              "quote": "than 1 January 2030",
+              "page": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "nea-eca-and-dcs",
+      "authority": "IMO",
+      "regime": "MARPOL",
+      "instrument": "marpol-1997-protocol",
+      "citation": "MEPC.407(84)",
+      "title": "North-East Atlantic ECA and fuel consumption reporting",
+      "description": "MARPOL Annex VI identifies the ECA and changes reporting entries and access to the IMO fuel consumption database.",
+      "keywords": "nordøst-atlanteren nordostatlanteren utslippskontroll bunker dcs drivstoffrapportering",
+      "dates": [
+        {
+          "id": "force",
+          "date": "2027-09-01",
+          "kind": "entry-into-force",
+          "condition": "Use the separately indexed Tier III construction thresholds and the later sulphur limit for operation in the ECA.",
+          "evidence": [
+            {
+              "source": "mepc407",
+              "reference": "paragraph 3 and annex",
+              "quote": "on 1 September 2027",
+              "page": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "nea-nox-tier-iii",
+      "authority": "IMO",
+      "regime": "MARPOL",
+      "instrument": "marpol-1997-protocol",
+      "citation": "MEPC.407(84)",
+      "title": "North-East Atlantic ECA · NOx Tier III",
+      "description": "The Tier III construction criteria apply to ships operating in the North-East Atlantic Emission Control Area.",
+      "keywords": "eca nordøst-atlanteren nordostatlanteren nox nitrogenoksid kjølstrekk byggekontrakt levering",
+      "dates": [
+        {
+          "id": "contract",
+          "date": "2027-01-01",
+          "kind": "construction",
+          "condition": "The building contract is placed on or after this date. Tier III applies in the ECA once the amendment is in force.",
+          "evidence": [
+            {
+              "source": "mepc407",
+              "reference": "Annex VI/13.5.1.3.2.1",
+              "quote": "placed on or after 1 January 2027",
+              "page": 2
+            }
+          ]
+        },
+        {
+          "id": "keel",
+          "date": "2027-07-01",
+          "kind": "construction",
+          "condition": "With no building contract, the keel is laid or the ship reaches a similar stage of construction on or after this date.",
+          "evidence": [
+            {
+              "source": "mepc407",
+              "reference": "Annex VI/13.5.1.3.2.2",
+              "quote": "after 1 July 2027",
+              "page": 2
+            }
+          ]
+        },
+        {
+          "id": "force",
+          "date": "2027-09-01",
+          "kind": "application",
+          "condition": "Ships operating in the ECA that meet the building contract, no-contract keel or delivery threshold in regulation 13.5.1.3.2.",
+          "evidence": [
+            {
+              "source": "mepc407",
+              "reference": "Annex VI/13.5.1.3.2",
+              "quote": "that ship is constructed",
+              "page": 2
+            }
+          ]
+        },
+        {
+          "id": "delivery",
+          "date": "2031-01-01",
+          "kind": "delivery",
+          "condition": "Delivery on or after this date is an alternative to the contract and keel thresholds.",
+          "evidence": [
+            {
+              "source": "mepc407",
+              "reference": "Annex VI/13.5.1.3.2.3",
+              "quote": "on or after 1 January 2031",
+              "page": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "nea-eca-sulphur",
+      "authority": "IMO",
+      "regime": "MARPOL",
+      "instrument": "marpol-1997-protocol",
+      "citation": "MEPC.407(84)",
+      "title": "North-East Atlantic ECA · 0.10% sulphur",
+      "description": "The 0.10% sulphur limit applies after the first 12 months of the ECA.",
+      "keywords": "svovel svovelgrense nordøst-atlanteren nordostatlanteren utslipp",
+      "dates": [
+        {
+          "id": "application",
+          "date": "2028-09-01",
+          "kind": "application",
+          "condition": "Ships operating inside the North-East Atlantic ECA. Equivalent compliance methods remain available under MARPOL VI.",
+          "evidence": [
+            {
+              "source": "mepc84",
+              "reference": "North-East Atlantic ECA",
+              "quote": "with the ECA taking effect 12 months later in 2028"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "marpol-engine-profiles",
+      "authority": "IMO",
+      "regime": "MARPOL",
+      "instrument": "marpol-1997-protocol",
+      "citation": "MEPC.408(84)",
+      "title": "MARPOL Annex VI · IAPP and engine profiles",
+      "description": "Definitions, the IAPP supplement and NOx provisions are aligned with the use of multiple engine operating profiles.",
+      "keywords": "motorprøvesyklus iapp sertifikat motorprofiler",
+      "dates": [
+        {
+          "id": "force",
+          "date": "2027-09-01",
+          "kind": "entry-into-force",
+          "condition": "Use the EIAPP certification and engine-specific triggers in MEPC.397(83) paragraph 4.",
+          "evidence": [
+            {
+              "source": "mepc408",
+              "reference": "paragraphs 3–4",
+              "quote": "the said amendments shall enter into force on 1 September 2027",
+              "page": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hns-liability",
+      "authority": "IMO",
+      "regime": "HNS",
+      "instrument": "hns-2010-protocol",
+      "citation": "",
+      "title": "2010 HNS Protocol · liability and compulsory insurance",
+      "description": "The regime covers compensation for damage from hazardous and noxious substances carried by sea.",
+      "keywords": "erstatning erstatningsansvar forsikring farlig skadelig last",
+      "dates": [
+        {
+          "id": "force",
+          "date": "2027-11-29",
+          "kind": "entry-into-force",
+          "condition": "Shipowners carrying covered substances must maintain State-certified insurance or other financial security.",
+          "evidence": [
+            {
+              "source": "hns",
+              "reference": "entry into force and insurance",
+              "quote": "required to maintain State-certified insurance or other financial security"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "emergency-towing",
+      "authority": "IMO",
+      "regime": "SOLAS",
+      "instrument": "solas-1974",
+      "citation": "MSC.549(108)",
+      "title": "Emergency towing arrangements from 20,000 GT",
+      "description": "Fit arrangements capable of rapid deployment and use without the ship’s main power.",
+      "keywords": "nødslep nødslepearrangement nødslepeutstyr nød slep 20000 gt",
+      "scope": {
+        "field": "grossTonnage",
+        "op": "gte",
+        "value": 20000
+      },
+      "dates": [
+        {
+          "id": "force",
+          "date": "2028-01-01",
+          "kind": "entry-into-force",
+          "condition": "New ships of at least 20,000 GT, other than tankers, constructed on or after this date.",
+          "scope": {
+            "field": "buildDate",
+            "op": "gte",
+            "value": "2028-01-01"
+          },
+          "evidence": [
+            {
+              "source": "msc549",
+              "reference": "SOLAS II-1/3-4.2.1",
+              "quote": "other than tankers, of not less than 20,000 gross tonnage, constructed on or after 1 January 2028",
+              "page": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "solas-fire-resistance-tables",
+      "authority": "IMO",
+      "regime": "SOLAS",
+      "instrument": "solas-1974",
+      "citation": "MSC.572(110)",
+      "title": "SOLAS fire resistance tables",
+      "description": "The amendment clarifies the table references for minimum fire integrity and the required insulation values.",
+      "keywords": "brannmotstand brannklasse brannisolasjonskrav tabell",
+      "dates": [
+        {
+          "id": "force",
+          "date": "2028-01-01",
+          "kind": "entry-into-force",
+          "condition": "SOLAS II-2/11.2, where the integrity of decks, bulkheads or other divisions is assessed against the SOLAS tables.",
+          "evidence": [
+            {
+              "source": "msc572",
+              "reference": "SOLAS II-2/11.2",
+              "quote": "given in tables 9.1 to 9.8",
+              "page": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pilot-transfer",
+      "authority": "IMO",
+      "regime": "SOLAS",
+      "instrument": "solas-1974",
+      "citation": "MSC.572(110)",
+      "title": "Pilot transfer arrangements",
+      "description": "Arrangements must meet the applicable parts of the MSC.576(110) performance standards.",
+      "keywords": "los losleider losleidere losarrangement manntau pilot ladder manrope",
+      "dates": [
+        {
+          "id": "new",
+          "date": "2028-01-01",
+          "kind": "installation",
+          "condition": "Installed from this date. Use the contractual delivery date or, without one, the actual delivery date. Parts A–C govern design and installation.",
+          "title": "Pilot transfer · new arrangements",
+          "evidence": [
+            {
+              "source": "msc572",
+              "reference": "SOLAS V/23.3 and 23.7",
+              "quote": "on or after 1 January 2028",
+              "page": 4
+            },
+            {
+              "source": "msc576",
+              "reference": "point 25.1",
+              "quote": "inspection before and after each use by a responsible officer on board",
+              "page": 14
+            }
+          ]
+        },
+        {
+          "id": "existing-chapter-i",
+          "date": "2029-01-01",
+          "kind": "survey",
+          "condition": "Arrangements installed before 2028 on ships subject to SOLAS chapter I must comply no later than the first survey on or after this date.",
+          "title": "Pilot transfer · existing arrangements on SOLAS chapter I ships",
+          "evidence": [
+            {
+              "source": "msc572",
+              "reference": "SOLAS V/23.4",
+              "quote": "after 1 January 2029",
+              "page": 4
+            }
+          ]
+        },
+        {
+          "id": "existing-other",
+          "date": "2030-01-01",
+          "kind": "application",
+          "condition": "Arrangements installed before 2028 on ships outside the scope of SOLAS chapter I must comply by this date.",
+          "title": "Pilot transfer · existing arrangements outside SOLAS chapter I",
+          "evidence": [
+            {
+              "source": "msc572",
+              "reference": "SOLAS V/23.5",
+              "quote": "not later than 1 January 2030",
+              "page": 4
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ro-ro-fire-safety",
+      "authority": "IMO",
+      "regime": "SOLAS",
+      "instrument": "solas-1974",
+      "citation": "MSC.550(108)",
+      "title": "Ro-ro fire safety · alarms, video and water monitors",
+      "description": "Fit the required fixed fire detection and alarm, continuous video monitoring and fixed water-based protection for relevant weather decks.",
+      "keywords": "roro ro-ro brann brannalarm brannsikring video kamera vannkanoner vannmonitor ferge passasjerskip",
+      "scope": {
+        "field": "shipType",
+        "op": "eq",
+        "value": "passenger"
+      },
+      "dates": [
+        {
+          "id": "new",
+          "date": "2026-01-01",
+          "kind": "construction",
+          "condition": "Passenger ships constructed on or after this date must meet the new requirements for vehicle, special category and ro-ro spaces.",
+          "scope": {
+            "field": "buildDate",
+            "op": "gte",
+            "value": "2026-01-01"
+          },
+          "evidence": [
+            {
+              "source": "msc550",
+              "reference": "SOLAS II-2/20.4.4",
+              "quote": "ships constructed on or after 1 January 2026",
+              "page": 7
+            }
+          ]
+        },
+        {
+          "id": "existing",
+          "date": "2028-01-01",
+          "kind": "survey",
+          "condition": "Passenger ships built before 1 January 2026 with vehicle, special category or ro-ro spaces. Compliance is due at the first survey on or after this date.",
+          "scope": {
+            "field": "buildDate",
+            "op": "lt",
+            "value": "2026-01-01"
+          },
+          "evidence": [
+            {
+              "source": "msc550",
+              "reference": "SOLAS II-2/20.4.1.6",
+              "quote": "fire detection and fire alarm",
+              "page": 5
+            },
+            {
+              "source": "msc550",
+              "reference": "SOLAS II-2/20.4.4",
+              "quote": "on or after 1 January 2028",
+              "page": 7
+            },
+            {
+              "source": "msc550",
+              "reference": "SOLAS II-2/20.6.2.3",
+              "quote": "water-based fire-extinguishing system",
+              "page": 10
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hsc-1994-lifejackets",
+      "authority": "IMO",
+      "regime": "SOLAS",
+      "instrument": "solas-1974-hsc-1994",
+      "citation": "MSC.573(110)",
+      "title": "High-speed craft · lifejackets under the 1994 HSC Code",
+      "description": "Short passenger voyages under 24 hours require infant lifejackets for at least 2.5% of passengers; on voyages of 24 hours or more, one per infant. Provide suitable accessories if adult jackets do not fit occupants up to 140 kg and 1,750 mm chest girth.",
+      "keywords": "hsc hurtiggående hurtigbat redningsvest redningsvester spedbarn livredning lifejackets",
+      "dates": [
+        {
+          "id": "survey",
+          "date": "2028-01-01",
+          "kind": "survey",
+          "condition": "Craft under the 1994 HSC Code. The additions are due by the first renewal survey on or after this date.",
+          "evidence": [
+            {
+              "source": "msc573",
+              "reference": "1994 HSC 8.3.5.5",
+              "quote": "first renewal survey on or after 1 January 2028",
+              "page": 3
+            },
+            {
+              "source": "msc573",
+              "reference": "1994 HSC 8.3.5.5.1",
+              "quote": "at least 2.5% of the number of passengers",
+              "page": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hsc-2000-lifejackets",
+      "authority": "IMO",
+      "regime": "SOLAS",
+      "instrument": "solas-1974-hsc-2000",
+      "citation": "MSC.574(110)",
+      "title": "High-speed craft · lifejackets under the 2000 HSC Code",
+      "description": "Short passenger voyages under 24 hours require infant lifejackets for at least 2.5% of passengers; on voyages of 24 hours or more, one per infant. Provide suitable accessories if adult jackets do not fit occupants up to 140 kg and 1,750 mm chest girth.",
+      "keywords": "hsc hurtiggående hurtigbat redningsvest redningsvester spedbarn livredning lifejackets",
+      "dates": [
+        {
+          "id": "new",
+          "date": "2028-01-01",
+          "kind": "construction",
+          "condition": "Craft under the 2000 HSC Code constructed on or after this date.",
+          "scope": {
+            "field": "buildDate",
+            "op": "gte",
+            "value": "2028-01-01"
+          },
+          "evidence": [
+            {
+              "source": "msc574",
+              "reference": "2000 HSC 8.3.5.5",
+              "quote": "craft constructed on or after 1 January 2028",
+              "page": 3
+            },
+            {
+              "source": "msc574",
+              "reference": "2000 HSC 8.3.5.5.3",
+              "quote": "persons weighing up to 140 kg",
+              "page": 3
+            }
+          ]
+        },
+        {
+          "id": "existing",
+          "date": "2028-01-01",
+          "kind": "survey",
+          "condition": "Craft constructed before this date must comply by the first renewal survey on or after it.",
+          "scope": {
+            "field": "buildDate",
+            "op": "lt",
+            "value": "2028-01-01"
+          },
+          "evidence": [
+            {
+              "source": "msc574",
+              "reference": "2000 HSC 8.3.5.6",
+              "quote": "first renewal survey on or after 1 January 2028",
+              "page": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hsc-1994-pilot-equipment",
+      "authority": "IMO",
+      "regime": "SOLAS",
+      "instrument": "solas-1974-hsc-1994",
+      "citation": "MSC.573(110)",
+      "title": "High-speed craft · pilot ladder and manropes (1994 Code)",
+      "description": "The Record of Equipment for the High-Speed Craft Safety Certificate adds pilot ladders and manropes.",
+      "keywords": "utstyrsliste hurtiggående hurtigbat hsc losleider manntau",
+      "dates": [
+        {
+          "id": "force",
+          "date": "2028-01-01",
+          "kind": "entry-into-force",
+          "condition": "Craft certified under the 1994 HSC Code.",
+          "evidence": [
+            {
+              "source": "msc110",
+              "reference": "HSC Codes · Record of Equipment",
+              "quote": "adding pilot ladders and manropes"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hsc-2000-pilot-equipment",
+      "authority": "IMO",
+      "regime": "SOLAS",
+      "instrument": "solas-1974-hsc-2000",
+      "citation": "MSC.574(110)",
+      "title": "High-speed craft · pilot ladder and manropes (2000 Code)",
+      "description": "The Record of Equipment for the High-Speed Craft Safety Certificate adds pilot ladders and manropes.",
+      "keywords": "utstyrsliste hurtiggående hurtigbat hsc losleider manntau",
+      "dates": [
+        {
+          "id": "force",
+          "date": "2028-01-01",
+          "kind": "entry-into-force",
+          "condition": "Craft certified under the 2000 HSC Code.",
+          "evidence": [
+            {
+              "source": "msc110",
+              "reference": "HSC Codes · Record of Equipment",
+              "quote": "adding pilot ladders and manropes"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gmdss-satellite-services",
+      "authority": "IMO",
+      "regime": "SOLAS",
+      "instrument": "solas-1974",
+      "citation": "MSC.583(111)",
+      "title": "GMDSS · maritime safety and search-and-rescue information",
+      "description": "Disseminate MSI and SAR-related information through all operational mobile satellite services recognized by IMO for GMDSS.",
+      "keywords": "satellitt radio radioutstyr redningsinformasjon maritime safety information",
+      "dates": [
+        {
+          "id": "force",
+          "date": "2028-01-01",
+          "kind": "entry-into-force",
+          "condition": "Provision of SOLAS chapter IV services and chapter V navigational information.",
+          "evidence": [
+            {
+              "source": "msc111",
+              "reference": "SOLAS IV and V · MSC.583(111)",
+              "quote": "mobile satellite services recognized by IMO"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "solas-vdes",
+      "authority": "IMO",
+      "regime": "SOLAS",
+      "instrument": "solas-1974",
+      "citation": "MSC.583(111)",
+      "title": "VDES permitted as an alternative to AIS",
+      "description": "SOLAS allows carriage of the VHF Data Exchange System as an alternative to AIS and updates the equipment records.",
+      "keywords": "ais vdes digital radio skipsidentifikasjon automatisk identifikasjon",
+      "dates": [
+        {
+          "id": "force",
+          "date": "2028-01-01",
+          "kind": "entry-into-force",
+          "condition": "Ships subject to SOLAS V/19 carriage requirements.",
+          "evidence": [
+            {
+              "source": "msc111",
+              "reference": "SOLAS V/19 · MSC.583(111)",
+              "quote": "the automatic identification system (AIS)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hsc-1994-vdes",
+      "authority": "IMO",
+      "regime": "SOLAS",
+      "instrument": "solas-1974-hsc-1994",
+      "citation": "MSC.585(111)",
+      "title": "VDES on 1994 HSC craft",
+      "description": "Consequential amendments align the HSC Code with SOLAS carriage of VDES as an alternative to AIS.",
+      "keywords": "ais vdes hsc hurtiggående hurtigbat utstyr",
+      "dates": [
+        {
+          "id": "force",
+          "date": "2028-01-01",
+          "kind": "entry-into-force",
+          "condition": "Craft covered by the 1994 HSC Code.",
+          "evidence": [
+            {
+              "source": "msc111",
+              "reference": "HSC Codes · MSC.585(111)",
+              "quote": "consequential amendments"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hsc-2000-vdes",
+      "authority": "IMO",
+      "regime": "SOLAS",
+      "instrument": "solas-1974-hsc-2000",
+      "citation": "MSC.586(111)",
+      "title": "VDES on 2000 HSC craft",
+      "description": "Consequential amendments align the HSC Code with SOLAS carriage of VDES as an alternative to AIS.",
+      "keywords": "ais vdes hsc hurtiggående hurtigbat utstyr",
+      "dates": [
+        {
+          "id": "force",
+          "date": "2028-01-01",
+          "kind": "entry-into-force",
+          "condition": "Craft covered by the 2000 HSC Code.",
+          "evidence": [
+            {
+              "source": "msc111",
+              "reference": "HSC Codes · MSC.586(111)",
+              "quote": "consequential amendments"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "esp-remote-inspection",
+      "authority": "IMO",
+      "regime": "SOLAS",
+      "instrument": "solas-1974-esp-2011",
+      "citation": "MSC.584(111)",
+      "title": "ESP Code · remote inspection",
+      "description": "Remote inspection techniques can be used to examine structural parts of qualifying bulk carriers and oil tankers in accordance with the amended ESP Code.",
+      "keywords": "fjerninspeksjon inspeksjon besiktelse bulkskip oljetankskip droner",
+      "dates": [
+        {
+          "id": "force",
+          "date": "2028-01-01",
+          "kind": "entry-into-force",
+          "condition": "Surveys covered by the 2011 ESP Code. Use the specific survey provisions and acceptance conditions in the annex.",
+          "evidence": [
+            {
+              "source": "msc584",
+              "reference": "ESP Code 1.2.22",
+              "quote": "remote inspection",
+              "page": 21
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "imdg-43-26",
+      "authority": "IMO",
+      "regime": "SOLAS",
+      "instrument": "solas-1974-imdg",
+      "citation": "MSC.587(111)",
+      "title": "IMDG amendment 43-26 · packaged dangerous goods",
+      "description": "The amendment updates requirements for batteries, electric vehicles, explosives, radioactive material, chemicals and other hazardous cargoes.",
+      "keywords": "farlig last farlig gods batterier batterilast elbiler elektriske kjøretøy pakket",
+      "dates": [
+        {
+          "id": "force",
+          "date": "2028-01-01",
+          "kind": "entry-into-force",
+          "condition": "Packaged dangerous goods subject to SOLAS VII and the IMDG Code.",
+          "evidence": [
+            {
+              "source": "msc111",
+              "reference": "IMDG Code · MSC.587(111)",
+              "quote": "battery cargoes and electric vehicles"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ip-stability-mass",
+      "authority": "IMO",
+      "regime": "SOLAS",
+      "instrument": "solas-1974-ip",
+      "citation": "MSC.588(111)",
+      "title": "IP Code · 90 kg per industrial person",
+      "description": "Use 90 kg instead of 75 kg per industrial person when calculating the stability of ships certified under SOLAS chapter I.",
+      "keywords": "industriperson industripersonell stabilitet vekt masse",
+      "dates": [
+        {
+          "id": "force",
+          "date": "2028-01-01",
+          "kind": "entry-into-force",
+          "condition": "IP Code part IV. The ship meets the contract, no-contract keel or delivery test in IV/2.1.7.",
+          "evidence": [
+            {
+              "source": "msc588",
+              "reference": "IP Code IV/2.1.7",
+              "quote": "90 kg instead of 75 kg",
+              "page": 128
+            }
+          ]
+        },
+        {
+          "id": "keel",
+          "date": "2028-07-01",
+          "kind": "construction",
+          "condition": "With no building contract, the keel is laid or the ship reaches a similar stage of construction from this date.",
+          "evidence": [
+            {
+              "source": "msc588",
+              "reference": "IP Code IV/2.1.7.2",
+              "quote": "6 months",
+              "page": 128
+            }
+          ]
+        },
+        {
+          "id": "delivery",
+          "date": "2032-01-01",
+          "kind": "delivery",
+          "condition": "Delivery on or after this date meets the third threshold. The date is four years after 1 January 2028.",
+          "evidence": [
+            {
+              "source": "msc588",
+              "reference": "IP Code IV/2.1.7.3",
+              "quote": "4 years",
+              "page": 128
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lsa-free-fall-testing",
+      "authority": "IMO",
+      "regime": "SOLAS",
+      "instrument": "solas-1974-lsa",
+      "citation": "MSC.589(111)",
+      "title": "LSA Code · simulated launching of free-fall lifeboats",
+      "description": "The test arrangement must support release under load without launching the lifeboat and have a minimum safety factor of 6.",
+      "keywords": "frittfallslivbåt livbåt simulert utsetting prøvekrav test",
+      "dates": [
+        {
+          "id": "force",
+          "date": "2028-01-01",
+          "kind": "entry-into-force",
+          "condition": "The LSA Code amendment enters into force. Installation and contractual delivery have a separate trigger.",
+          "evidence": [
+            {
+              "source": "msc589",
+              "reference": "paragraph 3",
+              "quote": "1 January 2028",
+              "page": 129
+            }
+          ]
+        },
+        {
+          "id": "install",
+          "date": "2031-01-01",
+          "kind": "installation",
+          "condition": "Free-fall lifeboats with a contractual delivery date from this date or, with no contractual date, actually delivered to the ship from this date.",
+          "evidence": [
+            {
+              "source": "msc589",
+              "reference": "LSA Code 4.7.7.1–2",
+              "quote": "1 January 2031",
+              "page": 133
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lifeboat-maintenance-testing",
+      "authority": "IMO",
+      "regime": "SOLAS",
+      "instrument": "solas-1974-lifeboat-maintenance",
+      "citation": "MSC.590(111)",
+      "title": "Lifeboat maintenance · simulated-launch testing",
+      "description": "Consequential changes to the operational testing and servicing requirements in MSC.402(96).",
+      "keywords": "frittfallslivbåt livbåt vedlikehold prøvekrav testing service",
+      "dates": [
+        {
+          "id": "force",
+          "date": "2028-01-01",
+          "kind": "entry-into-force",
+          "condition": "The maintenance amendment enters into force. The new testing procedure has a separate installation and delivery threshold.",
+          "evidence": [
+            {
+              "source": "msc590",
+              "reference": "MSC.402(96), paragraph 6.2.7",
+              "quote": "operational test",
+              "page": 137
+            }
+          ]
+        },
+        {
+          "id": "install",
+          "date": "2031-01-01",
+          "kind": "installation",
+          "condition": "Free-fall lifeboats installed or contracted for delivery on or after this date, or actually delivered then when there is no contractual date.",
+          "evidence": [
+            {
+              "source": "msc590",
+              "reference": "paragraph 4",
+              "quote": "1 January 2031",
+              "page": 136
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "load-lines-guardrails",
+      "authority": "IMO",
+      "regime": "LOAD LINES",
+      "instrument": "load-lines-1988-protocol",
+      "citation": "MSC.591(111)",
+      "title": "Load Lines · guard rails and bulwarks",
+      "description": "The 1988 Load Lines Protocol updates guard rails and bulwarks on deck structures.",
+      "keywords": "lastelinjer lastelinjeprotokollen rekkverk skansekledning dekk",
+      "dates": [
+        {
+          "id": "force",
+          "date": "2028-01-01",
+          "kind": "entry-into-force",
+          "condition": "Deck structures and exposed areas addressed by the amended Load Lines regulations.",
+          "evidence": [
+            {
+              "source": "msc111",
+              "reference": "1988 Load Lines Protocol · MSC.591(111)",
+              "quote": "guard rails and bulwarks"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "igf-fuel-safety",
+      "authority": "IMO",
+      "regime": "SOLAS",
+      "instrument": "solas-1974-igf",
+      "citation": "MSC.567(109)",
+      "title": "IGF Code · natural gas fuel safety",
+      "description": "Amended fuel-system pressure relief, fire protection, hazardous zones and ventilation requirements.",
+      "keywords": "igf brannsikring eksplosjonssoner eksplosjonsfarlige soner ventilasjon gass drivstoff trykkavlastning",
+      "dates": [
+        {
+          "id": "force",
+          "date": "2028-01-01",
+          "kind": "entry-into-force",
+          "condition": "IGF ships with a building contract from this date meet the new construction definition. See the alternative keel and delivery criteria.",
+          "evidence": [
+            {
+              "source": "msc567",
+              "reference": "paragraph 3",
+              "quote": "the amendments shall enter into force on 1 January 2028",
+              "page": 2
+            }
+          ]
+        },
+        {
+          "id": "keel",
+          "date": "2028-07-01",
+          "kind": "construction",
+          "condition": "With no building contract, the keel is laid or the ship reaches a similar stage of construction from this date.",
+          "evidence": [
+            {
+              "source": "msc567",
+              "reference": "IGF Code 2.2.44.2",
+              "quote": "after 1 July 2028",
+              "page": 3
+            }
+          ]
+        },
+        {
+          "id": "delivery",
+          "date": "2032-01-01",
+          "kind": "delivery",
+          "condition": "Delivery on or after this date is an alternative to the building contract and keel criteria.",
+          "evidence": [
+            {
+              "source": "msc567",
+              "reference": "IGF Code 2.2.44.3",
+              "quote": "delivery of which is on or after 1 January 2032",
+              "page": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gmdss-legacy-allowance",
+      "authority": "IMO",
+      "regime": "SOLAS",
+      "instrument": "solas-1974",
+      "citation": "MSC.1/Circ.1676",
+      "title": "GMDSS · transition for older equipment standards",
+      "description": "The circular invites administrations to consider permitting continued installation to older standards until this date.",
+      "keywords": "radio radioutstyr gmdss overgang overgangsordning inmarsat vhf mf hf",
+      "dates": [
+        {
+          "id": "expiry",
+          "date": "2028-01-01",
+          "kind": "expiry",
+          "condition": "Older-standard VHF, MF, MF/HF and Inmarsat-C installations listed in paragraph 5, where the administration uses the allowance.",
+          "evidence": [
+            {
+              "source": "gmdss",
+              "reference": "paragraph 5",
+              "quote": "consider permitting until 1 January 2028 the continued installation of",
+              "page": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "vhf-channel-arrangements",
+      "authority": "IMO",
+      "regime": "SOLAS",
+      "instrument": "solas-1974",
+      "citation": "MSC.1/Circ.1460/Rev.5",
+      "title": "VHF · revised ITU channel arrangements",
+      "description": "IMO guidance calls for shipboard equipment to comply with the latest channel arrangements in ITU Radio Regulations appendix 18.",
+      "keywords": "vhf radio radiobesiktelse radiokontroll kanaler kanalplan",
+      "dates": [
+        {
+          "id": "survey",
+          "date": "2028-01-01",
+          "kind": "recommendation",
+          "condition": "SOLAS IV/7 and IV/15 radio equipment. Update by the first radio survey scheduled on or after this date, or earlier as appropriate.",
+          "evidence": [
+            {
+              "source": "vhf",
+              "reference": "paragraph 5",
+              "quote": "by the first radio survey scheduled on or after 1 January 2028",
+              "page": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "beidou-receiver-standard",
+      "authority": "IMO",
+      "regime": "SOLAS",
+      "instrument": "solas-1974",
+      "citation": "MSC.379(93)/Rev.1",
+      "title": "BeiDou · revised performance standard for shipborne receivers",
+      "description": "IMO recommends the revised performance standard for applicable receiver installations. Earlier installations can follow MSC.379(93).",
+      "keywords": "satellittnavigasjon navigasjon satellittmottaker bds beidou",
+      "dates": [
+        {
+          "id": "install",
+          "date": "2028-07-31",
+          "kind": "recommendation",
+          "condition": "For ships contracted or first laid down without a contract from this date, any installation. For other ships, use the contracted or actual delivery date of the receiver.",
+          "evidence": [
+            {
+              "source": "beidou",
+              "reference": "paragraphs 2–3",
+              "quote": "if installed on or after 31 July 2028, conforms to performance standards",
+              "page": 189
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ecdis-s100",
+      "authority": "IMO",
+      "regime": "SOLAS",
+      "instrument": "solas-1974",
+      "citation": "MSC.530(106)/Rev.1",
+      "title": "ECDIS · S-100 performance standard",
+      "description": "Revised ECDIS performance standards support S-100 product specifications and digital exchange of route plans.",
+      "keywords": "ecdis sjøkart kartmaskin elektroniske sjokart s100 s-100",
+      "dates": [
+        {
+          "id": "early-use",
+          "date": "2026-01-01",
+          "kind": "early-use",
+          "condition": "New installations may use the revised standard during the transition.",
+          "evidence": [
+            {
+              "source": "ecdis",
+              "reference": "ECDIS updates",
+              "quote": "from 1 January 2026 on a voluntary basis"
+            }
+          ]
+        },
+        {
+          "id": "new-installations",
+          "date": "2029-01-01",
+          "kind": "installation",
+          "condition": "Applies to all new ECDIS installations from this date.",
+          "evidence": [
+            {
+              "source": "ecdis",
+              "reference": "ECDIS updates",
+              "quote": "for all new ECDIS installations from 1 January 2029"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ais-identity-performance",
+      "authority": "IMO",
+      "regime": "SOLAS",
+      "instrument": "solas-1974",
+      "citation": "MSC.570(109)",
+      "title": "AIS · revised performance and identity protection",
+      "description": "IMO recommends revised AIS performance standards with protections against unauthorized changes to ship identity data.",
+      "keywords": "ais identitetssikring spoofing automatisk identifikasjon nyinstallasjon",
+      "dates": [
+        {
+          "id": "install",
+          "date": "2029-01-01",
+          "kind": "recommendation",
+          "condition": "For new ships, the build contract or, without one, laying the keel or reaching a similar stage is on or after this date. For other ships, use the AIS equipment’s contracted or actual delivery date.",
+          "evidence": [
+            {
+              "source": "msc570",
+              "reference": "paragraph 2.1",
+              "quote": "having a contractual delivery date on or after 1 January 2029",
+              "page": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "enclosed-lifeboat-ventilation",
+      "authority": "IMO",
+      "regime": "SOLAS",
+      "instrument": "solas-1974-lsa",
+      "citation": "MSC.535(107)",
+      "title": "Enclosed lifeboat ventilation",
+      "description": "Totally enclosed lifeboats must provide a ventilation rate of at least 5 m³/h per person for at least 24 hours.",
+      "keywords": "redningsbåt redningsbat livbåt livbåter ventilasjon lukkede",
+      "dates": [
+        {
+          "id": "force",
+          "date": "2026-01-01",
+          "kind": "entry-into-force",
+          "condition": "The LSA Code amendment has a later installation threshold.",
+          "evidence": [
+            {
+              "source": "msc535",
+              "reference": "paragraph 3",
+              "quote": "enter into force on 1 January 2026",
+              "page": 2
+            }
+          ]
+        },
+        {
+          "id": "installation",
+          "date": "2029-01-01",
+          "kind": "application",
+          "condition": "For the amended LSA Code definition in 4.6.8, use the contractual delivery date of the lifeboat or, without a contractual date, its actual delivery date.",
+          "evidence": [
+            {
+              "source": "msc535",
+              "reference": "paragraph 4",
+              "quote": "totally enclosed lifeboats installed on or after 1 January 2029",
+              "page": 2
+            },
+            {
+              "source": "msc535",
+              "reference": "LSA Code 4.6.6.1",
+              "quote": "5 m³/h per person",
+              "page": 3
+            },
+            {
+              "source": "msc589",
+              "reference": "LSA Code 4.6.8, as amended from 1 January 2028",
+              "quote": "contractual delivery",
+              "page": 132
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "arctic-hfo-use-and-carriage",
+      "authority": "IMO",
+      "regime": "MARPOL",
+      "instrument": "marpol",
+      "citation": "MEPC.329(76)",
+      "title": "Arctic heavy fuel oil · use and carriage as fuel",
+      "description": "MARPOL Annex I/43A prohibits use and carriage as fuel of listed heavy oils in Arctic waters. Ships securing safety, engaged in search and rescue, or dedicated to oil-spill preparedness and response are excepted under paragraph 1.",
+      "keywords": "tungolje hfo arktis polar arktiske farvann drivstoff tankbeskyttelse",
+      "dates": [
+        {
+          "id": "general",
+          "date": "2024-07-01",
+          "kind": "application",
+          "condition": "General prohibition for ships operating in Arctic waters, subject to the protected-tank transition and permitted flag-State waivers.",
+          "evidence": [
+            {
+              "source": "mepc329",
+              "reference": "MARPOL I/43A.1",
+              "quote": "on or after 1 July 2024",
+              "page": 3
+            }
+          ]
+        },
+        {
+          "id": "protected-tanks",
+          "date": "2029-07-01",
+          "kind": "application",
+          "condition": "Ships to which MARPOL I/12A or Polar Code part II-A, chapter 1, regulation 1.2.1 applies.",
+          "title": "Arctic heavy fuel oil · ships with protected tanks",
+          "evidence": [
+            {
+              "source": "mepc329",
+              "reference": "MARPOL I/43A.2",
+              "quote": "on or after 1 July 2029",
+              "page": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "arctic-hfo-waivers",
+      "authority": "IMO",
+      "regime": "MARPOL",
+      "instrument": "marpol",
+      "citation": "MEPC.329(76)",
+      "title": "Arctic heavy fuel oil · coastal-state waivers expire",
+      "description": "Temporary waivers under regulation 43A.4 cease to apply.",
+      "keywords": "tungolje hfo arktis dispensasjon unntak waivers",
+      "dates": [
+        {
+          "id": "expiry",
+          "date": "2029-07-01",
+          "kind": "expiry",
+          "condition": "Waivers granted by an eligible Arctic coastal State to ships flying its flag in waters under its sovereignty or jurisdiction.",
+          "evidence": [
+            {
+              "source": "mepc329",
+              "reference": "MARPOL I/43A.4",
+              "quote": "No waivers issued under this paragraph shall apply",
+              "page": 3
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

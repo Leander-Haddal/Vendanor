@@ -75,3 +75,7 @@ main { max-width: 112rem; }
 .condition-pair {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;padding:.7rem 0;border-top:1px solid var(--line)}
 .condition-pair blockquote {margin:.35rem 0;white-space:pre-wrap;overflow-wrap:anywhere}
 @media(max-width:760px){.condition-pair{grid-template-columns:1fr}}
+.date-search-link { display: block; margin: .2rem .85rem .7rem; font-weight: 600; }
+.library-dated-hits { margin: .35rem .8rem .85rem; }
+.library-dated-hits h2 { font-size: 1rem; }
+.library-dated-hits .research-linked-results > li { padding: .45rem .6rem; }

@@ -108,6 +108,7 @@
 .law-stream { min-width: 0; }
 .overview-filters { display: grid; grid-template-columns: minmax(9rem, 1fr) minmax(12rem, 18rem); align-items: center; gap: 0 1rem; padding: .65rem 1rem; }
 .overview-filters > label:first-child { grid-row: span 2; }
+.overview-filters:has(.unfiltered-control[hidden]) { grid-template-columns: minmax(0, 1fr); }
 .overview-filters .unfiltered-control { display: flex; align-items: center; gap: .55rem; align-self: end; color: var(--ink); font-size: .92rem; cursor: pointer; }
 .overview-filters .unfiltered-control input { flex: none; width: 1.1rem; height: 1.1rem; min-height: 0; margin: 0; accent-color: var(--accent); }
 #unfiltered-help { align-self: start; margin: .15rem 0 0 1.65rem; color: var(--muted); font-size: .77rem; line-height: 1.35; }
@@ -115,6 +116,75 @@
 .overview-filters input, .overview-filters select { min-height: 2.4rem; margin-bottom: 0; }
 .owner-view .excerpt-count { margin: .8rem 0 .6rem; color: var(--muted); font-size: .86rem; font-weight: 550; letter-spacing: 0; }
 .source-cards { display: grid; gap: .9rem; }
+.research-switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .35rem .75rem;
+  border-bottom: 1px solid var(--line-dark);
+  margin-top: .55rem;
+}
+.research-switch button {
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  color: var(--muted);
+  padding: .48rem .25rem;
+}
+.research-switch button[aria-pressed=true] { color: var(--blue); border-bottom-color: var(--accent); }
+.research-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(10rem,100%),1fr));
+  gap: .5rem .85rem;
+  align-items: end;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  margin: .8rem 0;
+  padding: .75rem 1rem;
+}
+.research-fields input, .research-fields select { min-width: 0; margin: 0; }
+.research-count { margin: .85rem 0 .6rem; }
+.research-panel :is(h3,h4,p), .library-provisions a { overflow-wrap: anywhere; }
+.research-meta { color: var(--muted); font-size: .84rem; }
+.research-comparison { padding: 1rem; margin-bottom: .7rem; }
+.research-comparison > p { margin: .3rem 0 .7rem; }
+.research-pair { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: .65rem; }
+.research-pair > div { background: var(--wash); padding: .7rem .8rem; border-left: 2px solid var(--line-dark); }
+.research-pair .research-meta, .research-row .research-meta { margin: 0 0 .3rem; }
+.research-links { display: flex; gap: .35rem .85rem; flex-wrap: wrap; margin-top: .35rem; font-size: .86rem; }
+.research-timeline, .research-linked-results {
+  list-style: none;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  border-radius: 7px;
+  margin: 0 0 .5rem;
+  padding: 0;
+}
+.research-row, .research-linked-results > li { padding: .75rem .9rem; }
+.research-day { display: grid; grid-template-columns: minmax(6.5rem,.18fr) minmax(0,1fr); }
+.research-day > ul { list-style: none; margin: 0; padding: 0; }
+.research-day > h3 { margin: 0; padding: .75rem .9rem; font-variant-numeric: tabular-nums; color: var(--blue); }
+.research-day + .research-day, .research-row + .research-row, .research-linked-results > li + li { border-top: 1px solid var(--line); }
+.research-row > h4 { margin: 0 0 .18rem; }
+.research-row > p { margin: .24rem 0; }
+.research-condition strong { font-weight: 650; }
+.research-evidence { font-size: .88rem; }
+.research-selection { display: flex; align-items: baseline; gap: .35rem .65rem; flex-wrap: wrap; }
+.dated-provision-hits { margin-bottom: .85rem; }
+.research-quote {
+  margin: .5rem 0;
+  border-inline-start: 3px solid var(--line-dark);
+  padding: .45rem .75rem;
+  background: var(--wash);
+  overflow-wrap: anywhere;
+}
+.research-linked-results a, .research-linked-results span { display: block; }
+.library-provisions, .instrument-source { margin: .75rem 0; }
+@media (max-width: 760px) {
+  .research-pair, .research-day { grid-template-columns: minmax(0,1fr); }
+  .research-day > h3 { background: var(--wash); }
+}
 .source-cards .law-card { min-width: 0; margin: 0; padding: 0; overflow: clip; }
 .law-card-heading { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; margin: 0; padding: .85rem 1rem; background: #f7f9fa; }
 .law-card-heading h3 { overflow-wrap: anywhere; }

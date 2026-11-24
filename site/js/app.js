@@ -16,6 +16,8 @@ import {renderSources} from './sources.js';
 import {createDocumentWorkspace} from './documents.js';
 import {collections} from './collections.js';
 import {mapCatalogue} from './provision-map.js';
+import {indexChangeEvents,indexIncorporations,interpretQuestion,timelineHref} from './legal-research.js';
+import {showDatedHits} from './research-panel.js';
 
 const $=id=>document.getElementById(id);
 const worker=new Worker(new URL('./search-worker.js',import.meta.url),{type:'module'});
@@ -26,9 +28,11 @@ let countries=[],worldBook={records:[]},world=new Map(),sources=new Map(),byCoun
 let flagSources={flags:[]},ukHistory={records:[]},euHistory={records:[]},imoHistory={instruments:[]},registryBook={entries:[]};
 let ruleCoverage={},officialIndex={},publishers={},clauseIndex={records:{},counts:{}};
 let nationalIndex={records:{},counts:{}},originalTreaties={},treatyWording={},implementation=[],failedCollections=[];
+let researchCatalogue={regimes:{},provisions:[],relations:[],events:[]}, datedProvisions, researchEvents=[];
 const views=['regulations','documents','library','changes','sources'];
 let profile={values:{},asOf:''},rows=[],readerMode='text',loaded=false,limit=40,ticket=0,routeTurn=0,prefill,storageError='',lastQuery='',lastReader='',noticeTimer,within='',withinDoc='';
 let publicStart,ownerPage='',generation=0,regSignature='',regReturn='',regBrowser,collectionReady=false;
+let provisionSearch;
 const documentWorkspace=createDocumentWorkspace($('documents-view'),()=>publicStart && refreshImports());
 function referenceDay(){const latest=catalogues.map(c=>c.checkedAt).filter(Boolean).sort().at(-1);return latest&&latest<today()?latest:today();}
 function countryName(code){return countries.find(c=>c.code===code)?.name||code||'';}
@@ -76,6 +80,8 @@ function rebuild() {
   }
   for(const doc of implementation){byKey.set(doc.key,doc);byEdition.set(doc.version.id,doc.key);}
   archive=new Map(gazette.records.map(r=>[r.id,r]));
+  researchEvents=indexChangeEvents({imo:imoHistory,gazette:gazette.records,documents:[...byKey.values()],
+    supplements:researchCatalogue.events,datedProvisions});
   world=new Map(worldBook.records.map(raw=>{
     const country=raw.country||'FAO:'+raw.countryName,id='world:'+raw.id,topics=Array.isArray(raw.topics)?raw.topics.join(' · '):raw.topics||'';
     const preview=[raw.countryName,topics,raw.kind].filter(Boolean).join(' · ');
@@ -89,6 +95,7 @@ function rebuild() {
   const folios=[...folioRows(instruments),...implementation.flatMap(d=>folioRows([{...d.instrument,versions:[d.version]}]).map(r=>({...r,doc:d.key})))];
   const catalogue=[...[...world.values()].map(({id,country,codes,title,searchText,preview,year})=>({id,country,codes,title,searchText,preview,year,collection:'world'})),
     ...extra.map(({doc,...r})=>r)];
+  provisionSearch=undefined;
   worker.postMessage({type:'init',folios,records:gazette.records,searchIndex:gazette.searchIndex,world:catalogue});
   lastQuery='';lastReader='';generation++;
   byCountry=holdings(countries,world.values(),gazette.records,extra,[...byKey.values()]);
@@ -160,6 +167,20 @@ function treatyEditions(doc,section) {
 function openLocal(doc) {
   const key=byEdition.get('local-'+doc.id);if(key)select(key,doc.sections[0]?.key);
 }
+function searchProvisions(q,country,asOf,callback){
+  const id=++ticket;
+  provisionSearch=callback;
+  worker.postMessage({type:'search',ticket:id,q,country,asOf,limit:10,profile:{},match:'all',publishedBefore:asOf});
+  return ()=>{if(ticket===id)provisionSearch=undefined;};
+}
+const issuingBody={imo:'IMO',archive:'NO',uk:'GB',eu:'EU'};
+function libraryTimelineLink(query,source,country) {
+  const now=today(), parsed=interpretQuestion(query,researchCatalogue.regimes,now);
+  const authority=issuingBody[source]||country||parsed.authority;
+  const href=timelineHref({query,authority,instrument:parsed.instrument,today:now});
+  $('date-search-link').href=href;
+  $('date-search-link').hidden=!parsed.from&&!parsed.to;
+}
 function search(params) {
   const values={};
   for(const [key,id] of Object.entries(filters)){
@@ -169,8 +190,13 @@ function search(params) {
     if(control.value!==wanted)control.value=defaults[key];
     values[key]=control.value;
   }
+  libraryTimelineLink(values.q,values.source,values.country);
   const query=JSON.stringify([values,profile,limit]);
   if(query===lastQuery)return;
+  const canShowDates=!values.year&&(values.source==='all'||Object.hasOwn(issuingBody,values.source));
+  showDatedHits($('dated-library-hits'),researchEvents,{query:canShowDates?values.q:'',
+    authority:issuingBody[values.source]||values.country,today:today(),compact:true});
+  provisionSearch=undefined;
   lastQuery=query;rows=[];$('result-list').replaceChildren();$('result-count').textContent='';$('more-results').hidden=true;
   $('search-status').textContent='Searching…';
   worker.postMessage({type:'search',ticket:++ticket,...values,limit,profile:{},asOf:'',match:'all'});
@@ -188,18 +214,25 @@ function filtered(params) {
 function automaticHit(params) {return !params.has('doc')&&filtered(params)?rows[0]:null;}
 worker.onmessage=event=>{
   const message=event.data;
-  if(message.ticket!==ticket||route().view!=='library'||['map','compare'].includes(route().params.get('tab')))return;
+  if(message.ticket!==ticket)return;
+  const {view,params}=route();
+  if(view==='regulations'){provisionSearch?.(message);return;}
+  if(view!=='library'||['map','compare'].includes(params.get('tab')))return;
   if(message.type==='error'){$('search-status').textContent='The search file could not be read. Reload to retry.';return;}
   if(message.type!=='results')return;
   const q=$('q').value;rows=message.rows;
   $('result-count').textContent=message.total.toLocaleString('en');
-  $('search-status').textContent=message.errors?'Some archive files were unavailable. Results are partial.':message.progress||(!rows.length?'No results for these filters.':'');
+  $('search-status').textContent=message.errors?'Some archive files were unavailable. Results are partial.':message.progress||
+    (!rows.length?($('dated-library-hits').hidden?'No results for these filters.':'No matching documents.'):'');
   $('more-results').hidden=rows.length>=message.total;
   $('result-list').innerHTML=rows.map((r,i)=>'<button class="result" data-row="'+i+'"><span class="result-top">'+esc([r.date,r.type==='archive'?r.subtitle:r.type==='local'?'My import':r.jurisdiction].filter(Boolean).join(' · '))+'</span><strong>'+marked(r.heading||r.title,q)+'</strong><span class="result-sub">'+esc(r.title)+'</span><span class="snippet">'+marked(r.preview,q)+'</span>'+'</button>').join('');
   resultSelection();
   if(!route().params.has('doc')&&filtered(route().params))drawRoute();
 };
-worker.onerror=()=>{$('search-status').textContent='The local search worker could not start. Reload this page to retry.';};
+worker.onerror=()=>{
+  provisionSearch?.({type:'error'});
+  $('search-status').textContent='The local search worker could not start. Reload this page to retry.';
+};
 
 function showView(view) {
   for(const name of views)$(name+'-view').hidden=view!==name;
@@ -210,6 +243,7 @@ function showView(view) {
 async function drawRoute() {
   const {view,params}=route(),turn=++routeTurn;
   const previous=ownerPage;ownerPage=view;showView(view);
+  if(previous==='regulations'&&view!=='regulations')regBrowser?.close();
   if(previous==='changes'&&view!=='changes')closeComparison();
   if(previous==='documents'&&view!=='documents')documentWorkspace.close();
   if(view!=='library'){releasePreview();lastReader='';lastQuery='';}
@@ -224,9 +258,11 @@ async function drawRoute() {
   if(view==='regulations'){
     const signature=generation+'|'+params.toString();
     if(regSignature!==signature||previous!==view){
+      regBrowser?.close();
       regSignature=signature;
       regBrowser=renderRegulations($('regulations-view'),{documents:[...byKey.values()],fields,params,countryName,latest:referenceDay(),
         records:[...world.values()],coverage:ruleCoverage,conditionCollections:clauseIndex.collections,ready:collectionReady,lookup:sourceSummary,
+        researchCatalogue,researchEvents,today:today(),searchProvisions,
         editions:values=>publisherDates(values,world.values(),publishers,gazette.records,ukHistory.records,euHistory.records),changed(next,current){
           profile=current;regSignature=generation+'|'+next.toString();regReturn='#regulations'+(next.size?'?'+next:'');
           history.replaceState(null,'',regReturn);
@@ -286,13 +322,15 @@ function applyFilters() {
 async function start() {
   const secondary=['uk-history.json','eu-history.json','world-laws.json','national-screening.json','official-screening.json','publisher-matches.json','clause-index.json'];
   const pending=Promise.allSettled(secondary.map(f=>readJson(dataUrl(f))));
-  const files=[...Object.values(collections),'countries.json','gazette.json','originals.json','flag-sources.json','registry-guides.json','imo-history.json','treaty-originals.json','treaty-wording.json','uk-navigation.json','ca-arctic.json','rule-coverage.json'];
+  const files=[...Object.values(collections),'countries.json','gazette.json','originals.json','flag-sources.json','registry-guides.json','imo-history.json','treaty-originals.json','treaty-wording.json','uk-navigation.json','ca-arctic.json','rule-coverage.json','legal-research.json','dated-provisions.json'];
   const results=await Promise.allSettled(files.map(f=>readJson(dataUrl(f))));
   const data=Object.fromEntries(files.map((f,i)=>[f,results[i].value]));
   catalogues=Object.entries(collections).filter(([,file])=>data[file]).map(([collectionName,file])=>({...mapCatalogue(data[file]),collectionName}));
   failedCollections=Object.entries(collections).filter(([,file])=>!data[file]).map(([name])=>name);
   gazette=data['gazette.json']||gazette;originals=data['originals.json']||originals;
   flagSources=data['flag-sources.json']||flagSources;registryBook=data['registry-guides.json']||registryBook;imoHistory=data['imo-history.json']||imoHistory;
+  researchCatalogue=data['legal-research.json']||researchCatalogue;
+  datedProvisions=data['dated-provisions.json'];
   ruleCoverage=data['rule-coverage.json']||{};
   countries=data['countries.json']?.countries||[];originalTreaties=data['treaty-originals.json']||{};treatyWording=data['treaty-wording.json']||{};
   async function archiveSource(id){
@@ -302,6 +340,7 @@ async function start() {
   }
   const [construction,environment]=await Promise.all([archiveSource('SF/forskrift/2014-07-01-1072'),archiveSource('SF/forskrift/2012-05-30-488')]);
   implementation=[...domesticImplementations(construction,data['uk-navigation.json'],environment,data['ca-arctic.json']),...registeredScopes(originalTreaties,treatyWording,imoHistory)];
+  researchCatalogue=indexIncorporations(researchCatalogue,implementation,imoHistory,countryName);
   await refreshImports();loaded=true;
   if(route().view==='regulations'){rebuild();await drawRoute();}
   const additional=await pending,more=Object.fromEntries(secondary.map((f,i)=>[f,additional[i].value]));
@@ -309,11 +348,14 @@ async function start() {
   worldBook=more['world-laws.json']||worldBook;nationalIndex=more['national-screening.json']||nationalIndex;officialIndex=more['official-screening.json']||{};publishers=more['publisher-matches.json']||{};clauseIndex=more['clause-index.json']||clauseIndex;
   collectionReady=true;rebuild();
   if(failedCollections.length||[...results,...additional].some(r=>r.status!=='fulfilled'))notify('Part of the public collection could not be loaded.');
-  if(route().view==='regulations'&&regBrowser){regSignature=generation+'|'+route().params;regBrowser.updateRecords([...world.values()],clauseIndex.collections);}
+  if(route().view==='regulations'&&regBrowser){regSignature=generation+'|'+route().params;regBrowser.updateRecords([...world.values()],clauseIndex.collections,researchEvents);}
   else await drawRoute();
 }
 let debounce;
-$('q').oninput=()=>{clearTimeout(debounce);debounce=setTimeout(applyFilters,160);};
+$('q').oninput=()=>{
+  libraryTimelineLink($('q').value,$('source-filter').value,$('country-filter').value);
+  clearTimeout(debounce);debounce=setTimeout(applyFilters,160);
+};
 for(const id of ['source-filter','country-filter','year-filter'])$(id).onchange=applyFilters;
 $('filter-form').onsubmit=event=>{event.preventDefault();clearTimeout(debounce);applyFilters();};
 $('clear-filters').onclick=()=>{limit=40;navigate('library');};

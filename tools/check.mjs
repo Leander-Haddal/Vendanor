@@ -1,12 +1,13 @@
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {readFile,readdir,stat} from 'node:fs/promises';
-import {join,resolve} from 'node:path';
+import {dirname,join,resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {PDFDocument} from '../site/vendor/pdf-lib.mjs';
 import {mapCatalogue} from '../site/js/provision-map.js';
 import {domesticImplementations,implementationFields} from '../site/js/implementation.js';
 import {registeredScopes,treatyFields} from '../site/js/treaty-scope.js';
+import {eventKinds,provisionDateEvents} from '../site/js/legal-research.js';
 import {gunzipSync} from 'node:zlib';
 
 const root=fileURLToPath(new URL('../',import.meta.url)),site=join(root,'site'),data=join(site,'data');
@@ -432,15 +433,44 @@ async function checkLibrary(){
   assert(geo.length>150&&geo.every(([code,label,path])=>code&&label&&/^M[0-9.,LZM-]+$/.test(path)));
   console.log(Object.keys(index.records).length+' national catalogue records reconciled; '+index.counts.recordsWithText+' have usable primary text renditions.');
 }
+async function checkDatedProvisions() {
+  const data=await json('dated-provisions.json');
+  unique(data.provisions.map(p=>p.id),'dated provision');
+  for(const [id,source] of Object.entries(data.sources)){
+    webUrl(source.url);
+    assert(source.citation,id+' citation');
+  }
+  for(const p of data.provisions){
+    assert(p.id&&p.title&&p.authority&&p.instrument&&p.regime&&p.dates.length,p.id);
+    unique(p.dates.map(d=>d.id),p.id+' date ID');
+    for(const date of p.dates){
+      day(date.date);
+      assert(date.id&&Object.hasOwn(eventKinds,date.kind)&&date.condition&&date.evidence.length,p.id);
+      for(const proof of date.evidence){
+        assert(Object.hasOwn(data.sources,proof.source)&&proof.reference&&proof.quote,p.id+' source evidence');
+        if(proof.page!==undefined)assert(Number.isInteger(proof.page)&&proof.page>0,p.id+' source page');
+      }
+    }
+  }
+  const events=provisionDateEvents(data);
+  unique(events.map(e=>e.id),'dated provision event');
+  console.log(data.provisions.length+' dated provisions and '+events.length+' dates verified.');
+}
+
 const checked=await Promise.allSettled([
   checkFolios(codes),checkArchive(),checkWorld(),checkFlagSources(codes),checkTreaties(codes),
-  checkBritishHistory(),checkEuropeanHistory(),checkLibrary()
+  checkBritishHistory(),checkEuropeanHistory(),checkLibrary(),checkDatedProvisions()
 ]);
 const errors=checked.filter(r=>r.status==='rejected').map(r=>r.reason);
 if(errors.length)throw new AggregateError(errors,'Source validation failed');
 const [mapped,notices,national,flags,treatyEvents,ukActs,euActs]=checked.map(r=>r.value);
 const files=await walk(site);
-for(const path of files.filter(p=>p.endsWith('.pdf')))assert(usedPdfs.has(resolve(path)),'Unreferenced source PDF '+path);
+for(const path of files.filter(p=>p.endsWith('.pdf'))){
+  if(dirname(path)===join(site,'reports')){
+    const report=await PDFDocument.load(await readFile(path),{updateMetadata:false});
+    assert(report.getPageCount()>0,'Empty research report '+path);
+  }else assert(usedPdfs.has(resolve(path)),'Unreferenced source PDF '+path);
+}
 for(const file of ['index.html','.nojekyll'])assert((await stat(join(root,file))).isFile());
 for(const file of ['index.html','js/app.js','vendor/pdfjs.mjs','vendor/pdf.worker.mjs','vendor/pdf-lib.mjs','vendor/LICENSES.txt','vendor/fonts.json','vendor/cmaps.json'])assert((await stat(join(site,file))).isFile());
 console.log(mapped.versions+' mapped editions, '+notices+' Norwegian records, '+national+' national records and '+usedPdfs.size+' PDF assets verified.');
